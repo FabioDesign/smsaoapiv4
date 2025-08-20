@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('rdv', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uid')->unique();
             $table->string('lastname', 255);
             $table->string('firstname', 255);
             $table->string('number', 50)->nullable();

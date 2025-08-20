@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uid')->unique();
             $table->string('code', 2)->unique();
             $table->string('label_fr', 255);
             $table->string('label_en', 255);
