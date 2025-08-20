@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -10,13 +10,16 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
-    {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+    public function run(): void{
+        try {
+            $this->call([
+                // Type de Parents
+                TypeParent::class,
+                // Pièces à fournir
+                Requestdoc::class,
+            ]);
+        } catch (QueryException $e) {
+            $this->command->info('Erreur d’insertion détectée. Processus de seed ignoré pour cet enregistrement.');
+        }
     }
 }

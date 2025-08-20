@@ -13,11 +13,35 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->uuid('uid')->unique();
+            $table->string('lastname', 255);
+            $table->string('firstname', 255);
+            $table->string('gender', 1);
+            $table->string('number', 255)->nullable();
+            $table->string('email', 255)->nullable();
+            $table->string('password', 255)->nullable();
+            $table->timestamp('password_at')->nullable();
+            $table->timestamp('birthday_at');
+            $table->string('birthplace', 255);
+            $table->string('profession', 255);
+            $table->string('village', 255);
+            $table->string('street_number', 255);
+            $table->string('hourse_number', 255);
+            $table->string('family_number', 255);
+            $table->string('register_number', 255)->nullable();
+            $table->string('bp', 255)->nullable();
+            $table->string('diplome', 255);
+            $table->text('distinction');
+            $table->string('fullname_peson', 255);
+            $table->string('contact_person', 255);
+            $table->string('residence_person', 255);
+            $table->string('photo', 255);
+            $table->timestamp('login_at')->nullable();
+            $table->tinyinteger('status')->default('0');
+            $table->integer('admin_id')->default('0');
+            $table->integer('cellule_id');
+            $table->integer('district_id');
+            $table->integer('nationality_id')->default('0');
             $table->timestamps();
         });
     }

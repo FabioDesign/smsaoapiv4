@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class TypeParent extends Model
 {
-    use HasFactory;
+    public $table = 'type_parent';
 
     /**
      * The attributes that are mass assignable.
@@ -15,6 +14,7 @@ class Product extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'detail'
+        'label_fr',
+        'label_en',
     ];
 }
