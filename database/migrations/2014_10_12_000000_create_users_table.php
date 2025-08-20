@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('lastname', 255);
             $table->string('firstname', 255);
             $table->string('gender', 1);
-            $table->string('number', 255)->nullable();
+            $table->string('number', 50)->nullable();
             $table->string('email', 255)->nullable();
             $table->string('password', 255)->nullable();
             $table->timestamp('password_at')->nullable();
@@ -37,8 +37,9 @@ return new class extends Migration
             $table->string('residence_person', 255);
             $table->string('photo', 255);
             $table->timestamp('login_at')->nullable();
+            $table->text('comment')->nullable();
             $table->tinyinteger('status')->default('0');
-            $table->integer('admin_id')->default('0');
+            $table->integer('user_id')->default('0');
             $table->integer('cellule_id');
             $table->integer('district_id');
             $table->integer('nationality_id')->default('0');

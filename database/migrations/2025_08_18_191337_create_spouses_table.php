@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('filename', 255);
             $table->date('wedding_at')->nullable();
             $table->integer('user_id');
-            $table->integer('spouse_id')->nullable();
+            $table->integer('spouse_id');
             $table->integer('requestdoc_id');
             $table->timestamps();
         });

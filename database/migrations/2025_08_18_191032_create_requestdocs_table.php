@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('label_en', 255);
             $table->tinyinteger('status')->default('1');
             $table->timestamps();
+            $table->integer('user_id');
         });
     }
 

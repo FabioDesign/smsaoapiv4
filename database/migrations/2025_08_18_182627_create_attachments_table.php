@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('fichier_id');
             $table->integer('demande_id');
             $table->timestamps();
+            $table->integer('user_id');
         });
     }
 

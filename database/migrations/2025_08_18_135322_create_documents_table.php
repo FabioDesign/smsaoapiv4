@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('description_en');
             $table->tinyinteger('status');
             $table->timestamps();
+            $table->integer('user_id');
         });
     }
 

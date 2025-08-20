@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('rdv', function (Blueprint $table) {
             $table->id();
+            $table->string('lastname', 255);
+            $table->string('firstname', 255);
+            $table->string('number', 50)->nullable();
+            $table->string('email', 255)->nullable();
+            $table->text('motif');
+            $table->text('comment')->nullable();
+            $table->timestamp('daterdv_at')->nullable();
+            $table->tinyinteger('status')->default('0');
             $table->timestamps();
+            $table->integer('user_id')->default('0');
         });
     }
 

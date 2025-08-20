@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('lastname', 255);
             $table->string('firstname', 255);
             $table->integer('type_id');
-            $table->integer('enfant_id');
+            $table->integer('user_id');
             $table->integer('parent_id')->default('0');
             $table->timestamps();
         });

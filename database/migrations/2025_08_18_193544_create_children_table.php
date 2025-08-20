@@ -17,7 +17,7 @@ return new class extends Migration
             $table->tinyinteger('rank');
             $table->string('filename', 255);
             $table->integer('user_id');
-            $table->integer('spouse_id')->nullable();
+            $table->integer('children_id');
             $table->integer('requestdoc_id');
             $table->timestamps();
         });
