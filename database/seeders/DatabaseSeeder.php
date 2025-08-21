@@ -14,9 +14,9 @@ class DatabaseSeeder extends Seeder
         try {
             $this->call([
                 // Type de Parents
-                TypeParent::class,
+                TypeParentSeeder::class,
                 // Pièces à fournir
-                Requestdoc::class,
+                RequestdocSeeder::class,
             ]);
         } catch (QueryException $e) {
             $this->command->info('Erreur d’insertion détectée. Processus de seed ignoré pour cet enregistrement.');

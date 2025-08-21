@@ -18,6 +18,7 @@ class RequestdocSeeder extends Seeder
             [
                 "label_en" => 'Passport',
                 "label_fr" => 'Passeport',
+                "user_id" => 1,
                 "status" => 1,
             ]
         );
@@ -26,6 +27,7 @@ class RequestdocSeeder extends Seeder
             [
                 "label_en" => 'National Biometric Identity Card',
                 "label_fr" => 'Carte nationale d’identité Biométrique',
+                "user_id" => 1,
                 "status" => 1,
             ]
         );
@@ -34,6 +36,7 @@ class RequestdocSeeder extends Seeder
             [
                 "label_en" => 'Extract from birth certificate',
                 "label_fr" => 'Extrait d’acte de naissance',
+                "user_id" => 1,
                 "status" => 1,
             ]
         );
@@ -42,6 +45,7 @@ class RequestdocSeeder extends Seeder
             [
                 "label_en" => 'Supplementary judgment in lieu of birth certificate',
                 "label_fr" => 'Jugement supplétif tenant lieu d’acte de naissance',
+                "user_id" => 1,
                 "status" => 1,
             ]
         );
@@ -50,6 +54,7 @@ class RequestdocSeeder extends Seeder
             [
                 "label_en" => 'Guinean nationality certificate',
                 "label_fr" => 'Certificat de nationalité guinéenne',
+                "user_id" => 1,
                 "status" => 1,
             ]
         );
@@ -58,6 +63,7 @@ class RequestdocSeeder extends Seeder
             [
                 "label_en" => 'Residence permit',
                 "label_fr" => 'Titre de séjour',
+                "user_id" => 1,
                 "status" => 1,
             ]
         );
@@ -66,6 +72,7 @@ class RequestdocSeeder extends Seeder
             [
                 "label_en" => 'Handwritten request addressed to the Minister of Foreign Affairs',
                 "label_fr" => 'Demande manuscrite adressée au ministre des Affaires Etrangères',
+                "user_id" => 1,
                 "status" => 1,
             ]
         );
@@ -74,6 +81,7 @@ class RequestdocSeeder extends Seeder
             [
                 "label_en" => 'SC Hierarchical route',
                 "label_fr" => 'SC Voie hiérarchique',
+                "user_id" => 1,
                 "status" => 1,
             ]
         );
@@ -82,182 +90,7 @@ class RequestdocSeeder extends Seeder
             [
                 "label_en" => 'Old consular identity card',
                 "label_fr" => 'Ancienne carte d’identité consulaire',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Father'],
-            [
-                "label_en" => 'Father',
-                "label_fr" => 'Père',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Mother'],
-            [
-                "label_en" => 'Mother',
-                "label_fr" => 'Mère',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Father'],
-            [
-                "label_en" => 'Father',
-                "label_fr" => 'Père',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Mother'],
-            [
-                "label_en" => 'Mother',
-                "label_fr" => 'Mère',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Father'],
-            [
-                "label_en" => 'Father',
-                "label_fr" => 'Père',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Mother'],
-            [
-                "label_en" => 'Mother',
-                "label_fr" => 'Mère',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Father'],
-            [
-                "label_en" => 'Father',
-                "label_fr" => 'Père',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Mother'],
-            [
-                "label_en" => 'Mother',
-                "label_fr" => 'Mère',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Father'],
-            [
-                "label_en" => 'Father',
-                "label_fr" => 'Père',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Mother'],
-            [
-                "label_en" => 'Mother',
-                "label_fr" => 'Mère',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Father'],
-            [
-                "label_en" => 'Father',
-                "label_fr" => 'Père',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Mother'],
-            [
-                "label_en" => 'Mother',
-                "label_fr" => 'Mère',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Father'],
-            [
-                "label_en" => 'Father',
-                "label_fr" => 'Père',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Mother'],
-            [
-                "label_en" => 'Mother',
-                "label_fr" => 'Mère',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Father'],
-            [
-                "label_en" => 'Father',
-                "label_fr" => 'Père',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Mother'],
-            [
-                "label_en" => 'Mother',
-                "label_fr" => 'Mère',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Father'],
-            [
-                "label_en" => 'Father',
-                "label_fr" => 'Père',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Mother'],
-            [
-                "label_en" => 'Mother',
-                "label_fr" => 'Mère',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Father'],
-            [
-                "label_en" => 'Father',
-                "label_fr" => 'Père',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Mother'],
-            [
-                "label_en" => 'Mother',
-                "label_fr" => 'Mère',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Father'],
-            [
-                "label_en" => 'Father',
-                "label_fr" => 'Père',
-                "status" => 1,
-            ]
-        );
-        Requestdoc::firstOrCreate(
-            ["label_en" => 'Mother'],
-            [
-                "label_en" => 'Mother',
-                "label_fr" => 'Mère',
+                "user_id" => 1,
                 "status" => 1,
             ]
         );
