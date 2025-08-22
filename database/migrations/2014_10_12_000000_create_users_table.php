@@ -39,11 +39,12 @@ return new class extends Migration
             $table->timestamp('login_at')->nullable();
             $table->text('comment')->nullable();
             $table->tinyinteger('status')->default('0');
+            $table->timestamps();
             $table->integer('user_id')->default('0');
+            $table->integer('profile_id');
             $table->integer('cellule_id');
             $table->integer('district_id');
             $table->integer('nationality_id')->default('0');
-            $table->timestamps();
         });
     }
 

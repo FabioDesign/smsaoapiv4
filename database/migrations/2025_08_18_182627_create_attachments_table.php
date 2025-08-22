@@ -16,10 +16,10 @@ return new class extends Migration
             $table->uuid('uid')->unique();
             $table->string('filename', 255);
             $table->tinyinteger('status')->default('1');
-            $table->integer('fichier_id');
-            $table->integer('demande_id');
             $table->timestamps();
             $table->integer('user_id');
+            $table->integer('fichier_id');
+            $table->integer('demande_id');
         });
     }
 

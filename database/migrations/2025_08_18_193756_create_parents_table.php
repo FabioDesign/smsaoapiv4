@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('lastname', 255);
             $table->string('firstname', 255);
+            $table->tinyinteger('status')->default('1');
+            $table->timestamps();
             $table->integer('type_id');
             $table->integer('user_id');
             $table->integer('parent_id')->default('0');
-            $table->timestamps();
         });
     }
 

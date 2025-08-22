@@ -16,14 +16,14 @@ return new class extends Migration
             $table->uuid('uid')->unique();
             $table->string('code', 50);
             $table->timestamp('daterdv_at');
-            $table->tinyinteger('status')->default('0');
-            $table->integer('controller_id')->default('0');
             $table->timestamp('controller_at')->nullable();
-            $table->integer('validator_id')->default('0');
             $table->timestamp('validator_at')->nullable();
+            $table->tinyinteger('status')->default('0');
+            $table->timestamps();
             $table->integer('user_id');
             $table->integer('document_id');
-            $table->timestamps();
+            $table->integer('validator_id')->default('0');
+            $table->integer('controller_id')->default('0');
         });
     }
 

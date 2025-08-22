@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('fichiers', function (Blueprint $table) {
             $table->id();
             $table->tinyinteger('status')->default('1');
+            $table->timestamps();
             $table->integer('requestdoc_id');
             $table->integer('document_id');
-            $table->timestamps();
         });
     }
 

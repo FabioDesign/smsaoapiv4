@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\{
-    RegisterController,
+    UserController,
     ProductController,
 };
 
@@ -19,8 +19,8 @@ use App\Http\Controllers\API\{
 |
 */
 
-Route::post('register', [RegisterController::class, 'register']);
-Route::post('login', [RegisterController::class, 'login']);
+Route::post('register', [UserController::class, 'store']);
+Route::post('login', [UserController::class, 'login']);
 
 Route::middleware('auth:api')->group( function () {
     Route::resource('products', ProductController::class);

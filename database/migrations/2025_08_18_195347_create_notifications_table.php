@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('label_en', 255);
             $table->string('target', 255);
             $table->timestamp('read_at')->nullable();
-            $table->integer('user_id');
             $table->timestamps();
+            $table->integer('user_id');
         });
     }
 

@@ -11,32 +11,27 @@ class BaseController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function sendResponse($result, $message)
-  {
+  public function sendSuccess($message, $data = [], $status = 200){
     $response = [
-      'success' => true,
-      'data'    => $result,
-      'message' => $message,
-    ];
-    return response()->json($response, 200);
+          'status' => $status,
+          'message' => $message,
+          'data' => $data,
+      ];
+      return response()->json($response, $status);
   }
-
   /**
    * return error response.
    *
    * @return \Illuminate\Http\Response
    */
-  public function sendError($error, $errorMessages = [], $code = 404)
-  {
+  public function sendError($message, $data = [], $status = 400){
     $response = [
-      'success' => false,
-      'message' => $error,
-    ];
-
-    if(!empty($errorMessages)){
-      $response['data'] = $errorMessages;
-    }
-
-    return response()->json($response, $code);
+          'status' => $status,
+          'message' => $message,
+      ];
+      if(!empty($data)){
+          $response['data'] = $data;
+      }
+      return response()->json($response, $status);
   }
 }

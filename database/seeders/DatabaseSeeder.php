@@ -13,6 +13,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void{
         try {
             $this->call([
+                // Menu
+                MenuSeeder::class,
+                // Action
+                ActionSeeder::class,
+                // Profil
+                ProfileSeeder::class,
+                // Permission
+                PermissionSeeder::class,
                 // Type de Parents
                 TypeParentSeeder::class,
                 // Pièces à fournir

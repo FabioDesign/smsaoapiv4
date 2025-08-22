@@ -17,10 +17,11 @@ return new class extends Migration
             $table->tinyinteger('rank');
             $table->string('filename', 255);
             $table->date('wedding_at')->nullable();
+            $table->tinyinteger('status')->default('1');
+            $table->timestamps();
             $table->integer('user_id');
             $table->integer('spouse_id');
             $table->integer('requestdoc_id');
-            $table->timestamps();
         });
     }
 

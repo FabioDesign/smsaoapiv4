@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -19,6 +20,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'bp',
+        'uid',
         'email',
         'photo',
         'gender',
@@ -26,11 +28,13 @@ class User extends Authenticatable
         'status',
         'user_id',
         'village',
+        'comment',
         'diplome',
         'login_at',
         'password',
         'lastname',
         'firstname',
+        'profile_id',
         'cellule_id',
         'birthplace',
         'profession',
@@ -68,4 +72,15 @@ class User extends Authenticatable
         'birthday_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->uid)) {
+                $model->uid = Str::uuid()->toString();
+            }
+        });
+    }
 }

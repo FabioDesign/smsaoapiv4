@@ -21,25 +21,21 @@ git remote add origin https://github.com/FabioDesign/rwanda.git
 2. Installer Passport
 ```
 composer require laravel/passport
-php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
 ```
 
 3. Installer Log-viewer
 ```
 composer require arcanedev/log-viewer
-php artisan log-viewer:publish
 ```
 
-4. Installer Guzzle
+4. Installer PHP Mailer
 ```
-composer require guzzlehttp/guzzle
+composer require phpmailer/phpmailer
 ```
 
 5. Installer Swagger
 ```
 composer require darkaonline/l5-swagger
-php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
-php artisan l5-swagger:generate
 ```
 
 6. Installer DomPDF
@@ -75,14 +71,7 @@ php artisan l5-swagger:generate
 url/api/documentation
 ```
 
-12. Donner les droits à des dossiers
-```
-chmod -R 777 storage
-chmod -R 777 public/assets/pdf
-chmod -R 777 public/assets/excel
-```
-
-## Fabriqué avec
+## Réalisé avec
 Liste des programmes/logiciels utilisés pour développer le projet
 
 * [Laravel] (https://laravel.com/) - Framework PHP
