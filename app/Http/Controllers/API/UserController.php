@@ -37,6 +37,7 @@ class UserController extends BaseController
     */
     public function login(Request $request): JsonResponse
     {
+        dd($request);
         //Validator
         $validator = Validator::make($request->all(), [
           'login' => 'required',
@@ -115,8 +116,9 @@ class UserController extends BaseController
      */
     public function store(Request $request): JsonResponse
     {
+        dd($request);
         Log::notice("User::store : " . json_encode($request->all()));
-        // return $this->sendError("Data", $request->all());
+        return $this->sendError("Data", $request->all());
         // $validator = Validator::make($request->all(), [
         //     'lastname' => 'required',
         //     'firstname' => 'required',

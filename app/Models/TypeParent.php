@@ -14,7 +14,9 @@ class TypeParent extends Model
      * @var array
      */
     protected $fillable = [
-        'label_fr',
         'label_en',
+        'label_fr',
     ];
+    
+    public $timestamps = false;
 }

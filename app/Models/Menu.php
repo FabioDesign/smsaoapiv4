@@ -18,4 +18,6 @@ class Menu extends Model
         'label_fr',
         'position',
     ];
+    
+    public $timestamps = false;
 }

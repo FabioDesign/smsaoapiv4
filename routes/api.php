@@ -20,7 +20,7 @@ use App\Http\Controllers\API\{
 */
 
 Route::post('register', [UserController::class, 'store']);
-Route::post('login', [UserController::class, 'login']);
+Route::post('users/auth', [UserController::class, 'login']);
 
 Route::middleware('auth:api')->group( function () {
     Route::resource('products', ProductController::class);

@@ -18,7 +18,6 @@ class ActionSeeder extends Seeder
             [
                 "label_fr" => 'Voir',
                 "label_en" => 'See',
-                "icone" => 'see-icon',
             ]
         );
         Action::firstOrCreate(
@@ -26,7 +25,6 @@ class ActionSeeder extends Seeder
             [
                 "label_fr" => 'Ajouter',
                 "label_en" => 'Add',
-                "icone" => 'add-icon',
             ]
         );
         Action::firstOrCreate(
@@ -34,7 +32,6 @@ class ActionSeeder extends Seeder
             [
                 "label_fr" => 'Modifier',
                 "label_en" => 'Update',
-                "icone" => 'update-icon',
             ]
         );
         Action::firstOrCreate(
@@ -42,7 +39,6 @@ class ActionSeeder extends Seeder
             [
                 "label_fr" => 'Activer/Désactiver',
                 "label_en" => 'Enable/Disable',
-                "icone" => 'enable-icon',
             ]
         );
         Action::firstOrCreate(
@@ -50,7 +46,6 @@ class ActionSeeder extends Seeder
             [
                 "label_fr" => 'Envoyer',
                 "label_en" => 'Send',
-                "icone" => 'send-icon',
             ]
         );
         Action::firstOrCreate(
@@ -58,7 +53,6 @@ class ActionSeeder extends Seeder
             [
                 "label_fr" => 'Approuver',
                 "label_en" => 'Approve',
-                "icone" => 'approve-icon',
             ]
         );
         Action::firstOrCreate(
@@ -66,7 +60,6 @@ class ActionSeeder extends Seeder
             [
                 "label_fr" => 'Supprimer',
                 "label_en" => 'Delete',
-                "icone" => 'delete-icon',
             ]
         );
         Action::firstOrCreate(
@@ -74,7 +67,6 @@ class ActionSeeder extends Seeder
             [
                 "label_fr" => 'Exporter',
                 "label_en" => 'Export',
-                "icone" => 'export-icon',
             ]
         );
     }

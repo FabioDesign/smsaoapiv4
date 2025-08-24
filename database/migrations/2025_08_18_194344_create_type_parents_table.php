@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('type_parent', function (Blueprint $table) {
             $table->id();
-            $table->string('label_fr', 50);
             $table->string('label_en', 50);
-            $table->timestamps();
+            $table->string('label_fr', 50);
         });
     }
 

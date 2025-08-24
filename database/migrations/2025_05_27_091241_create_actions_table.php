@@ -13,13 +13,8 @@ return new class extends Migration
     {
         Schema::create('actions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code', 50)->unique();
-            $table->string('label_fr', 50);
             $table->string('label_en', 50);
-            $table->string('icone', 50);
-            $table->tinyInteger('position');
-            $table->tinyInteger('status');
-            $table->timestamps();
+            $table->string('label_fr', 50);
         });
     }
 

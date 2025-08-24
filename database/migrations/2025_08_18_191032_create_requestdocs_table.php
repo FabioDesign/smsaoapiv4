@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('requestdocs', function (Blueprint $table) {
             $table->id();
             $table->uuid('uid')->unique();
-            $table->string('label_fr', 255);
             $table->string('label_en', 255);
+            $table->string('label_fr', 255);
             $table->tinyinteger('status')->default('1');
             $table->timestamps();
             $table->integer('user_id');

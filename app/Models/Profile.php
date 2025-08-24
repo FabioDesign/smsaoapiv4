@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Profile extends Model
 {
@@ -12,14 +13,14 @@ class Profile extends Model
     protected $fillable = [
         'uid',
         'status',
-        'label_fr',
         'label_en',
+        'label_fr',
         'deleted_at',
         'created_user',
         'updated_user',
         'deleted_user',
-        'description_fr',
         'description_en',
+        'description_fr',
     ];
 
     /**

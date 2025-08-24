@@ -20,7 +20,7 @@ class MenuSeeder extends Seeder
                 "label_en" => 'Dashboard',
                 "status" => 1,
                 "icone" => 'dashboard-icon',
-                "target" => 'dashboard',
+                "target" => '/dashboard',
                 "menu_id" => 0,
                 "position" => 1,
             ]
@@ -32,7 +32,7 @@ class MenuSeeder extends Seeder
                 "label_en" => 'Documents',
                 "status" => 1,
                 "icone" => 'documents-icon',
-                "target" => 'documents',
+                "target" => '/documents',
                 "menu_id" => 0,
                 "position" => 2,
             ]
@@ -44,7 +44,7 @@ class MenuSeeder extends Seeder
                 "label_en" => 'Documents to provide',
                 "status" => 1,
                 "icone" => 'attachments-icon',
-                "target" => 'attachments',
+                "target" => '/attachments',
                 "menu_id" => 0,
                 "position" => 3,
             ]
@@ -56,7 +56,7 @@ class MenuSeeder extends Seeder
                 "label_en" => 'Settings',
                 "status" => 1,
                 "icone" => 'settings-icon',
-                "target" => 'settings',
+                "target" => '/settings',
                 "menu_id" => 0,
                 "position" => 4,
             ]
@@ -68,7 +68,7 @@ class MenuSeeder extends Seeder
                 "label_en" => 'Profile Management',
                 "status" => 1,
                 "icone" => 'profile-icon',
-                "target" => 'profile',
+                "target" => '/profile',
                 "menu_id" => 0,
                 "position" => 5,
             ]
@@ -80,7 +80,7 @@ class MenuSeeder extends Seeder
                 "label_en" => 'User Management',
                 "status" => 1,
                 "icone" => 'user-icon',
-                "target" => 'users',
+                "target" => '/users',
                 "menu_id" => 0,
                 "position" => 6,
             ]
@@ -92,7 +92,7 @@ class MenuSeeder extends Seeder
                 "label_en" => 'Appointments',
                 "status" => 1,
                 "icone" => 'appointments-icon',
-                "target" => 'appointments',
+                "target" => '/appointments',
                 "menu_id" => 0,
                 "position" => 7,
             ]
@@ -104,7 +104,7 @@ class MenuSeeder extends Seeder
                 "label_en" => 'Audit trail',
                 "status" => 1,
                 "icone" => 'logs-icon',
-                "target" => 'logs',
+                "target" => '/logs',
                 "menu_id" => 0,
                 "position" => 8,
             ]

@@ -10,8 +10,9 @@ class Action extends Model
     use HasFactory;
 
     protected $fillable = [
-        'icone',
-        'label_fr',
         'label_en',
+        'label_fr',
     ];
+    
+    public $timestamps = false;
 }
