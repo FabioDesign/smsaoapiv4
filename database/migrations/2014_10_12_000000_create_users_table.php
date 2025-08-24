@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('email', 255)->nullable();
             $table->string('password', 255)->nullable();
             $table->timestamp('password_at')->nullable();
-            $table->timestamp('birthday_at');
+            $table->date('birthday_at');
             $table->string('birthplace', 255);
             $table->string('profession', 255);
             $table->string('village', 255);
@@ -30,10 +30,10 @@ return new class extends Migration
             $table->string('family_number', 255);
             $table->string('register_number', 255)->nullable();
             $table->string('bp', 255)->nullable();
-            $table->string('diplome', 255);
-            $table->text('distinction');
+            $table->string('diplome', 255)->nullable();
+            $table->text('distinction')->nullable();
             $table->string('fullname_peson', 255);
-            $table->string('contact_person', 255);
+            $table->string('number_person', 255);
             $table->string('residence_person', 255);
             $table->string('photo', 255);
             $table->timestamp('login_at')->nullable();

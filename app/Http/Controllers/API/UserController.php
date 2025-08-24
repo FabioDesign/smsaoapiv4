@@ -25,8 +25,8 @@ class UserController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"email", "password"},
-    *         @OA\Property(property="email", type="string"),
+    *         required={"login", "password"},
+    *         @OA\Property(property="login", type="string"),
     *         @OA\Property(property="password", type="string")
     *      )
     *   ),
@@ -39,7 +39,7 @@ class UserController extends BaseController
     {
         //Validator
         $validator = Validator::make($request->all(), [
-          'email' => 'required|email|exists:users,email',
+          'login' => 'required',
           'password' => 'required',
           'lg' => 'required',
         ]);
@@ -52,19 +52,25 @@ class UserController extends BaseController
 			App::setLocale(Session::get('lg'));
         else
 			Session::put('lg', $request->lg);
-        $credential = [
-            'email' => $request->email,
+        $credentialNum = [
+            'number' => $request->login,
             'password' => $request->password,
+            'status' => 1,
+        ];
+        $credentialEml = [
+            'email' => $request->login,
+            'password' => $request->password,
+            'status' => 1,
         ];
         try {
-            if (Auth::attempt($credential)) {
+            if ((Auth::attempt($credentialNum))||(Auth::attempt($credentialEml))) {
                 $user = Auth::user();
-                // $profiles = Profile::find($user->profile_id);
-                // // Vérifier si le profil existe
-                // if (!$profiles) {
-                //     Log::warning("Aucun profil trouvé pour l'utilisateur : " . $user->id);
-                //     return $this->sendError("Aucun profil disponible pour cet utilisateur.", [], 401);
-                // }
+                $profiles = Profile::find($user->profile_id);
+                // Vérifier si le profil existe
+                if (!$profiles) {
+                    Log::warning("Aucun profil trouvé pour l'utilisateur : " . $user->id);
+                    return $this->sendError("Aucun profil disponible pour cet utilisateur.", [], 401);
+                }
                 // Ajouter les informations de l'utilisateur et du profil dans la réponse
                 $data['auth_token'] =  $user->createToken('MyApp')->accessToken;
                 $data['infos'] = [
@@ -109,50 +115,79 @@ class UserController extends BaseController
      */
     public function store(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'lastname' => 'required',
-            'firstname' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => [
-                'required', 'confirmed',
-                Password::min(8)
-                    ->mixedCase() // Majuscules + minuscules
-                    ->letters()   // Doit contenir des lettres
-                    ->numbers()   // Doit contenir des chiffres
-                    ->symbols()   // Doit contenir des caractères spéciaux
-            ],
-        ]);
-        //Error field
-        if ($validator->fails()) {
-            Log::warning("User::store - Validator : " . json_encode($request->all()));
-            return $this->sendError($validator->errors()->first());
-        }
+        Log::notice("User::store : " . json_encode($request->all()));
+        // return $this->sendError("Data", $request->all());
+        // $validator = Validator::make($request->all(), [
+        //     'lastname' => 'required',
+        //     'firstname' => 'required',
+        //     'email' => 'required|email|unique:users,email',
+        //     'password' => [
+        //         'required', 'confirmed',
+        //         Password::min(8)
+        //             ->mixedCase() // Majuscules + minuscules
+        //             ->letters()   // Doit contenir des lettres
+        //             ->numbers()   // Doit contenir des chiffres
+        //             ->symbols()   // Doit contenir des caractères spéciaux
+        //     ],
+        // ]);
+        // //Error field
+        // if ($validator->fails()) {
+        //     Log::warning("User::store - Validator : " . json_encode($request->all()));
+        //     return $this->sendError($validator->errors()->first());
+        // }
         // Formatage du nom et prénoms
         $email = Str::lower($request->email);
         $lastname = mb_strtoupper($request->lastname, 'UTF-8');
         $firstname = mb_convert_case(Str::lower($request->firstname), MB_CASE_TITLE, "UTF-8");
-        $set = [
-            'email' => $email,
+        $setData = [
             'lastname' => $lastname,
             'firstname' => $firstname,
+            'gender' => $request->gender,
+            'number' => $request->number,
+            'email' => $email,
             'password' => Hash::make($request->password), // Hash du mot de passe
+            'password_at' => now(),
+            'birthday_at' => $request->birthday,
+            'birthplace' => $request->birthplace,
+            'profession' => $request->profession,
+            'village' => $request->village,
+            'street_number' => $request->street_number,
+            'hourse_number' => $request->hourse_number,
+            'family_number' => $request->family_number,
+            'register_number' => $request->register_number,
+            'bp' => $request->bp,
+            'diplome' => $request->diplome,
+            'distinction' => $request->distinction,
+            'fullname_peson' => $request->fullname_peson,
+            'number_person' => $request->number_person,
+            'residence_person' => $request->residence_person,
+            'photo' => $request->photo,
+            'login_at' => now(),
+            'comment' => $request->comment,
+            'profile_id' => $request->profile_id,
+            'cellule_id' => $request->cellule_id,
+            'district_id' => $request->district_id,
+            'nationality_id' => $request->nationality_id,
         ];
+        // return $this->sendError("Data insert", $setData);
         DB::beginTransaction(); // Démarrer une transaction
         try {
             // Création de l'utilisateur
-            $user = User::create($set);
+            $user = User::create($setData);
             DB::commit(); // Valider la transaction
             // Retourner les données de l'utilisateur
             $data = [
                 'lastname' => $lastname,
                 'firstname' => $firstname,
+                'gender' => $request->gender,
+                'number' => $request->number,
                 'email' => $email,
             ];
             $data['auth_token'] =  $user->createToken('MyApp')->accessToken;
             return $this->sendSuccess('Utilisateur enregistré avec succès.', $data, 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Annuler la transaction en cas d'erreur
-            Log::warning("User::store - Erreur enregistrement de l'utilisateur : " . $e->getMessage() . " " . json_encode($set));
+            Log::warning("User::store - Erreur enregistrement de l'utilisateur : " . $e->getMessage() . " " . json_encode($setData));
             return $this->sendError("Erreur enregistrement de l'utilisateur");
         }
     }

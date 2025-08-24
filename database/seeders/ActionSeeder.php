@@ -14,14 +14,67 @@ class ActionSeeder extends Seeder
      */
     public function run(){
         Action::firstOrCreate(
-            ["code" => 'read'],
+            ["label_en" => 'See'],
             [
-                "code" => 'read',
-                "label_fr" => 'Lire',
-                "label_en" => 'Read',
-                "icone" => 'dashboard-icon',
-                "status" => 1,
-                "position" => 1,
+                "label_fr" => 'Voir',
+                "label_en" => 'See',
+                "icone" => 'see-icon',
+            ]
+        );
+        Action::firstOrCreate(
+            ["label_en" => 'Add'],
+            [
+                "label_fr" => 'Ajouter',
+                "label_en" => 'Add',
+                "icone" => 'add-icon',
+            ]
+        );
+        Action::firstOrCreate(
+            ["label_en" => 'Update'],
+            [
+                "label_fr" => 'Modifier',
+                "label_en" => 'Update',
+                "icone" => 'update-icon',
+            ]
+        );
+        Action::firstOrCreate(
+            ["label_en" => 'Enable/Disable'],
+            [
+                "label_fr" => 'Activer/Désactiver',
+                "label_en" => 'Enable/Disable',
+                "icone" => 'enable-icon',
+            ]
+        );
+        Action::firstOrCreate(
+            ["label_en" => 'Send'],
+            [
+                "label_fr" => 'Envoyer',
+                "label_en" => 'Send',
+                "icone" => 'send-icon',
+            ]
+        );
+        Action::firstOrCreate(
+            ["label_en" => 'Approve'],
+            [
+                "label_fr" => 'Approuver',
+                "label_en" => 'Approve',
+                "icone" => 'approve-icon',
+            ]
+        );
+        Action::firstOrCreate(
+            ["label_en" => 'Delete'],
+            [
+                "label_fr" => 'Supprimer',
+                "label_en" => 'Delete',
+                "icone" => 'delete-icon',
+            ]
+        );
+        Action::firstOrCreate(
+            ["label_en" => 'Export'],
+            [
+                "label_fr" => 'Exporter',
+                "label_en" => 'Export',
+                "icone" => 'export-icon',
             ]
         );
     }

@@ -42,11 +42,11 @@ class User extends Authenticatable
         'password_at',
         'birthday_at',
         'distinction',
+        'number_person',
         'street_number',
         'hourse_number',
         'family_number',
         'fullname_peson',
-        'contact_person',
         'nationality_id',
         'register_number',
         'residence_person',
@@ -69,7 +69,7 @@ class User extends Authenticatable
     protected $casts = [
         'login_at' => 'datetime',
         'password_at' => 'datetime',
-        'birthday_at' => 'datetime',
+        'birthday_at' => 'date',
         'password' => 'hashed',
     ];
 

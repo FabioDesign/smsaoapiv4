@@ -10,11 +10,8 @@ class Action extends Model
     use HasFactory;
 
     protected $fillable = [
-        'code',
         'icone',
-        'status',
         'label_fr',
         'label_en',
-        'position',
     ];
 }

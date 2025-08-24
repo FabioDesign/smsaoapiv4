@@ -13,10 +13,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void{
         try {
             $this->call([
-                // Menu
-                MenuSeeder::class,
                 // Action
                 ActionSeeder::class,
+                // Menu
+                MenuSeeder::class,
                 // Profil
                 ProfileSeeder::class,
                 // Permission
