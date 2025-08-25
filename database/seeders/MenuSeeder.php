@@ -64,7 +64,7 @@ class MenuSeeder extends Seeder
         Menu::firstOrCreate(
             ["label_en" => 'Profile Management'],
             [
-                "label_fr" => 'Gestion Profil',
+                "label_fr" => 'Gestion des Profils',
                 "label_en" => 'Profile Management',
                 "status" => 1,
                 "icone" => 'profile-icon',
@@ -76,7 +76,7 @@ class MenuSeeder extends Seeder
         Menu::firstOrCreate(
             ["label_en" => 'User Management'],
             [
-                "label_fr" => 'Gestion Utilisateurs',
+                "label_fr" => 'Gestion des Utilisateurs',
                 "label_en" => 'User Management',
                 "status" => 1,
                 "icone" => 'user-icon',

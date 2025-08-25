@@ -14,4 +14,6 @@ class Permission extends Model
         'action_id',
         'profile_id',
     ];
+    
+    public $timestamps = false;
 }

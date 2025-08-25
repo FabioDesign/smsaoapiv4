@@ -1,13 +1,12 @@
 <?php
 namespace App\Http\Controllers\API; 
 
-use Session;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Models\{Profile, User};
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Support\Facades\{App, Auth, DB, Hash, Log, Validator};
+use App\Models\{Permission, Profile, User};
+use Illuminate\Support\Facades\{App, Auth, DB, Hash, Log, Session, Validator};
 use App\Http\Controllers\API\BaseController as BaseController;
 
 /**
@@ -37,22 +36,18 @@ class UserController extends BaseController
     */
     public function login(Request $request): JsonResponse
     {
-        dd($request);
         //Validator
         $validator = Validator::make($request->all(), [
           'login' => 'required',
           'password' => 'required',
           'lg' => 'required',
         ]);
+		App::setLocale($request->lg);
         //Error field
         if ($validator->fails()) {
           Log::warning("User::login - Validator : ".$validator->errors());
           return $this->sendError('Champs invalides.', $validator->errors());
         }
-        if(Session::has('lg'))
-			App::setLocale(Session::get('lg'));
-        else
-			Session::put('lg', $request->lg);
         $credentialNum = [
             'number' => $request->login,
             'password' => $request->password,
@@ -63,14 +58,14 @@ class UserController extends BaseController
             'password' => $request->password,
             'status' => 1,
         ];
-        try {
-            if ((Auth::attempt($credentialNum))||(Auth::attempt($credentialEml))) {
+        if ((Auth::attempt($credentialNum))||(Auth::attempt($credentialEml))) {
+            try {
                 $user = Auth::user();
-                $profiles = Profile::find($user->profile_id);
+                $profil = Profile::find($user->profile_id);
                 // Vérifier si le profil existe
-                if (!$profiles) {
+                if (!$profil) {
                     Log::warning("Aucun profil trouvé pour l'utilisateur : " . $user->id);
-                    return $this->sendError("Aucun profil disponible pour cet utilisateur.", [], 401);
+                    return $this->sendError(__('message.noprofil'), [], 404);
                 }
                 // Ajouter les informations de l'utilisateur et du profil dans la réponse
                 $data['auth_token'] =  $user->createToken('MyApp')->accessToken;
@@ -79,34 +74,38 @@ class UserController extends BaseController
                     'firstname' => $user->firstname,
                     'number' => $user->number,
                     'email' => $user->email,
-                    'profile' => $profiles->libelle,
+                    'profile' => $request->lg == 'en' ? $profil->label_en : $profil->label_fr,
                 ];
                 // Code to list permissions
-                $permissions = Permission::select('code AS action', 'menus.libelle AS subject')
+                $permissions = Permission::select('menus.id', 'label_en', 'label_fr', 'target', 'icone')
                 ->join('menus', 'menus.id', '=', 'permissions.menu_id')
-                ->join('actions', 'actions.id', '=', 'permissions.action_id')
                 ->where('profile_id', $user->profile_id) // Seulement les menus du profil de l'utilisateur
-                ->where('menus.status', 1) // Seulement les menus activés
-                ->where('actions.status', 1) // Seulement les actions activées
-                ->orderBy('menus.position')
-                ->orderBy('actions.position')
+                ->where('status', 1) // Seulement les menus activés
+                ->where('action_id', 1) // Seulement les actions de voir
+                ->orderBy('position')
                 ->get();
                 // Vérifier si les données existent
                 if ($permissions->isEmpty()) {
                     Log::warning("Aucun menu trouvé pour ce profil : " . $user->profile_id);
-                    return $this->sendError("Aucun menu disponible pour ce profil.", [], 401);
+                    return $this->sendError(__('message.nomenu'), [], 404);
                 }
-                $data['permissions'] = $permissions;
+                // Transformer les données
+                $query = $permissions->map(fn($permission) => [
+                    'id' => $permission->id,
+                    'menu' => $request->lg == 'en' ? $permission->label_en : $permission->label_fr,
+                    'target' => $permission->target,
+                    'icone' => $permission->icone,
+                ]);
+                $data['permissions'] = $query;
                 // Logs::createLog('Connexion', $user->id, 1);
-                return $this->sendSuccess("Authentification effectuée avec succès.", $data);
-            } else {
-                // Logs::createLog('Connexion échouée', $user->id, 0);
-                Log::warning("Authentication : " . json_encode($request->all()));
-                return $this->sendError("Echec d'authentification.", [], 401);
+                return $this->sendSuccess(__('message.authsucc'), $data);
+            } catch (\Exception $e) {
+                Log::warning("Echec de connexion à la base de données : " . $e->getMessage());
+                return $this->sendError(__('message.error'));
             }
-        } catch (\Exception $e) {
-            Log::warning("Echec de connexion à la base de données : " . $e->getMessage());
-            return $this->sendError("Une erreur est survenue, veuillez réessayer plus tard.");
+        } else {
+            Log::warning("Authentication : " . json_encode($request->all()));
+            return $this->sendError(__('message.authfail'), [], 401);
         }
     }
     /**
@@ -116,9 +115,8 @@ class UserController extends BaseController
      */
     public function store(Request $request): JsonResponse
     {
-        dd($request);
         Log::notice("User::store : " . json_encode($request->all()));
-        return $this->sendError("Data", $request->all());
+        // return $this->sendError("Data", $request->all());
         // $validator = Validator::make($request->all(), [
         //     'lastname' => 'required',
         //     'firstname' => 'required',
@@ -141,7 +139,7 @@ class UserController extends BaseController
         $email = Str::lower($request->email);
         $lastname = mb_strtoupper($request->lastname, 'UTF-8');
         $firstname = mb_convert_case(Str::lower($request->firstname), MB_CASE_TITLE, "UTF-8");
-        $setData = [
+        $set = [
             'lastname' => $lastname,
             'firstname' => $firstname,
             'gender' => $request->gender,
@@ -171,11 +169,11 @@ class UserController extends BaseController
             'district_id' => $request->district_id,
             'nationality_id' => $request->nationality_id,
         ];
-        // return $this->sendError("Data insert", $setData);
+        // return $this->sendError("Data insert", $set);
         DB::beginTransaction(); // Démarrer une transaction
         try {
             // Création de l'utilisateur
-            $user = User::create($setData);
+            $user = User::create($set);
             DB::commit(); // Valider la transaction
             // Retourner les données de l'utilisateur
             $data = [
@@ -185,11 +183,10 @@ class UserController extends BaseController
                 'number' => $request->number,
                 'email' => $email,
             ];
-            $data['auth_token'] =  $user->createToken('MyApp')->accessToken;
             return $this->sendSuccess('Utilisateur enregistré avec succès.', $data, 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Annuler la transaction en cas d'erreur
-            Log::warning("User::store - Erreur enregistrement de l'utilisateur : " . $e->getMessage() . " " . json_encode($setData));
+            Log::warning("User::store - Erreur enregistrement de l'utilisateur : " . $e->getMessage() . " " . json_encode($set));
             return $this->sendError("Erreur enregistrement de l'utilisateur");
         }
     }
