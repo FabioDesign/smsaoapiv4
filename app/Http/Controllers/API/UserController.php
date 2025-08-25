@@ -68,7 +68,8 @@ class UserController extends BaseController
                     return $this->sendError(__('message.noprofil'), [], 404);
                 }
                 // Ajouter les informations de l'utilisateur et du profil dans la réponse
-                $data['auth_token'] =  $user->createToken('MyApp')->accessToken;
+                $data['accessToken'] =  $user->createToken('MyApp')->accessToken;
+                /*
                 $data['infos'] = [
                     'lastname' => $user->lastname,
                     'firstname' => $user->firstname,
@@ -98,6 +99,8 @@ class UserController extends BaseController
                 ]);
                 $data['permissions'] = $query;
                 // Logs::createLog('Connexion', $user->id, 1);
+                return $this->sendSuccess(__('message.authsucc'), $data);
+                */
                 return $this->sendSuccess(__('message.authsucc'), $data);
             } catch (\Exception $e) {
                 Log::warning("Echec de connexion à la base de données : " . $e->getMessage());

@@ -103,8 +103,8 @@ class MenuSeeder extends Seeder
                 "label_fr" => "Piste d'audit",
                 "label_en" => 'Audit trail',
                 "status" => 1,
-                "icone" => 'logs-icon',
-                "target" => '/logs',
+                "icone" => 'audit_trail-icon',
+                "target" => '/audit_trail',
                 "menu_id" => 0,
                 "position" => 8,
             ]
