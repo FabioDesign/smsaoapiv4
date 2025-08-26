@@ -1,0 +1,77 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API RWANDA",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/users/auth": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Authenticate Platform and Generate JWT",
+                "operationId": "login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "login",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "login": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authentification éffectuée avec succès."
+                    },
+                    "401": {
+                        "description": "Echec d'authentification."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/users/logout": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Deconnecte l'utilisateur en supprimant son token d'accès",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Déconnexion éffectuée avec succès."
+                    },
+                    "401": {
+                        "description": "Echec d'authentification."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Users",
+            "description": "Users"
+        }
+    ]
+}
