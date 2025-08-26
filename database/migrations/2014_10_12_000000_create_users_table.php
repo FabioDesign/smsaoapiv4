@@ -37,6 +37,8 @@ return new class extends Migration
             $table->string('residence_person', 255);
             $table->string('photo', 255);
             $table->timestamp('login_at')->nullable();
+            $table->string('otp', 10)->nullable();
+            $table->timestamp('otp_at')->nullable();
             $table->text('comment')->nullable();
             $table->tinyinteger('status')->default('0');
             $table->timestamps();

@@ -39,7 +39,7 @@ class UserController extends BaseController
         // //Error field
         // if ($validator->fails()) {
         //     Log::warning("User::store - Validator : " . json_encode($request->all()));
-        //     return $this->sendError($validator->errors()->first());
+            // return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
         // }
         // Formatage du nom et prénoms
         $email = Str::lower($request->email);
@@ -128,7 +128,7 @@ class UserController extends BaseController
         //Error field
         if ($validator->fails()) {
           Log::warning("User::login - Validator : ".$validator->errors());
-          return $this->sendError('Champs invalides.', $validator->errors());
+          return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
         }
         $credentialNum = [
             'number' => $request->login,
@@ -150,7 +150,7 @@ class UserController extends BaseController
                     return $this->sendError(__('message.noprofil'), [], 404);
                 }
                 // Ajouter les informations de l'utilisateur et du profil dans la réponse
-                $data['accessToken'] =  $user->createToken('MyApp')->accessToken;
+                $data['auth_token'] =  $user->createToken('MyApp')->accessToken;
                 $data['infos'] = [
                     'lastname' => $user->lastname,
                     'firstname' => $user->firstname,

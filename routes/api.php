@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\{
     UserController,
-    ProductController,
+    PasswordController,
 };
 
 /*
@@ -21,8 +21,10 @@ use App\Http\Controllers\API\{
 
 Route::post('register', [UserController::class, 'store']);
 Route::post('users/auth', [UserController::class, 'login']);
+Route::post('password/verifemail', [PasswordController::class, 'step1']);
+Route::post('password/verifotp', [PasswordController::class, 'step2']);
+Route::post('password/addpass', [PasswordController::class, 'step3']);
 
 Route::middleware('auth:api')->group( function () {
-    Route::resource('products', ProductController::class);
     Route::post('users/logout', [UserController::class, 'logout']);
 });

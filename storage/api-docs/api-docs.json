@@ -5,6 +5,189 @@
         "version": "1.0"
     },
     "paths": {
+        "/api/password/verifemail": {
+            "post": {
+                "tags": [
+                    "Password"
+                ],
+                "description": "Vérification de l'email",
+                "operationId": "verifemail",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "fabio@yopmail.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vérification de l'email."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/password/verifotp": {
+            "post": {
+                "tags": [
+                    "Password"
+                ],
+                "description": "Vérification du Code OTP",
+                "operationId": "verifotp",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "otp"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "otp": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vérification du Code OTP."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/password/addpass": {
+            "post": {
+                "tags": [
+                    "Password"
+                ],
+                "description": "Ajout de Mot de passe",
+                "operationId": "addpass",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mot de passe modifié avec succès."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/password/editpass": {
+            "post": {
+                "tags": [
+                    "Password"
+                ],
+                "description": "Modification de Mot de passe",
+                "operationId": "editpass",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "oldpass",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "oldpass": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mot de passe modifié avec succès."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/users/auth": {
             "post": {
                 "tags": [
@@ -69,6 +252,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Password",
+            "description": "Password"
+        },
         {
             "name": "Users",
             "description": "Users"
