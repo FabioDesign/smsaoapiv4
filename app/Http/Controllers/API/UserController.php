@@ -26,7 +26,7 @@ class UserController extends BaseController
  *      @OA\MediaType(
  *          mediaType="multipart/form-data",
  *          @OA\Schema(
- *          required={"lg", "lastname", "firstname", "gender", "number", "email", "birthday", "birthplace", "profession", "village", "street_number", "hourse_number", "family_number", "fullname_peson", "number_person", "residence_person", "cellule_id", "maritalstatus_id", "district_id", "lastname_father", "firstname_father", "lastname_mother", "firstname_mother", "photo"},
+ *          required={"lg", "lastname", "firstname", "gender", "number", "email", "birthday", "birthplace", "profession", "village", "street_number", "hourse_number", "family_number", "fullname_peson", "number_person", "residence_person", "cellule_id", "maritalstatus_id", "district_id", "fullname_father", "fullname_mother", "photo"},
     *         @OA\Property(property="lg", type="string"),
     *         @OA\Property(property="lastname", type="string"),
     *         @OA\Property(property="firstname", type="string"),
@@ -50,10 +50,8 @@ class UserController extends BaseController
     *         @OA\Property(property="distinction", type="string"),
     *         @OA\Property(property="maritalstatus_id", type="integer"),
     *         @OA\Property(property="nationality_id", type="integer"),
-    *         @OA\Property(property="lastname_father", type="string"),
-    *         @OA\Property(property="firstname_father", type="string"),
-    *         @OA\Property(property="lastname_mother", type="string"),
-    *         @OA\Property(property="firstname_mother", type="string"),
+    *         @OA\Property(property="fullname_father", type="string"),
+    *         @OA\Property(property="fullname_mother", type="string"),
     *         @OA\Property(property="photo", type="string", format="binary"),
     *          )
     *      )
@@ -83,6 +81,8 @@ class UserController extends BaseController
             'family_number' => 'required',
             'fullname_peson' => 'required',
             'number_person' => 'required',
+            'fullname_father' => 'required',
+            'fullname_mother' => 'required',
             'residence_person' => 'required',
             'maritalstatus_id' => 'required',
             'cellule_id' => 'required',
@@ -145,15 +145,13 @@ class UserController extends BaseController
             Parents::create([
                 'type_id' => 1,
                 'user_id' => $user->id,
-                'lastname' => mb_strtoupper($request->lastname_father, 'UTF-8'),
-                'firstname' => mb_convert_case(Str::lower($request->firstname_father), MB_CASE_TITLE, "UTF-8"),
+                'fullname' => $request->fullname_father,
             ]);
             // Mother
             Parents::create([
                 'type_id' => 2,
                 'user_id' => $user->id,
-                'lastname' => mb_strtoupper($request->lastname_mother, 'UTF-8'),
-                'firstname' => mb_convert_case(Str::lower($request->firstname_mother), MB_CASE_TITLE, "UTF-8"),
+                'fullname' => $request->fullname_mother,
             ]);
             $data = [
                 'lastname' => $lastname,
@@ -162,7 +160,39 @@ class UserController extends BaseController
                 'number' => $request->number,
                 'email' => $email,
             ];
+            /*
+            // Gender
+            if ($request->gender == 'M')
+                $gender = __('message.mr');
+            else
+                $gender = __('message.mrs');
+            //subject
+            $subject = __('message.creataccount');
+            $message = "<div style='color:#156082;font-size:11pt;line-height:1.5em;font-family:Century Gothic'>"
+            . __('message.dear') . " " . $gender ." ".$request->lastname.",<br><br>"
+            . __('message.otp') . " : <b>" . __('message.txtaccount') . "</b><br><br>"
+            . __('message.bestregard') . " !<br>
+            <hr style='color:#156082;'>
+            </div>";
+            // Envoi de l'email
+            $this->sendMail($request->email, '', $subject, $message);
             
+            // Gender
+            if ($request->gender == 'M')
+                $gender = __('message.mr');
+            else
+                $gender = __('message.mrs');
+            //subject
+            $subject = __('message.creataccount');
+            $message = "<div style='color:#156082;font-size:11pt;line-height:1.5em;font-family:Century Gothic'>"
+            . __('message.dear') . " " . $gender ." ".$request->lastname.",<br><br>"
+            . __('message.otp') . " : <b>" . __('message.txtaccount') . "</b><br><br>"
+            . __('message.bestregard') . " !<br>
+            <hr style='color:#156082;'>
+            </div>";
+            // Envoi de l'email
+            $this->sendMail($request->email, '', $subject, $message);
+            */
             return $this->sendSuccess('Utilisateur enregistré avec succès.', $data, 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Annuler la transaction en cas d'erreur

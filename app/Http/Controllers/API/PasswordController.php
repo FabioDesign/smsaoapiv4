@@ -56,7 +56,7 @@ class PasswordController extends BaseController
             $subject = __('message.forgotpwd');
             $message = "<div style='color:#156082;font-size:11pt;line-height:1.5em;font-family:Century Gothic'>"
             . __('message.dear') . " " . $gender ." ".$user->lastname.",<br><br>"
-            . __('message.otp') . " : <b>".$otp."</b><br><br>"
+            . __('message.otp') . " : <b>" . $otp . "</b><br><br>"
             . __('message.bestregard') . " !<br>
             <hr style='color:#156082;'>
             </div>";

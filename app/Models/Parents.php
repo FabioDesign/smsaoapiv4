@@ -11,8 +11,7 @@ class Parents extends Model
     protected $fillable = [
         'type_id',
         'user_id',
-        'lastname',
-        'firstname',
+        'fullname',
         'parent_id',
     ];
     

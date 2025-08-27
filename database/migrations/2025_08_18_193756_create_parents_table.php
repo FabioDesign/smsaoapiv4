@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('parents', function (Blueprint $table) {
             $table->id();
-            $table->string('lastname', 255);
-            $table->string('firstname', 255);
+            $table->string('fullname', 255);
             $table->integer('type_id');
             $table->integer('user_id');
             $table->integer('parent_id')->default('0');

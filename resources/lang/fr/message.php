@@ -10,6 +10,9 @@ return [
     'nomenu' => "Aucun menu disponible pour cet utilisateur.",
     'logoutsucc' => "Déconnexion éffectuée avec succès.",
     'logouterr' => "Erreur lors de la déconnexion.",
+    'creataccount' => "Création de compte",
+    'txtaccount' => "Votre demande d’inscription a bien été enregistrée et est en cours de traitement.<br>
+    Vous recevrez sous peu un e-mail de confirmation avec vos paramètres de connexion.",
 
     //Password
     'forgotpwd' => "Mot de passe oublié.",

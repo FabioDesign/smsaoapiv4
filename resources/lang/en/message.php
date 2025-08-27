@@ -10,6 +10,9 @@ return [
     'nomenu' => "No menu available for this user.",
     'logoutsucc' => "Logout successfully completed.",
     'logouterr' => "Error while logging out.",
+    'creataccount' => "Account creation",
+    'txtaccount' => "Your application for registration as a participant has been registered and is being processed.<br>
+    You will shortly receive a confirmation email with your login details.",
 
     //Password
     'forgotpwd' => "Forgot password.",
