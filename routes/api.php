@@ -19,7 +19,7 @@ use App\Http\Controllers\API\{
 |
 */
 // Route pour l'inscription
-Route::post('register', [UserController::class, 'store']);
+Route::post('users/register', [UserController::class, 'store']);
 // Route pour la connexion
 Route::post('users/auth', [UserController::class, 'login']);
 // Routes pour les mots de passe oubliés
