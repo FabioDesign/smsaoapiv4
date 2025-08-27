@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\API; 
 
+use \Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -260,6 +261,8 @@ class UserController extends BaseController
                     'firstname' => $user->firstname,
                     'number' => $user->number,
                     'email' => $user->email,
+                    'birthday_at' => Carbon::parse($user->birthday)->format('d/m/Y'),
+                    'birthplace' => $user->birthplace,
                     'profile' => $request->lg == 'en' ? $profil->label_en : $profil->label_fr,
                     'photo' => env('APP_URL') . '/assets/photos/' . $user->photo,
                 ];
