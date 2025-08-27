@@ -167,7 +167,7 @@ class PasswordController extends BaseController
         //Error field
         if($validator->fails()){
             Log::warning("Validator password forgot - password : " . json_encode($request->all()));
-            return $this->sendError($validator->errors()->first());
+            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
         }
         // Récupérer les données
         $user = User::where('email', $request->email)->first();
@@ -221,18 +221,11 @@ class PasswordController extends BaseController
                     ->numbers()   // Doit contenir des chiffres
                     ->symbols()   // Doit contenir des caractères spéciaux
             ],
-        ], [
-            'oldpass.required' => "L'ancien mot de passe est obligatoire.",
-            'oldpass.min' => "8 caractères minimum pour l'ancien mot de passe.",
-            'password.required' => "Le nouveau mot de passe est obligatoire.",
-            'password.confirmed' => "Les mots de passe doivent être identiques.",
-            'password.min' => "8 caractères minimum pour le nouveau mot de passe.",
-            'password.different' => "Le nouveau mot de passe doit être différent de l'ancien.",
         ]);
         //Error field
         if($validator->fails()){
             Log::warning("Validator password edit : " . json_encode($request->all()));
-            return $this->sendError($validator->errors()->first());
+            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
         }
         // Vérification de l'ancien mot de passe
         if (!Hash::check($request->oldpass, $user->password)) {
@@ -243,7 +236,6 @@ class PasswordController extends BaseController
             // Mettre à jour du password
             User::findOrFail($user->id)->update([
                 'password_at' => now(),
-                'api_secret' => $request->password,
                 'password' => Hash::make($request->password),
             ]);
             return $this->sendSuccess("Mot de passe modifié avec succès.", [], 201);
