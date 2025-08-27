@@ -46,7 +46,7 @@ class PasswordController extends BaseController
             // Récupérer les données
             $user = User::where('email', $request->email)->first();
             // Générer l'OTP sécurisé
-            $otp = random_int(000, 999) . ' ' . random_int(000, 999);
+            $otp = random_int(100, 999) . ' ' . random_int(100, 999);
             // Gender
             if ($user->gender == 'M')
                 $gender = __('message.mr');
