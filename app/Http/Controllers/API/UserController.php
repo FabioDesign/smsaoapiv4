@@ -5,8 +5,8 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules\Password;
-use App\Models\{Permission, Profile, User};
-use Illuminate\Support\Facades\{App, Auth, DB, Hash, Log, Session, Validator};
+use App\Models\{Parents, Permission, Profile, User};
+use Illuminate\Support\Facades\{App, Auth, DB, Hash, Log, Validator};
 use App\Http\Controllers\API\BaseController as BaseController;
 
 /**
@@ -14,33 +14,95 @@ use App\Http\Controllers\API\BaseController as BaseController;
  */
 class UserController extends BaseController
 {
-    /**
-     * Register api
-     *
-     * @return \Illuminate\Http\Response
-     */
+//Account creation
+/**
+* @OA\Post(
+*   path="/api/users/register",
+*   tags={"Users"},
+*   operationId="register",
+*   description="Account creation",
+ *   @OA\RequestBody(
+ *      required=true,
+ *      @OA\MediaType(
+ *          mediaType="multipart/form-data",
+ *          @OA\Schema(
+ *          required={"lg", "lastname", "firstname", "gender", "number", "email", "birthday", "birthplace", "profession", "village", "street_number", "hourse_number", "family_number", "fullname_peson", "number_person", "residence_person", "cellule_id", "maritalstatus_id", "district_id", "lastname_father", "firstname_father", "lastname_mother", "firstname_mother", "photo"},
+    *         @OA\Property(property="lg", type="string"),
+    *         @OA\Property(property="lastname", type="string"),
+    *         @OA\Property(property="firstname", type="string"),
+    *         @OA\Property(property="gender", type="string"),
+    *         @OA\Property(property="number", type="string"),
+    *         @OA\Property(property="email", type="string"),
+    *         @OA\Property(property="birthday", type="date"),
+    *         @OA\Property(property="birthplace", type="string"),
+    *         @OA\Property(property="profession", type="string"),
+    *         @OA\Property(property="village", type="string"),
+    *         @OA\Property(property="street_number", type="string"),
+    *         @OA\Property(property="hourse_number", type="string"),
+    *         @OA\Property(property="family_number", type="integer"),
+    *         @OA\Property(property="fullname_peson", type="string"),
+    *         @OA\Property(property="number_person", type="string"),
+    *         @OA\Property(property="residence_person", type="string"),
+    *         @OA\Property(property="cellule_id", type="integer"),
+    *         @OA\Property(property="district_id", type="integer"),
+    *         @OA\Property(property="bp", type="string"),
+    *         @OA\Property(property="diplome", type="string"),
+    *         @OA\Property(property="distinction", type="string"),
+    *         @OA\Property(property="maritalstatus_id", type="integer"),
+    *         @OA\Property(property="nationality_id", type="integer"),
+    *         @OA\Property(property="lastname_father", type="string"),
+    *         @OA\Property(property="firstname_father", type="string"),
+    *         @OA\Property(property="lastname_mother", type="string"),
+    *         @OA\Property(property="firstname_mother", type="string"),
+    *         @OA\Property(property="photo", type="string", format="binary"),
+    *          )
+    *      )
+    *   ),
+    *   @OA\Response(response=200, description="Création de compte éffectuée avec succès."),
+    *   @OA\Response(response=401, description="Echec de Création de compte."),
+    *   @OA\Response(response=404, description="Page introuvable."),
+ * )
+ */
     public function store(Request $request): JsonResponse
     {
         Log::notice("User::store : " . json_encode($request->all()));
-        // return $this->sendError("Data", $request->all());
-        // $validator = Validator::make($request->all(), [
-        //     'lastname' => 'required',
-        //     'firstname' => 'required',
-        //     'email' => 'required|email|unique:users,email',
-        //     'password' => [
-        //         'required', 'confirmed',
-        //         Password::min(8)
-        //             ->mixedCase() // Majuscules + minuscules
-        //             ->letters()   // Doit contenir des lettres
-        //             ->numbers()   // Doit contenir des chiffres
-        //             ->symbols()   // Doit contenir des caractères spéciaux
-        //     ],
-        // ]);
-        // //Error field
-        // if ($validator->fails()) {
-        //     Log::warning("User::store - Validator : " . json_encode($request->all()));
-            // return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
-        // }
+        //Validator
+        $validator = Validator::make($request->all(), [
+            'lg' => 'required',
+            'lastname' => 'required',
+            'firstname' => 'required',
+            'gender' => 'required|in:M,F',
+            'number' => 'required|unique:users,number',
+            'email' => 'required|email|unique:users,email',
+            'birthday' => 'required|date_format:Y-m-d',
+            'birthplace' => 'required',
+            'profession' => 'required',
+            'village' => 'required',
+            'street_number' => 'required',
+            'hourse_number' => 'required',
+            'family_number' => 'required',
+            'fullname_peson' => 'required',
+            'number_person' => 'required',
+            'residence_person' => 'required',
+            'maritalstatus_id' => 'required',
+            'cellule_id' => 'required',
+            'district_id' => 'required',
+			'photo' => 'required|image|mimes:png,jpeg,jpg|max:2048',
+        ]);
+        //Error field
+        if ($validator->fails()) {
+            Log::warning("User::store - Validator : " . json_encode($request->all()));
+            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
+        }
+        // Upload photo
+        $dir = 'assets/photos';
+        $image = $request->file('photo');
+        $ext = $image->getClientOriginalExtension();
+        $photo = User::filenameUnique($ext);
+        if(!($image->move($dir, $photo))){
+            Log::warning("User::store - Erreur de téléchargement de la photo : " . $e->getMessage() . " " . json_encode($request->all()));
+            return $this->sendError("Erreur de téléchargement de la photo.");
+        }
         // Formatage du nom et prénoms
         $email = Str::lower($request->email);
         $lastname = mb_strtoupper($request->lastname, 'UTF-8');
@@ -51,8 +113,6 @@ class UserController extends BaseController
             'gender' => $request->gender,
             'number' => $request->number,
             'email' => $email,
-            'password' => Hash::make($request->password), // Hash du mot de passe
-            'password_at' => now(),
             'birthday_at' => $request->birthday,
             'birthplace' => $request->birthplace,
             'profession' => $request->profession,
@@ -67,13 +127,12 @@ class UserController extends BaseController
             'fullname_peson' => $request->fullname_peson,
             'number_person' => $request->number_person,
             'residence_person' => $request->residence_person,
-            'photo' => $request->photo,
-            'login_at' => now(),
-            'comment' => $request->comment,
-            'profile_id' => $request->profile_id,
+            'photo' => $photo,
+            'lg' => $request->lg,
             'cellule_id' => $request->cellule_id,
             'district_id' => $request->district_id,
             'nationality_id' => $request->nationality_id,
+            'maritalstatus_id' => $request->maritalstatus_id,
         ];
         // return $this->sendError("Data insert", $set);
         DB::beginTransaction(); // Démarrer une transaction
@@ -82,6 +141,20 @@ class UserController extends BaseController
             $user = User::create($set);
             DB::commit(); // Valider la transaction
             // Retourner les données de l'utilisateur
+            // Father
+            Parents::create([
+                'type_id' => 1,
+                'user_id' => $user->id,
+                'lastname' => mb_strtoupper($request->lastname_father, 'UTF-8'),
+                'firstname' => mb_convert_case(Str::lower($request->firstname_father), MB_CASE_TITLE, "UTF-8"),
+            ]);
+            // Mother
+            Parents::create([
+                'type_id' => 2,
+                'user_id' => $user->id,
+                'lastname' => mb_strtoupper($request->lastname_mother, 'UTF-8'),
+                'firstname' => mb_convert_case(Str::lower($request->firstname_mother), MB_CASE_TITLE, "UTF-8"),
+            ]);
             $data = [
                 'lastname' => $lastname,
                 'firstname' => $firstname,
@@ -89,6 +162,7 @@ class UserController extends BaseController
                 'number' => $request->number,
                 'email' => $email,
             ];
+            
             return $this->sendSuccess('Utilisateur enregistré avec succès.', $data, 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Annuler la transaction en cas d'erreur
@@ -143,8 +217,8 @@ class UserController extends BaseController
         if ((Auth::attempt($credentialNum))||(Auth::attempt($credentialEml))) {
             try {
                 $user = Auth::user();
-                $profil = Profile::find($user->profile_id);
                 // Vérifier si le profil existe
+                $profil = Profile::find($user->profile_id);
                 if (!$profil) {
                     Log::warning("Aucun profil trouvé pour l'utilisateur : " . $user->id);
                     return $this->sendError(__('message.noprofil'), [], 404);
@@ -157,6 +231,7 @@ class UserController extends BaseController
                     'number' => $user->number,
                     'email' => $user->email,
                     'profile' => $request->lg == 'en' ? $profil->label_en : $profil->label_fr,
+                    'photo' => env('APP_URL') . '/assets/photos/' . $user->photo,
                 ];
                 // Code to list permissions
                 $permissions = Permission::select('menus.id', 'label_en', 'label_fr', 'target', 'icone')
@@ -179,6 +254,10 @@ class UserController extends BaseController
                     'icone' => $permission->icone,
                 ]);
                 $data['permissions'] = $query;
+                User::findOrFail($user->id)->update([
+                    'login_at' => now(),
+                    'lg' => $request->lg,
+                ]);
                 // Logs::createLog('Connexion', $user->id, 1);
                 return $this->sendSuccess(__('message.authsucc'), $data);
             } catch (\Exception $e) {

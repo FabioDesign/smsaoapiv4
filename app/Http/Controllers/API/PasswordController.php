@@ -6,7 +6,7 @@ namespace App\Http\Controllers\API;
 use App\Models\User;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\{Request, JsonResponse};
-use Illuminate\Support\Facades\{Auth, Hash, Log, Validator};
+use Illuminate\Support\Facades\{App, Auth, Hash, Log, Validator};
 use App\Http\Controllers\API\BaseController as BaseController;
 
 class PasswordController extends BaseController
@@ -34,7 +34,9 @@ class PasswordController extends BaseController
         //Validator
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
+            'lg' => 'required',
         ]);
+		App::setLocale($request->lg);
         //Error field
         if($validator->fails()){
             Log::warning("Password forgot - Validator email : ".$request->email);
@@ -44,7 +46,7 @@ class PasswordController extends BaseController
             // Récupérer les données
             $user = User::where('email', $request->email)->first();
             // Générer l'OTP sécurisé
-            $otp = random_int(100000, 999999);
+            $otp = random_int(000, 999) . ' ' . random_int(000, 999);
             // Gender
             if ($user->gender == 'M')
                 $gender = __('message.mr');
@@ -63,7 +65,7 @@ class PasswordController extends BaseController
                 $this->sendMail($request->email, '', $subject, $message);
                 // Mettre à jour l'utilisateur avec l'OTP et l'horodatage
                 $user->update([
-                    'otp' => $otp,
+                    'otp' => str_replace(' ', '', $otp),
                     'otp_at' => now(),
                 ]);
                 return $this->sendSuccess(__('message.sendmailsucc'), [], 201);
@@ -101,7 +103,9 @@ class PasswordController extends BaseController
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
             'otp' => 'required|size:6',
+            'lg' => 'required',
         ]);
+		App::setLocale($request->lg);
         //Error field
         if($validator->fails()){
             Log::warning("Password forgot - Validator otp : ".$request->email);
@@ -163,7 +167,9 @@ class PasswordController extends BaseController
                     ->numbers()   // Doit contenir des chiffres
                     ->symbols()   // Doit contenir des caractères spéciaux
             ],
+            'lg' => 'required',
         ]);
+		App::setLocale($request->lg);
         //Error field
         if($validator->fails()){
             Log::warning("Validator password forgot - password : " . json_encode($request->all()));
@@ -208,6 +214,7 @@ class PasswordController extends BaseController
     public function editpass(Request $request){
         //User
         $user = Auth::user();
+		App::setLocale($user->lg);
         //Data
         Log::notice("ID Utilisateur : {$user->id} - Requête : " . json_encode($request->all()));
         //Validator

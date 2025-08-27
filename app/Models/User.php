@@ -19,6 +19,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'lg',
         'bp',
         'uid',
         'otp',
@@ -52,6 +53,7 @@ class User extends Authenticatable
         'nationality_id',
         'register_number',
         'residence_person',
+        'maritalstatus_id',
     ];
 
     /**
@@ -69,12 +71,24 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'birthday_at' => 'date',
+        'otp_at' => 'datetime',
         'login_at' => 'datetime',
         'password_at' => 'datetime',
-        'birthday_at' => 'date',
         'password' => 'hashed',
     ];
 
+    // Génération de Filename unique
+    public static function filenameUnique($ext)
+    {
+        do {
+            $alfa = 'abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789';
+            $string = substr(str_shuffle($alfa), 0, 15) . '.' . $ext;
+        } while(self::where('photo', $string)->exists());
+        return $string;
+    }
+
+    // Génération de UUID unique
     protected static function boot()
     {
         parent::boot();

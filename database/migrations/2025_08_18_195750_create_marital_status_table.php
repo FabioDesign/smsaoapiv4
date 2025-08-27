@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('parents', function (Blueprint $table) {
+        Schema::create('marital_status', function (Blueprint $table) {
             $table->id();
-            $table->string('lastname', 255);
-            $table->string('firstname', 255);
-            $table->integer('type_id');
-            $table->integer('user_id');
-            $table->integer('parent_id')->default('0');
+            $table->string('label_en', 50);
+            $table->string('label_fr', 50);
         });
     }
 
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('parents');
+        Schema::dropIfExists('marital_status');
     }
 };

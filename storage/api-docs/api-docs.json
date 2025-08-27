@@ -188,6 +188,150 @@
                 ]
             }
         },
+        "/api/users/register": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Account creation",
+                "operationId": "register",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "lg",
+                                    "lastname",
+                                    "firstname",
+                                    "gender",
+                                    "number",
+                                    "email",
+                                    "birthday",
+                                    "birthplace",
+                                    "profession",
+                                    "village",
+                                    "street_number",
+                                    "hourse_number",
+                                    "family_number",
+                                    "fullname_peson",
+                                    "number_person",
+                                    "residence_person",
+                                    "cellule_id",
+                                    "maritalstatus_id",
+                                    "district_id",
+                                    "lastname_father",
+                                    "firstname_father",
+                                    "lastname_mother",
+                                    "firstname_mother",
+                                    "photo"
+                                ],
+                                "properties": {
+                                    "lg": {
+                                        "type": "string"
+                                    },
+                                    "lastname": {
+                                        "type": "string"
+                                    },
+                                    "firstname": {
+                                        "type": "string"
+                                    },
+                                    "gender": {
+                                        "type": "string"
+                                    },
+                                    "number": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "birthday": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "birthplace": {
+                                        "type": "string"
+                                    },
+                                    "profession": {
+                                        "type": "string"
+                                    },
+                                    "village": {
+                                        "type": "string"
+                                    },
+                                    "street_number": {
+                                        "type": "string"
+                                    },
+                                    "hourse_number": {
+                                        "type": "string"
+                                    },
+                                    "family_number": {
+                                        "type": "integer"
+                                    },
+                                    "fullname_peson": {
+                                        "type": "string"
+                                    },
+                                    "number_person": {
+                                        "type": "string"
+                                    },
+                                    "residence_person": {
+                                        "type": "string"
+                                    },
+                                    "cellule_id": {
+                                        "type": "integer"
+                                    },
+                                    "district_id": {
+                                        "type": "integer"
+                                    },
+                                    "bp": {
+                                        "type": "string"
+                                    },
+                                    "diplome": {
+                                        "type": "string"
+                                    },
+                                    "distinction": {
+                                        "type": "string"
+                                    },
+                                    "maritalstatus_id": {
+                                        "type": "integer"
+                                    },
+                                    "nationality_id": {
+                                        "type": "integer"
+                                    },
+                                    "lastname_father": {
+                                        "type": "string"
+                                    },
+                                    "firstname_father": {
+                                        "type": "string"
+                                    },
+                                    "lastname_mother": {
+                                        "type": "string"
+                                    },
+                                    "firstname_mother": {
+                                        "type": "string"
+                                    },
+                                    "photo": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Création de compte éffectuée avec succès."
+                    },
+                    "401": {
+                        "description": "Echec de Création de compte."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
         "/api/users/auth": {
             "post": {
                 "tags": [
