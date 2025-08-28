@@ -13,7 +13,8 @@ return [
     'creataccount' => "Création de compte",
     'txtaccount' => "Votre demande d’inscription a bien été enregistrée et est en cours de traitement.<br>
     Vous recevrez sous peu un e-mail de confirmation avec vos paramètres de connexion.",
-
+    'txtadmin' => "Veuillez vous connecter à votre espace pour valider l'inscription de :<br>",
+    
     //Password
     'forgotpwd' => "Mot de passe oublié.",
     'otp' => "Le code OTP est",

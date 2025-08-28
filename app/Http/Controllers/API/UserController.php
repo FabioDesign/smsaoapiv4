@@ -169,8 +169,8 @@ class UserController extends BaseController
             //subject
             $subject = __('message.creataccount');
             $message = "<div style='color:#156082;font-size:11pt;line-height:1.5em;font-family:Century Gothic'>"
-            . __('message.dear') . " " . $gender ." ".$request->lastname.",<br><br>"
-            . __('message.otp') . " : <b>" . __('message.txtaccount') . "</b><br><br>"
+            . __('message.dear') . " " . $gender . " " . $request->lastname . ",<br><br>"
+            . __('message.txtaccount') . "<br><br>"
             . __('message.bestregard') . " !<br>
             <hr style='color:#156082;'>
             </div>";
@@ -178,21 +178,18 @@ class UserController extends BaseController
             $this->sendMail($email, '', $subject, $message);
             // Mail aux admins
             $admins = User::where('profile_id', 1)->get();
-            // Gender
-            if ($request->gender == 'M')
-                $gender = __('message.mr');
-            else
-                $gender = __('message.mrs');
-            //subject
-            $subject = __('message.creataccount');
-            $message = "<div style='color:#156082;font-size:11pt;line-height:1.5em;font-family:Century Gothic'>"
-            . __('message.dear') . " " . $gender ." ".$request->lastname.",<br><br>"
-            . __('message.otp') . " : <b>" . __('message.txtaccount') . "</b><br><br>"
-            . __('message.bestregard') . " !<br>
-            <hr style='color:#156082;'>
-            </div>";
-            // Envoi de l'email
-            $this->sendMail($request->email, '', $subject, $message);
+            foreach ($admins as $admin) :
+                $message = "<div style='color:#156082;font-size:11pt;line-height:1.5em;font-family:Century Gothic'>"
+                . __('message.dear') . " Admin,<br><br>"
+                . __('message.txtadmin') . "<br><b>"
+                . $gender . " " . $request->lastname . " " . $request->firstname
+                . "</b><br><br>"
+                . __('message.bestregard') . " !<br>
+                <hr style='color:#156082;'>
+                </div>";
+                // Envoi de l'email
+                $this->sendMail($admin->email, '', $subject, $message);
+            endforeach;
             return $this->sendSuccess('Utilisateur enregistré avec succès.', $data, 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Annuler la transaction en cas d'erreur
