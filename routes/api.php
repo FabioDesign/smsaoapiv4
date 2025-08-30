@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\{
     UserController,
+    SettingController,
     PasswordController,
 };
 
@@ -26,6 +27,10 @@ Route::post('users/auth', [UserController::class, 'login']);
 Route::post('password/verifemail', [PasswordController::class, 'step1']);
 Route::post('password/verifotp', [PasswordController::class, 'step2']);
 Route::post('password/addpass', [PasswordController::class, 'step3']);
+
+// Route pour les paramètres
+Route::get('settings/country/{lg}', [SettingController::class, 'country']);
+Route::get('settings/nationality/{lg}', [SettingController::class, 'nationality']);
 
 Route::middleware('auth:api')->group( function () {
     // Route pour les mots de passe

@@ -19,6 +19,10 @@ return [
     'forgotpwd' => "Forgot password.",
     'otp' => "The OTP code is",
 
+    // Settings
+    'listnation' => "List of nationalities.",
+    'listcontry' => "List of contries.",
+    
     // Mail
     'dear' => "Dear",
     'bestregard' => "Best regards",

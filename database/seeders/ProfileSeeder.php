@@ -14,10 +14,10 @@ class ProfileSeeder extends Seeder
      */
     public function run(){
         Profile::firstOrCreate(
-            ["label_en" => 'Administrator'],
+            ["en" => 'Administrator'],
             [
-                "label_en" => 'Administrator',
-                "label_fr" => 'Administrateur',
+                "en" => 'Administrator',
+                "fr" => 'Administrateur',
                 "description_en" => 'System Manager.',
                 "description_fr" => 'Gestionnaire du système.',
                 "status" => 1,

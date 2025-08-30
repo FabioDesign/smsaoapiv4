@@ -14,17 +14,17 @@ class TypeParentSeeder extends Seeder
      */
     public function run(){
         TypeParent::firstOrCreate(
-            ["label_en" => 'Father'],
+            ["en" => 'Father'],
             [
-                "label_en" => 'Father',
-                "label_fr" => 'Père',
+                "en" => 'Father',
+                "fr" => 'Père',
             ]
         );
         TypeParent::firstOrCreate(
-            ["label_en" => 'Mother'],
+            ["en" => 'Mother'],
             [
-                "label_en" => 'Mother',
-                "label_fr" => 'Mère',
+                "en" => 'Mother',
+                "fr" => 'Mère',
             ]
         );
     }

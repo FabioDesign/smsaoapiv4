@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('label_en', 50);
-            $table->string('label_fr', 50);
+            $table->string('en', 50);
+            $table->string('fr', 50);
             $table->string('target')->nullable();
             $table->string('icone')->nullable();
             $table->tinyInteger('position');

@@ -188,6 +188,46 @@
                 ]
             }
         },
+        "/api/settings/nationality": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "description": "Liste de nationalités.",
+                "operationId": "nationality",
+                "responses": {
+                    "200": {
+                        "description": "Liste de nationalités."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/settings/country": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "description": "Liste de pays.",
+                "operationId": "country",
+                "responses": {
+                    "200": {
+                        "description": "Liste de pays."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
         "/api/users/register": {
             "post": {
                 "tags": [
@@ -220,10 +260,8 @@
                                     "cellule_id",
                                     "maritalstatus_id",
                                     "district_id",
-                                    "lastname_father",
-                                    "firstname_father",
-                                    "lastname_mother",
-                                    "firstname_mother",
+                                    "fullname_father",
+                                    "fullname_mother",
                                     "photo"
                                 ],
                                 "properties": {
@@ -297,16 +335,10 @@
                                     "nationality_id": {
                                         "type": "integer"
                                     },
-                                    "lastname_father": {
+                                    "fullname_father": {
                                         "type": "string"
                                     },
-                                    "firstname_father": {
-                                        "type": "string"
-                                    },
-                                    "lastname_mother": {
-                                        "type": "string"
-                                    },
-                                    "firstname_mother": {
+                                    "fullname_mother": {
                                         "type": "string"
                                     },
                                     "photo": {
@@ -391,7 +423,12 @@
                     "404": {
                         "description": "Page introuvable."
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         }
     },
@@ -399,6 +436,10 @@
         {
             "name": "Password",
             "description": "Password"
+        },
+        {
+            "name": "Settings",
+            "description": "Settings"
         },
         {
             "name": "Users",

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->uuid('uid')->unique();
             $table->string('code', 2)->unique();
-            $table->string('label_en', 255);
-            $table->string('label_fr', 255);
+            $table->string('en', 255);
+            $table->string('fr', 255);
             $table->string('amount', 50);
             $table->string('deadline', 255);
             $table->text('description_en');

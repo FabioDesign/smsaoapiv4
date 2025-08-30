@@ -14,10 +14,10 @@ class MenuSeeder extends Seeder
      */
     public function run(){
         Menu::firstOrCreate(
-            ["label_en" => 'Dashboard'],
+            ["en" => 'Dashboard'],
             [
-                "label_fr" => 'Tableau de bord',
-                "label_en" => 'Dashboard',
+                "fr" => 'Tableau de bord',
+                "en" => 'Dashboard',
                 "status" => 1,
                 "icone" => 'dashboard-icon',
                 "target" => '/dashboard',
@@ -26,10 +26,10 @@ class MenuSeeder extends Seeder
             ]
         );
         Menu::firstOrCreate(
-            ["label_en" => 'Documents'],
+            ["en" => 'Documents'],
             [
-                "label_fr" => 'Documents',
-                "label_en" => 'Documents',
+                "fr" => 'Documents',
+                "en" => 'Documents',
                 "status" => 1,
                 "icone" => 'documents-icon',
                 "target" => '/documents',
@@ -38,10 +38,10 @@ class MenuSeeder extends Seeder
             ]
         );
         Menu::firstOrCreate(
-            ["label_en" => 'Documents to provide'],
+            ["en" => 'Documents to provide'],
             [
-                "label_fr" => 'Pièces à fournir',
-                "label_en" => 'Documents to provide',
+                "fr" => 'Pièces à fournir',
+                "en" => 'Documents to provide',
                 "status" => 1,
                 "icone" => 'attachments-icon',
                 "target" => '/attachments',
@@ -50,10 +50,10 @@ class MenuSeeder extends Seeder
             ]
         );
         Menu::firstOrCreate(
-            ["label_en" => 'Settings'],
+            ["en" => 'Settings'],
             [
-                "label_fr" => 'Paramètres',
-                "label_en" => 'Settings',
+                "fr" => 'Paramètres',
+                "en" => 'Settings',
                 "status" => 1,
                 "icone" => 'settings-icon',
                 "target" => '/settings',
@@ -62,10 +62,10 @@ class MenuSeeder extends Seeder
             ]
         );
         Menu::firstOrCreate(
-            ["label_en" => 'Profile Management'],
+            ["en" => 'Profile Management'],
             [
-                "label_fr" => 'Gestion des Profils',
-                "label_en" => 'Profile Management',
+                "fr" => 'Gestion des Profils',
+                "en" => 'Profile Management',
                 "status" => 1,
                 "icone" => 'profile-icon',
                 "target" => '/profile',
@@ -74,10 +74,10 @@ class MenuSeeder extends Seeder
             ]
         );
         Menu::firstOrCreate(
-            ["label_en" => 'User Management'],
+            ["en" => 'User Management'],
             [
-                "label_fr" => 'Gestion des Utilisateurs',
-                "label_en" => 'User Management',
+                "fr" => 'Gestion des Utilisateurs',
+                "en" => 'User Management',
                 "status" => 1,
                 "icone" => 'user-icon',
                 "target" => '/users',
@@ -86,10 +86,10 @@ class MenuSeeder extends Seeder
             ]
         );
         Menu::firstOrCreate(
-            ["label_en" => 'Appointments'],
+            ["en" => 'Appointments'],
             [
-                "label_fr" => 'Rendez-vous',
-                "label_en" => 'Appointments',
+                "fr" => 'Rendez-vous',
+                "en" => 'Appointments',
                 "status" => 1,
                 "icone" => 'appointments-icon',
                 "target" => '/appointments',
@@ -98,10 +98,10 @@ class MenuSeeder extends Seeder
             ]
         );
         Menu::firstOrCreate(
-            ["label_en" => 'Audit trail'],
+            ["en" => 'Audit trail'],
             [
-                "label_fr" => "Piste d'audit",
-                "label_en" => 'Audit trail',
+                "fr" => "Piste d'audit",
+                "en" => 'Audit trail',
                 "status" => 1,
                 "icone" => 'audit_trail-icon',
                 "target" => '/audit_trail',

@@ -14,59 +14,59 @@ class ActionSeeder extends Seeder
      */
     public function run(){
         Action::firstOrCreate(
-            ["label_en" => 'See'],
+            ["en" => 'See'],
             [
-                "label_fr" => 'Voir',
-                "label_en" => 'See',
+                "fr" => 'Voir',
+                "en" => 'See',
             ]
         );
         Action::firstOrCreate(
-            ["label_en" => 'Add'],
+            ["en" => 'Add'],
             [
-                "label_fr" => 'Ajouter',
-                "label_en" => 'Add',
+                "fr" => 'Ajouter',
+                "en" => 'Add',
             ]
         );
         Action::firstOrCreate(
-            ["label_en" => 'Update'],
+            ["en" => 'Update'],
             [
-                "label_fr" => 'Modifier',
-                "label_en" => 'Update',
+                "fr" => 'Modifier',
+                "en" => 'Update',
             ]
         );
         Action::firstOrCreate(
-            ["label_en" => 'Enable/Disable'],
+            ["en" => 'Enable/Disable'],
             [
-                "label_fr" => 'Activer/Désactiver',
-                "label_en" => 'Enable/Disable',
+                "fr" => 'Activer/Désactiver',
+                "en" => 'Enable/Disable',
             ]
         );
         Action::firstOrCreate(
-            ["label_en" => 'Send'],
+            ["en" => 'Send'],
             [
-                "label_fr" => 'Envoyer',
-                "label_en" => 'Send',
+                "fr" => 'Envoyer',
+                "en" => 'Send',
             ]
         );
         Action::firstOrCreate(
-            ["label_en" => 'Approve'],
+            ["en" => 'Approve'],
             [
-                "label_fr" => 'Approuver',
-                "label_en" => 'Approve',
+                "fr" => 'Approuver',
+                "en" => 'Approve',
             ]
         );
         Action::firstOrCreate(
-            ["label_en" => 'Delete'],
+            ["en" => 'Delete'],
             [
-                "label_fr" => 'Supprimer',
-                "label_en" => 'Delete',
+                "fr" => 'Supprimer',
+                "en" => 'Delete',
             ]
         );
         Action::firstOrCreate(
-            ["label_en" => 'Export'],
+            ["en" => 'Export'],
             [
-                "label_fr" => 'Exporter',
-                "label_en" => 'Export',
+                "fr" => 'Exporter',
+                "en" => 'Export',
             ]
         );
     }

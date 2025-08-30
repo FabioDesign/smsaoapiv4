@@ -13,8 +13,8 @@ class Profile extends Model
     protected $fillable = [
         'uid',
         'status',
-        'label_en',
-        'label_fr',
+        'en',
+        'fr',
         'deleted_at',
         'created_user',
         'updated_user',

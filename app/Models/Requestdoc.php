@@ -19,8 +19,8 @@ class Requestdoc extends Model
         'uid',
         'status',
         'user_id',
-        'label_en',
-        'label_fr',
+        'en',
+        'fr',
     ];
 
     protected static function boot()

@@ -14,8 +14,8 @@ class Menu extends Model
         'status',
         'target',
         'menu_id',
-        'label_en',
-        'label_fr',
+        'en',
+        'fr',
         'position',
     ];
     

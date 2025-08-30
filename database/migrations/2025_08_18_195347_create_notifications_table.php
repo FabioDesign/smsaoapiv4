@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->uuid('uid')->unique();
-            $table->string('label_en', 255);
-            $table->string('label_fr', 255);
+            $table->string('en', 255);
+            $table->string('fr', 255);
             $table->string('target', 255);
             $table->timestamp('read_at')->nullable();
             $table->timestamps();
