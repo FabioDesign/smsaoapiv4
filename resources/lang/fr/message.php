@@ -21,7 +21,7 @@ return [
 
     // Settings
     'listnation' => "Liste de nationalités.",
-    'listcontry' => "Liste de pays.",
+    'listcountry' => "Liste de pays.",
     
     // Mail
     'dear' => "Cher(e)",
