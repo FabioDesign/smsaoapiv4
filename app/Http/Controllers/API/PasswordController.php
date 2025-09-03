@@ -137,8 +137,8 @@ class PasswordController extends BaseController
     //Renvoyer OTP",
     /**
     * @OA\Post(
-    *   path="/api/users/sendotp",
-    *   tags={"Users"},
+    *   path="/api/password/sendotp",
+    *   tags={"Password"},
     *   operationId="sendotp",
     *   description="Renvoyer OTP",
     *   @OA\RequestBody(
