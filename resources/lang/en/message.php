@@ -23,6 +23,11 @@ return [
     // Settings
     'listnation' => "List of nationalities.",
     'listcountry' => "List of contries.",
+    'listprovince' => "List of provinces.",
+    'listregion' => "List of regions.",
+    'listdistrict' => "List of districts.",
+    'listsector' => "List of sectors.",
+    'listcells' => "List of cells.",
     
     // Mail
     'dear' => "Dear",

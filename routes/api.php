@@ -23,16 +23,20 @@ use App\Http\Controllers\API\{
 Route::post('users/register', [UserController::class, 'store']);
 // Route pour la connexion
 Route::post('users/auth', [UserController::class, 'login']);
-// Route pour l'envoi de OTP
-Route::post('users/sendotp', [UserController::class, 'sendotp']);
 // Routes pour les mots de passe oubliés
-Route::post('password/verifemail', [PasswordController::class, 'step1']);
-Route::post('password/verifotp', [PasswordController::class, 'step2']);
-Route::post('password/addpass', [PasswordController::class, 'step3']);
+Route::post('password/sendotp', [PasswordController::class, 'sendotp']);
+Route::post('password/verifemail', [PasswordController::class, 'verifemail']);
+Route::post('password/verifotp', [PasswordController::class, 'verifotp']);
+Route::post('password/addpass', [PasswordController::class, 'addpass']);
 
 // Route pour les paramètres
 Route::get('settings/country/{lg}', [SettingController::class, 'country']);
+Route::get('settings/province/{lg}', [SettingController::class, 'province']);
 Route::get('settings/nationality/{lg}', [SettingController::class, 'nationality']);
+Route::get('settings/cells/{lg}/{sector_id}', [SettingController::class, 'cells']);
+Route::get('settings/region/{lg}/{country_id}', [SettingController::class, 'region']);
+Route::get('settings/sector/{lg}/{district_id}', [SettingController::class, 'sector']);
+Route::get('settings/district/{lg}/{province_id}', [SettingController::class, 'district']);
 
 Route::middleware('auth:api')->group( function () {
     // Route pour les mots de passe

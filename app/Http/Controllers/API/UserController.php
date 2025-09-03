@@ -15,61 +15,6 @@ use App\Http\Controllers\API\BaseController as BaseController;
  */
 class UserController extends BaseController
 {
-    //Renvoyer OTP",
-    /**
-    * @OA\Post(
-    *   path="/api/users/sendotp",
-    *   tags={"Users"},
-    *   operationId="sendotp",
-    *   description="Renvoyer OTP",
-    *   @OA\RequestBody(
-    *      required=true,
-    *      @OA\JsonContent(
-    *         required={"email"},
-    *         @OA\Property(property="email", type="string", example="fabio@yopmail.com")
-    *      )
-    *   ),
-    *   @OA\Response(response=200, description="Renvoyer OTP."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
-    *   @OA\Response(response=404, description="Page introuvable.")
-    * )
-    */
-    public function sendotp(Request $request): JsonResponse {
-        //Validator
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'lg' => 'required',
-        ]);
-		App::setLocale($request->lg);
-        //Error field
-        if($validator->fails()){
-            Log::warning("Send OTP - Validator email : ".$request->email);
-            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
-        }
-        try {
-            // Générer l'OTP sécurisé
-            $otp = random_int(100, 999) . ' ' . random_int(100, 999);
-            //subject
-            $subject = __('message.verifeml');
-            $message = "<div style='color:#156082;font-size:11pt;line-height:1.5em;font-family:Century Gothic'>"
-            . __('message.dear') . " " . __('message.mr_mrs') . ",<br><br>"
-            . __('message.otp') . " : <b>" . $otp . "</b><br><br>"
-            . __('message.bestregard') . " !<br>
-            <hr style='color:#156082;'>
-            </div>";
-            try {
-                // Envoi de l'email
-                $this->sendMail($request->email, '', $subject, $message);
-                return $this->sendSuccess(__('message.sendmailsucc'), [], 201);
-            } catch(\Exception $e) {
-                Log::warning("Erreur d'envoi de mail : " . $e->getMessage());
-                return $this->sendError(__('message.sendmailerr'));
-            }
-        } catch(\Exception $e) {
-            Log::warning("Erreur de récupération de l'utilisateur : " . $e->getMessage());
-            return $this->sendError(__('message.error'));
-        }
-    }
     //Account creation
     /**
     * @OA\Post(

@@ -86,6 +86,45 @@
                 }
             }
         },
+        "/api/users/sendotp": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Renvoyer OTP",
+                "operationId": "sendotp",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "fabio@yopmail.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Renvoyer OTP."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
         "/api/password/addpass": {
             "post": {
                 "tags": [
@@ -188,16 +227,16 @@
                 ]
             }
         },
-        "/api/settings/nationality": {
+        "/api/settings/nationality/{lg}": {
             "get": {
                 "tags": [
                     "Settings"
                 ],
-                "description": "Liste de nationalités.",
+                "description": "Liste de Nationalités.",
                 "operationId": "nationality",
                 "responses": {
                     "200": {
-                        "description": "Liste de nationalités."
+                        "description": "Liste de Nationalités."
                     },
                     "401": {
                         "description": "Aucune donnée trouvée."
@@ -208,16 +247,116 @@
                 }
             }
         },
-        "/api/settings/country": {
+        "/api/settings/country/{lg}": {
             "get": {
                 "tags": [
                     "Settings"
                 ],
-                "description": "Liste de pays.",
+                "description": "Liste de Pays.",
                 "operationId": "country",
                 "responses": {
                     "200": {
-                        "description": "Liste de pays."
+                        "description": "Liste de Pays."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/settings/province/{lg}": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "description": "Liste de provinces.",
+                "operationId": "province",
+                "responses": {
+                    "200": {
+                        "description": "Liste de provinces."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/settings/region/{lg}/{country_id}": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "description": "Liste de régions.",
+                "operationId": "region",
+                "responses": {
+                    "200": {
+                        "description": "Liste de régions."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/settings/district/{lg}/{province_id}": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "description": "Liste de districts.",
+                "operationId": "district",
+                "responses": {
+                    "200": {
+                        "description": "Liste de districts."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/settings/sector/{lg}/{district_id}": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "description": "Liste de sectors.",
+                "operationId": "sector",
+                "responses": {
+                    "200": {
+                        "description": "Liste de sectors."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/settings/cells/{lg}/{sector_id}": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "description": "Liste de cells.",
+                "operationId": "cells",
+                "responses": {
+                    "200": {
+                        "description": "Liste de cells."
                     },
                     "401": {
                         "description": "Aucune donnée trouvée."
@@ -438,12 +577,12 @@
             "description": "Password"
         },
         {
-            "name": "Settings",
-            "description": "Settings"
-        },
-        {
             "name": "Users",
             "description": "Users"
+        },
+        {
+            "name": "Settings",
+            "description": "Settings"
         }
     ]
 }
