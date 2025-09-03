@@ -23,6 +23,8 @@ use App\Http\Controllers\API\{
 Route::post('users/register', [UserController::class, 'store']);
 // Route pour la connexion
 Route::post('users/auth', [UserController::class, 'login']);
+// Route pour l'envoi de OTP
+Route::post('users/sendotp', [UserController::class, 'sendotp']);
 // Routes pour les mots de passe oubliés
 Route::post('password/verifemail', [PasswordController::class, 'step1']);
 Route::post('password/verifotp', [PasswordController::class, 'step2']);

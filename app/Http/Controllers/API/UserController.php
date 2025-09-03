@@ -15,19 +15,74 @@ use App\Http\Controllers\API\BaseController as BaseController;
  */
 class UserController extends BaseController
 {
-//Account creation
-/**
-* @OA\Post(
-*   path="/api/users/register",
-*   tags={"Users"},
-*   operationId="register",
-*   description="Account creation",
- *   @OA\RequestBody(
- *      required=true,
- *      @OA\MediaType(
- *          mediaType="multipart/form-data",
- *          @OA\Schema(
- *          required={"lg", "lastname", "firstname", "gender", "number", "email", "birthday", "birthplace", "profession", "village", "street_number", "hourse_number", "family_number", "fullname_peson", "number_person", "residence_person", "cellule_id", "maritalstatus_id", "district_id", "fullname_father", "fullname_mother", "photo"},
+    //Renvoyer OTP",
+    /**
+    * @OA\Post(
+    *   path="/api/users/sendotp",
+    *   tags={"Users"},
+    *   operationId="sendotp",
+    *   description="Renvoyer OTP",
+    *   @OA\RequestBody(
+    *      required=true,
+    *      @OA\JsonContent(
+    *         required={"email"},
+    *         @OA\Property(property="email", type="string", example="fabio@yopmail.com")
+    *      )
+    *   ),
+    *   @OA\Response(response=200, description="Renvoyer OTP."),
+    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=404, description="Page introuvable.")
+    * )
+    */
+    public function sendotp(Request $request): JsonResponse {
+        //Validator
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'lg' => 'required',
+        ]);
+		App::setLocale($request->lg);
+        //Error field
+        if($validator->fails()){
+            Log::warning("Send OTP - Validator email : ".$request->email);
+            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
+        }
+        try {
+            // Générer l'OTP sécurisé
+            $otp = random_int(100, 999) . ' ' . random_int(100, 999);
+            //subject
+            $subject = __('message.verifeml');
+            $message = "<div style='color:#156082;font-size:11pt;line-height:1.5em;font-family:Century Gothic'>"
+            . __('message.dear') . " " . __('message.mr_mrs') . ",<br><br>"
+            . __('message.otp') . " : <b>" . $otp . "</b><br><br>"
+            . __('message.bestregard') . " !<br>
+            <hr style='color:#156082;'>
+            </div>";
+            try {
+                // Envoi de l'email
+                $this->sendMail($request->email, '', $subject, $message);
+                return $this->sendSuccess(__('message.sendmailsucc'), [], 201);
+            } catch(\Exception $e) {
+                Log::warning("Erreur d'envoi de mail : " . $e->getMessage());
+                return $this->sendError(__('message.sendmailerr'));
+            }
+        } catch(\Exception $e) {
+            Log::warning("Erreur de récupération de l'utilisateur : " . $e->getMessage());
+            return $this->sendError(__('message.error'));
+        }
+    }
+    //Account creation
+    /**
+    * @OA\Post(
+    *   path="/api/users/register",
+    *   tags={"Users"},
+    *   operationId="register",
+    *   description="Account creation",
+    *   @OA\RequestBody(
+    *      required=true,
+    *      @OA\MediaType(
+    *          mediaType="multipart/form-data",
+    *          @OA\Schema(
+    *          required={"lg", "lastname", "firstname", "gender", "number", "email", "birthday", "birthplace", "profession", "village", "street_number", "hourse_number", "family_number", "fullname_peson", "number_person", "residence_person", "cellule_id", "maritalstatus_id", "district_id", "fullname_father", "fullname_mother", "photo"},
     *         @OA\Property(property="lg", type="string"),
     *         @OA\Property(property="lastname", type="string"),
     *         @OA\Property(property="firstname", type="string"),
@@ -60,8 +115,8 @@ class UserController extends BaseController
     *   @OA\Response(response=200, description="Création de compte éffectuée avec succès."),
     *   @OA\Response(response=401, description="Echec de Création de compte."),
     *   @OA\Response(response=404, description="Page introuvable."),
- * )
- */
+    * )
+    */
     public function store(Request $request): JsonResponse
     {
         Log::notice("User::store : " . json_encode($request->all()));
@@ -88,7 +143,7 @@ class UserController extends BaseController
             'maritalstatus_id' => 'required',
             'cellule_id' => 'required',
             'district_id' => 'required',
-			'photo' => 'required|image|mimes:png,jpeg,jpg|max:2048',
+			'photo' => 'required|file|mimes:png,jpeg,jpg|max:2048',
         ]);
         //Error field
         if ($validator->fails()) {
@@ -134,8 +189,8 @@ class UserController extends BaseController
             'district_id' => $request->district_id,
             'nationality_id' => $request->nationality_id,
             'maritalstatus_id' => $request->maritalstatus_id,
+            'password' => Hash::make($request->password),
         ];
-        // return $this->sendError("Data insert", $set);
         DB::beginTransaction(); // Démarrer une transaction
         try {
             // Création de l'utilisateur
@@ -264,7 +319,7 @@ class UserController extends BaseController
                     'photo' => env('APP_URL') . '/assets/photos/' . $user->photo,
                 ];
                 // Code to list permissions
-                $permissions = Permission::select('menus.id', $lg . ' as label', 'target', 'icone')
+                $permissions = Permission::select('menus.id', '' . $request->lg . ' as label', 'target', 'icone')
                 ->join('menus', 'menus.id', '=', 'permissions.menu_id')
                 ->where('profile_id', $user->profile_id) // Seulement les menus du profil de l'utilisateur
                 ->where('status', 1) // Seulement les menus activés

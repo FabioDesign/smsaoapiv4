@@ -4,6 +4,7 @@ return [
     //Users
     'mr' => "M.",
     'mrs' => "Mme",
+    'mr_mrs' => "M./Mme",
     'authsucc' => "Authentification effectuée avec succès.",
     'autherr' => "Echec d'authentification.",
     'noprofil' => "Aucun profil disponible pour cet utilisateur.",
@@ -26,6 +27,7 @@ return [
     // Mail
     'dear' => "Cher(e)",
     'bestregard' => "Cordialement",
+    'verifeml' => "Email verification.",
     'sendmailsucc' => "Mail envoyé avec succès.",
     'sendmailerr' => "Erreur d'envoi de mail.",
 
