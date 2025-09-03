@@ -319,7 +319,7 @@ class UserController extends BaseController
                     'photo' => env('APP_URL') . '/assets/photos/' . $user->photo,
                 ];
                 // Code to list permissions
-                $permissions = Permission::select('menus.id', '' . $request->lg . ' as label', 'target', 'icone')
+                $permissions = Permission::select('menus.id', $request->lg . ' as label', 'target', 'icone')
                 ->join('menus', 'menus.id', '=', 'permissions.menu_id')
                 ->where('profile_id', $user->profile_id) // Seulement les menus du profil de l'utilisateur
                 ->where('status', 1) // Seulement les menus activés
@@ -334,7 +334,7 @@ class UserController extends BaseController
                 // Transformer les données
                 $query = $permissions->map(fn($permission) => [
                     'id' => $permission->id,
-                    'menu' => $request->llabel,
+                    'menu' => $permission->label,
                     'target' => $permission->target,
                     'icone' => $permission->icone,
                 ]);
