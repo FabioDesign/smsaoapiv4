@@ -110,14 +110,14 @@ class SettingController extends BaseController
         return $this->sendSuccess(__('message.listdistrict'), $districts);
     }
 
-    // Liste de sectors
+    // Liste de secteurs
     /**
     * @OA\Get(
     *   path="/api/settings/sector/{lg}/{district_id}",
     *   tags={"Settings"},
     *   operationId="sector",
-    *   description="Liste de sectors.",
-    *   @OA\Response(response=200, description="Liste de sectors."),
+    *   description="Liste de secteurs.",
+    *   @OA\Response(response=200, description="Liste de secteurs."),
     *   @OA\Response(response=401, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
@@ -132,14 +132,14 @@ class SettingController extends BaseController
         return $this->sendSuccess(__('message.listsector'), $sectors);
     }
 
-    // Liste de cells
+    // Liste de cellules
     /**
     * @OA\Get(
     *   path="/api/settings/cells/{lg}/{sector_id}",
     *   tags={"Settings"},
     *   operationId="cells",
-    *   description="Liste de cells.",
-    *   @OA\Response(response=200, description="Liste de cells."),
+    *   description="Liste de cellules.",
+    *   @OA\Response(response=200, description="Liste de cellules."),
     *   @OA\Response(response=401, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
