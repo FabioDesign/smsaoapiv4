@@ -86,10 +86,10 @@
                 }
             }
         },
-        "/api/users/sendotp": {
+        "/api/password/sendotp": {
             "post": {
                 "tags": [
-                    "Users"
+                    "Password"
                 ],
                 "description": "Renvoyer OTP",
                 "operationId": "sendotp",
@@ -332,11 +332,11 @@
                 "tags": [
                     "Settings"
                 ],
-                "description": "Liste de sectors.",
+                "description": "Liste de secteurs.",
                 "operationId": "sector",
                 "responses": {
                     "200": {
-                        "description": "Liste de sectors."
+                        "description": "Liste de secteurs."
                     },
                     "401": {
                         "description": "Aucune donnée trouvée."
@@ -352,11 +352,11 @@
                 "tags": [
                     "Settings"
                 ],
-                "description": "Liste de cells.",
+                "description": "Liste de cellules.",
                 "operationId": "cells",
                 "responses": {
                     "200": {
-                        "description": "Liste de cells."
+                        "description": "Liste de cellules."
                     },
                     "401": {
                         "description": "Aucune donnée trouvée."
@@ -577,12 +577,12 @@
             "description": "Password"
         },
         {
-            "name": "Users",
-            "description": "Users"
-        },
-        {
             "name": "Settings",
             "description": "Settings"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
         }
     ]
 }
