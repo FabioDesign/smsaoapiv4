@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+//404
+Route::fallback(function() {
+  $response = [
+    'status' => 404,
+    'message' => "Page introuvable.",
+    'data' => [],
+  ];
+  return response()->json($response, 404);
 });

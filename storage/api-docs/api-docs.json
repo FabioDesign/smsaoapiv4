@@ -86,45 +86,6 @@
                 }
             }
         },
-        "/api/password/sendotp": {
-            "post": {
-                "tags": [
-                    "Password"
-                ],
-                "description": "Renvoyer OTP",
-                "operationId": "sendotp",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "email"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "example": "fabio@yopmail.com"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Renvoyer OTP."
-                    },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
-                    },
-                    "404": {
-                        "description": "Page introuvable."
-                    }
-                }
-            }
-        },
         "/api/password/addpass": {
             "post": {
                 "tags": [
@@ -225,6 +186,223 @@
                         "bearer": []
                     }
                 ]
+            }
+        },
+        "/api/register/sendotp": {
+            "post": {
+                "tags": [
+                    "Register"
+                ],
+                "description": "Renvoyer OTP",
+                "operationId": "sendotp",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "fabio@yopmail.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Renvoyer OTP."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/register/validotp": {
+            "post": {
+                "tags": [
+                    "Register"
+                ],
+                "description": "Validation du Code OTP",
+                "operationId": "validotp",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "otp"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "otp": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Validation du Code OTP."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/register/forms": {
+            "post": {
+                "tags": [
+                    "Register"
+                ],
+                "description": "Account creation",
+                "operationId": "registerUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "lg",
+                                    "lastname",
+                                    "firstname",
+                                    "gender",
+                                    "number",
+                                    "email",
+                                    "birthday",
+                                    "birthplace",
+                                    "profession",
+                                    "village",
+                                    "street_number",
+                                    "hourse_number",
+                                    "family_number",
+                                    "fullname_peson",
+                                    "number_person",
+                                    "residence_person",
+                                    "cellule_id",
+                                    "maritalstatus_id",
+                                    "district_id",
+                                    "fullname_father",
+                                    "fullname_mother",
+                                    "photo"
+                                ],
+                                "properties": {
+                                    "lg": {
+                                        "type": "string"
+                                    },
+                                    "lastname": {
+                                        "type": "string"
+                                    },
+                                    "firstname": {
+                                        "type": "string"
+                                    },
+                                    "gender": {
+                                        "type": "string"
+                                    },
+                                    "number": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "birthday": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "birthplace": {
+                                        "type": "string"
+                                    },
+                                    "profession": {
+                                        "type": "string"
+                                    },
+                                    "village": {
+                                        "type": "string"
+                                    },
+                                    "street_number": {
+                                        "type": "string"
+                                    },
+                                    "hourse_number": {
+                                        "type": "string"
+                                    },
+                                    "family_number": {
+                                        "type": "integer"
+                                    },
+                                    "fullname_peson": {
+                                        "type": "string"
+                                    },
+                                    "number_person": {
+                                        "type": "string"
+                                    },
+                                    "residence_person": {
+                                        "type": "string"
+                                    },
+                                    "cellule_id": {
+                                        "type": "integer"
+                                    },
+                                    "district_id": {
+                                        "type": "integer"
+                                    },
+                                    "bp": {
+                                        "type": "string"
+                                    },
+                                    "diplome": {
+                                        "type": "string"
+                                    },
+                                    "distinction": {
+                                        "type": "string"
+                                    },
+                                    "maritalstatus_id": {
+                                        "type": "integer"
+                                    },
+                                    "nationality_id": {
+                                        "type": "integer"
+                                    },
+                                    "fullname_father": {
+                                        "type": "string"
+                                    },
+                                    "fullname_mother": {
+                                        "type": "string"
+                                    },
+                                    "photo": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Création de compte éffectuée avec succès."
+                    },
+                    "401": {
+                        "description": "Echec de Création de compte."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
             }
         },
         "/api/settings/nationality/{lg}": {
@@ -367,119 +545,22 @@
                 }
             }
         },
-        "/api/users/register": {
+        "/api/users/photo": {
             "post": {
                 "tags": [
                     "Users"
                 ],
-                "description": "Account creation",
-                "operationId": "register",
+                "description": "Modification de la photo de profil",
+                "operationId": "photo",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "multipart/form-data": {
                             "schema": {
                                 "required": [
-                                    "lg",
-                                    "lastname",
-                                    "firstname",
-                                    "gender",
-                                    "number",
-                                    "email",
-                                    "birthday",
-                                    "birthplace",
-                                    "profession",
-                                    "village",
-                                    "street_number",
-                                    "hourse_number",
-                                    "family_number",
-                                    "fullname_peson",
-                                    "number_person",
-                                    "residence_person",
-                                    "cellule_id",
-                                    "maritalstatus_id",
-                                    "district_id",
-                                    "fullname_father",
-                                    "fullname_mother",
                                     "photo"
                                 ],
                                 "properties": {
-                                    "lg": {
-                                        "type": "string"
-                                    },
-                                    "lastname": {
-                                        "type": "string"
-                                    },
-                                    "firstname": {
-                                        "type": "string"
-                                    },
-                                    "gender": {
-                                        "type": "string"
-                                    },
-                                    "number": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "birthday": {
-                                        "type": "string",
-                                        "format": "date"
-                                    },
-                                    "birthplace": {
-                                        "type": "string"
-                                    },
-                                    "profession": {
-                                        "type": "string"
-                                    },
-                                    "village": {
-                                        "type": "string"
-                                    },
-                                    "street_number": {
-                                        "type": "string"
-                                    },
-                                    "hourse_number": {
-                                        "type": "string"
-                                    },
-                                    "family_number": {
-                                        "type": "integer"
-                                    },
-                                    "fullname_peson": {
-                                        "type": "string"
-                                    },
-                                    "number_person": {
-                                        "type": "string"
-                                    },
-                                    "residence_person": {
-                                        "type": "string"
-                                    },
-                                    "cellule_id": {
-                                        "type": "integer"
-                                    },
-                                    "district_id": {
-                                        "type": "integer"
-                                    },
-                                    "bp": {
-                                        "type": "string"
-                                    },
-                                    "diplome": {
-                                        "type": "string"
-                                    },
-                                    "distinction": {
-                                        "type": "string"
-                                    },
-                                    "maritalstatus_id": {
-                                        "type": "integer"
-                                    },
-                                    "nationality_id": {
-                                        "type": "integer"
-                                    },
-                                    "fullname_father": {
-                                        "type": "string"
-                                    },
-                                    "fullname_mother": {
-                                        "type": "string"
-                                    },
                                     "photo": {
                                         "type": "string",
                                         "format": "binary"
@@ -492,15 +573,20 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Création de compte éffectuée avec succès."
+                        "description": "Photo de profil modifiée avec succès."
                     },
                     "401": {
-                        "description": "Echec de Création de compte."
+                        "description": "Non autorisé."
                     },
                     "404": {
                         "description": "Page introuvable."
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/api/users/auth": {
@@ -575,6 +661,10 @@
         {
             "name": "Password",
             "description": "Password"
+        },
+        {
+            "name": "Register",
+            "description": "Register"
         },
         {
             "name": "Settings",

@@ -16,6 +16,7 @@ Apache 2.4
 ```
 git init
 git remote add origin https://github.com/FabioDesign/rwanda.git
+git branch -M master
 ```
 
 2. Installer Passport
