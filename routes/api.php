@@ -49,7 +49,7 @@ Route::get('settings/region/{lg}/{country_id}', [SettingController::class, 'regi
 Route::get('settings/sector/{lg}/{district_id}', [SettingController::class, 'sector']);
 Route::get('settings/district/{lg}/{province_id}', [SettingController::class, 'district']);
 
-Route::middleware('auth:api')->group( function () {
+Route::middleware(['auth:api'])->group(function () {
     // Route pour les mots de passe
     Route::post('password/editpass', [PasswordController::class, 'editpass']);
     // Route pour la photo de profil

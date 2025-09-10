@@ -46,23 +46,11 @@ class RegisterController extends BaseController
         $otp = random_int(100, 999) . ' ' . random_int(100, 999);
         // Formatage du nom et prénoms
         $email = Str::lower($request->email);
-        if (Checkotp::where('email', $email)->exists()) {
-            // Récupérer les données
-            $user = Checkotp::where([
-                ['email', $email],
-                ['otp', $request->otp],
-            ])
-            ->first();
-            // Vérifier si les données existent
-            if (!$user) {
-                Log::warning("Code OTP erroné : " . $email);
-                return $this->sendError("Code OTP erroné.", [], 404);
-            }
-            // Vérifier si l'OTP a expiré
-            if (!($user->otp_at >= now()->subMinutes(10))) {
-                Log::warning("Code OTP a expiré : " . $email);
-                return $this->sendError("Code OTP a expiré.", [], 404);
-            }
+        // Récupérer les données
+        $checkotp = Checkotp::where('email', $email)->first();
+        if ($checkotp) {
+            // Mettre à jour l'utilisateur avec l'OTP et l'horodatage
+            $checkotp->update(['otp' => str_replace(' ', '', $otp)]);
         } else {
             $set = [
                 'email' => $email,
@@ -71,7 +59,7 @@ class RegisterController extends BaseController
             DB::beginTransaction(); // Démarrer une transaction
             try {
                 // Création de l'utilisateur
-                $user = Checkotp::create($set);
+                Checkotp::create($set);
                 DB::commit(); // Valider la transaction
             } catch(\Exception $e) {
                 Log::warning("Erreur de récupération de l'utilisateur : " . $e->getMessage());
