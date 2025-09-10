@@ -122,8 +122,8 @@ class PasswordController extends BaseController
             ->first();
             // Vérifier si les données existent
             if (!$user) {
-                Log::warning("Code OTP erroné : " . $request->email);
-                return $this->sendError("Code OTP erroné.", [], 404);
+                Log::warning("Email ou Code OTP erroné : " . $request->email);
+                return $this->sendError("Email ou Code OTP erroné.", [], 404);
             }
             // Vérifier si l'OTP a expiré
             if (!($user->otp_at >= now()->subMinutes(10))) {
@@ -146,8 +146,9 @@ class PasswordController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"email", "password", "password_confirmation", "lg"},
+    *         required={"email", "otp", "password", "password_confirmation", "lg"},
     *         @OA\Property(property="email", type="string"),
+    *         @OA\Property(property="otp", type="string"),
     *         @OA\Property(property="password", type="string", format="password"),
     *         @OA\Property(property="password_confirmation", type="string", format="password"),
     *         @OA\Property(property="lg", type="string")
@@ -162,6 +163,7 @@ class PasswordController extends BaseController
         //Validator
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
+            'otp' => 'required|size:6',
             'password' => [
                 'required', 'confirmed',
                 Password::min(8)
@@ -179,7 +181,21 @@ class PasswordController extends BaseController
             return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
         }
         // Récupérer les données
-        $user = User::where('email', $request->email)->first();
+        $user = User::where([
+            ['otp', $request->otp],
+            ['email', $request->email],
+        ])
+        ->first();
+        // Vérifier si les données existent
+        if (!$user) {
+            Log::warning("Email ou Code OTP erroné : " . $request->email);
+            return $this->sendError("Email ou Code OTP erroné.", [], 404);
+        }
+        // Vérifier si l'OTP a expiré
+        if (!($user->otp_at >= now()->subMinutes(10))) {
+            Log::warning("Code OTP a expiré : " . $request->email);
+            return $this->sendError("Code OTP a expiré.", [], 404);
+        }
         try {
             // Mettre à jour du password
             $user->update([
