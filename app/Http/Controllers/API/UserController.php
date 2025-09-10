@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules\Password;
 use App\Models\{Parents, Permission, Profile, User};
-use Illuminate\Support\Facades\{App, Auth, DB, Hash, Log, Validator};
+use Illuminate\Support\Facades\{App, Auth, DB, Log, Validator};
 use App\Http\Controllers\API\BaseController as BaseController;
 
 /**
@@ -81,9 +81,10 @@ class UserController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"login", "password"},
+    *         required={"login", "password", "lg"},
     *         @OA\Property(property="login", type="string"),
-    *         @OA\Property(property="password", type="string")
+    *         @OA\Property(property="password", type="string"),
+    *         @OA\Property(property="lg", type="string")
     *      )
     *   ),
     *   @OA\Response(response=200, description="Authentification éffectuée avec succès."),

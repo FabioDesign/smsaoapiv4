@@ -56,17 +56,23 @@ php artisan migrate
 php artisan db:seed
 ```
 
-9. Exécuter la commande à la fin
+9. Exécuter les commandes de Passport
+```
+php artisan passport:install --force
+php artisan passport:keys --length=512 --force
+```
+
+10. Exécuter la commande à la fin
 ```
 php artisan key:generate
 ```
 
-10. Vérifier si tout est bien installé
+11. Vérifier si tout est bien installé
 ```
 composer dump-autoload
 ```
 
-11. Lien du swagger
+12. Lien du swagger
 ```
 php artisan l5-swagger:generate
 url/api/documentation

@@ -21,8 +21,9 @@ class PasswordController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"email"},
-    *         @OA\Property(property="email", type="string", example="fabio@yopmail.com")
+    *         required={"email", "lg"},
+    *         @OA\Property(property="email", type="string", example="fabio@yopmail.com"),
+    *         @OA\Property(property="lg", type="string")
     *      )
     *   ),
     *   @OA\Response(response=200, description="Vérification de l'email."),
@@ -88,9 +89,10 @@ class PasswordController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"email", "otp"},
+    *         required={"email", "otp", "lg"},
     *         @OA\Property(property="email", type="string"),
-    *         @OA\Property(property="otp", type="string")
+    *         @OA\Property(property="otp", type="string"),
+    *         @OA\Property(property="lg", type="string")
     *      )
     *   ),
     *   @OA\Response(response=200, description="Vérification du Code OTP."),
@@ -144,10 +146,11 @@ class PasswordController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"email", "password", "password_confirmation"},
+    *         required={"email", "password", "password_confirmation", "lg"},
     *         @OA\Property(property="email", type="string"),
     *         @OA\Property(property="password", type="string", format="password"),
     *         @OA\Property(property="password_confirmation", type="string", format="password"),
+    *         @OA\Property(property="lg", type="string")
     *      )
     *   ),
     *   @OA\Response(response=200, description="Mot de passe modifié avec succès."),

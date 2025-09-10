@@ -33,6 +33,7 @@ class User extends Authenticatable
         'village',
         'comment',
         'diplome',
+        'photo_at',
         'login_at',
         'password',
         'lastname',
@@ -45,6 +46,8 @@ class User extends Authenticatable
         'password_at',
         'birthday_at',
         'distinction',
+        'validator_id',
+        'validator_at',
         'number_person',
         'street_number',
         'hourse_number',
@@ -73,8 +76,10 @@ class User extends Authenticatable
     protected $casts = [
         'birthday_at' => 'date',
         'otp_at' => 'datetime',
+        'photo_at' => 'datetime',
         'login_at' => 'datetime',
         'password_at' => 'datetime',
+        'validator_at' => 'datetime',
         'password' => 'hashed',
     ];
 

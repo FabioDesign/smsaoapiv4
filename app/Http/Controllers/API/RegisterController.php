@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Support\Str;
-use App\Models\{Checkotp, User};
+use App\Models\{Checkotp, Parents, User};
 use Illuminate\Http\{Request, JsonResponse};
-use Illuminate\Support\Facades\{App, DB, Log, Validator};
+use Illuminate\Support\Facades\{App, DB, Hash, Log, Validator};
 use App\Http\Controllers\API\BaseController as BaseController;
 
 class RegisterController extends BaseController
@@ -20,8 +20,9 @@ class RegisterController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"email"},
-    *         @OA\Property(property="email", type="string", example="fabio@yopmail.com")
+    *         required={"email", "lg"},
+    *         @OA\Property(property="email", type="string", example="fabio@yopmail.com"),
+    *         @OA\Property(property="lg", type="string")
     *      )
     *   ),
     *   @OA\Response(response=200, description="Renvoyer OTP."),
@@ -104,9 +105,10 @@ class RegisterController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"email", "otp"},
+    *         required={"email", "otp", "lg"},
     *         @OA\Property(property="email", type="string"),
-    *         @OA\Property(property="otp", type="string")
+    *         @OA\Property(property="otp", type="string"),
+    *         @OA\Property(property="lg", type="string")
     *      )
     *   ),
     *   @OA\Response(response=200, description="Validation du Code OTP."),
@@ -270,6 +272,8 @@ class RegisterController extends BaseController
             'district_id' => $request->district_id,
             'nationality_id' => $request->nationality_id,
             'maritalstatus_id' => $request->maritalstatus_id,
+            // 'password_at' => now(),
+            // 'password' => Hash::make($request->password),
         ];
         DB::beginTransaction(); // Démarrer une transaction
         try {
