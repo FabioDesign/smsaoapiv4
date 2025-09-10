@@ -133,7 +133,7 @@ class UserController extends BaseController
                     'firstname' => $user->firstname,
                     'number' => $user->number,
                     'email' => $user->email,
-                    'birthday_at' => Carbon::parse($user->birthday)->format('d/m/Y'),
+                    'birthday_at' => Carbon::parse($user->birthday_at)->format('d/m/Y'),
                     'birthplace' => $user->birthplace,
                     'profile' => $request->lg == 'en' ? $profil->en : $profil->fr,
                     'photo' => env('APP_URL') . '/assets/photos/' . $user->photo,
