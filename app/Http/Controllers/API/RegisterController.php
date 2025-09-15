@@ -260,8 +260,8 @@ class RegisterController extends BaseController
             'district_id' => $request->district_id,
             'nationality_id' => $request->nationality_id,
             'maritalstatus_id' => $request->maritalstatus_id,
-            'password_at' => now(),
-            'password' => Hash::make($request->password),
+            // 'password_at' => now(),
+            // 'password' => Hash::make($request->password),
         ];
         DB::beginTransaction(); // Démarrer une transaction
         try {
