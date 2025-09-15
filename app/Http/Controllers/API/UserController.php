@@ -66,7 +66,7 @@ class UserController extends BaseController
             ];
             User::findOrFail($user->id)->update($set);
             return $this->sendSuccess('Photo de profil modifiée avec succès.', [], 201);
-        }catch(\Exception $e) {
+        } catch(\Exception $e) {
             Log::warning("Photo::store - Erreur de modification de la photo de profil : " . $e->getMessage());
             return $this->sendError("Erreur de modification de la photo de profil");
         }

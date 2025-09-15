@@ -26,13 +26,13 @@ return new class extends Migration
             $table->string('profession', 255);
             $table->string('village', 255);
             $table->string('street_number', 255);
-            $table->string('hourse_number', 255);
+            $table->string('house_number', 255);
             $table->string('family_number', 255);
             $table->string('register_number', 255)->nullable();
             $table->string('bp', 255)->nullable();
             $table->string('diplome', 255)->nullable();
             $table->text('distinction')->nullable();
-            $table->string('fullname_peson', 255);
+            $table->string('fullname_person', 255);
             $table->string('number_person', 255);
             $table->string('residence_person', 255);
             $table->string('photo', 255);
