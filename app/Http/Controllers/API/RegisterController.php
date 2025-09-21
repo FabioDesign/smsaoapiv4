@@ -193,7 +193,7 @@ class RegisterController extends BaseController
         //Validator
         $validator = Validator::make($request->all(), [
             'lg' => 'required',
-            'g-recaptcha-response' => 'required',
+            'g_recaptcha_response' => 'required',
             'lastname' => 'required',
             'firstname' => 'required',
             'gender' => 'required|in:M,F',
@@ -227,7 +227,7 @@ class RegisterController extends BaseController
         $data = [
             'remoteip' => $request->ip(),
             'secret' => env('RECAPTCHAV3_SECRET'),
-            'response' => $_POST['g-recaptcha-response'],
+            'response' => $_POST['g_recaptcha_response'],
         ];
         $options = [
             'http' => [
