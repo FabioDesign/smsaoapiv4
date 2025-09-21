@@ -11,10 +11,10 @@ class Profile extends Model
     use HasFactory;
 
     protected $fillable = [
-        'uid',
-        'status',
         'en',
         'fr',
+        'uid',
+        'status',
         'deleted_at',
         'created_user',
         'updated_user',

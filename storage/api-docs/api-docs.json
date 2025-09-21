@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API RWANDA",
+        "title": "API DOCUMENT RWANDA",
         "version": "1.0"
     },
     "paths": {
@@ -204,6 +204,210 @@
                 ]
             }
         },
+        "/api/profiles": {
+            "get": {
+                "tags": [
+                    "Profiles"
+                ],
+                "description": "Liste des profils",
+                "operationId": "listProfile",
+                "responses": {
+                    "200": {
+                        "description": "Liste des profils."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Profiles"
+                ],
+                "description": "Enregistrement d'un profil",
+                "operationId": "storeProfile",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "libelle",
+                                    "permissions"
+                                ],
+                                "properties": {
+                                    "libelle": {
+                                        "type": "string",
+                                        "example": "Dashboard"
+                                    },
+                                    "description": {
+                                        "type": "text",
+                                        "example": "Tableau de bord"
+                                    },
+                                    "permissions": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "menu_id": {
+                                                    "type": "integer"
+                                                },
+                                                "action_id": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object",
+                                            "example": "[1|2, 3|4]"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profil enregisté avec succès."
+                    },
+                    "400": {
+                        "description": "Erreur de validation."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/profiles/{uid}": {
+            "get": {
+                "tags": [
+                    "Profiles"
+                ],
+                "description": "Détail d'un profil",
+                "operationId": "showProfile",
+                "responses": {
+                    "200": {
+                        "description": "Détail d'un profil."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/profiles/{id}": {
+            "put": {
+                "tags": [
+                    "Profiles"
+                ],
+                "description": "Modification d'un profil",
+                "operationId": "editProfile",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "libelle",
+                                    "permissions",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "libelle": {
+                                        "type": "string",
+                                        "example": "Dashboard"
+                                    },
+                                    "description": {
+                                        "type": "text",
+                                        "example": "Tableau de bord"
+                                    },
+                                    "status": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "permissions": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "menu_id": {
+                                                    "type": "integer"
+                                                },
+                                                "action_id": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object",
+                                            "example": "[1|2, 3|4]"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profil modifié avec succès."
+                    },
+                    "400": {
+                        "description": "Erreur de validation."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Profiles"
+                ],
+                "description": "Suppression d'un profil",
+                "operationId": "deleteProfile",
+                "responses": {
+                    "200": {
+                        "description": "Menu supprimé avec succès."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/register/sendotp": {
             "post": {
                 "tags": [
@@ -324,7 +528,7 @@
                                     "residence_person",
                                     "cellule_id",
                                     "maritalstatus_id",
-                                    "district_id",
+                                    "town_id",
                                     "fullname_father",
                                     "fullname_mother",
                                     "photo"
@@ -382,7 +586,7 @@
                                     "cellule_id": {
                                         "type": "integer"
                                     },
-                                    "district_id": {
+                                    "town_id": {
                                         "type": "integer"
                                     },
                                     "bp": {
@@ -569,6 +773,200 @@
                 }
             }
         },
+        "/api/users?num=1&limit=10&status=0": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Liste des Utilisateurs",
+                "operationId": "listUser",
+                "responses": {
+                    "200": {
+                        "description": "Liste des Utilisateurs."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{uid}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Détail d'Utilisateur",
+                "operationId": "showUser",
+                "responses": {
+                    "200": {
+                        "description": "Détail d'Utilisateur."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Modification d'un Utilisateur",
+                "operationId": "editUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "lastname",
+                                    "firstname",
+                                    "gender",
+                                    "number",
+                                    "email",
+                                    "birthday",
+                                    "birthplace",
+                                    "profession",
+                                    "village",
+                                    "street_number",
+                                    "house_number",
+                                    "family_number",
+                                    "fullname_person",
+                                    "number_person",
+                                    "residence_person",
+                                    "cellule_id",
+                                    "maritalstatus_id",
+                                    "town_id",
+                                    "fullname_father",
+                                    "fullname_mother",
+                                    "status",
+                                    "profile_id"
+                                ],
+                                "properties": {
+                                    "lastname": {
+                                        "type": "string"
+                                    },
+                                    "firstname": {
+                                        "type": "string"
+                                    },
+                                    "gender": {
+                                        "type": "string"
+                                    },
+                                    "number": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "birthday": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "birthplace": {
+                                        "type": "string"
+                                    },
+                                    "profession": {
+                                        "type": "string"
+                                    },
+                                    "village": {
+                                        "type": "string"
+                                    },
+                                    "street_number": {
+                                        "type": "string"
+                                    },
+                                    "house_number": {
+                                        "type": "string"
+                                    },
+                                    "family_number": {
+                                        "type": "integer"
+                                    },
+                                    "register_number": {
+                                        "type": "integer"
+                                    },
+                                    "fullname_person": {
+                                        "type": "string"
+                                    },
+                                    "number_person": {
+                                        "type": "string"
+                                    },
+                                    "residence_person": {
+                                        "type": "string"
+                                    },
+                                    "cellule_id": {
+                                        "type": "integer"
+                                    },
+                                    "town_id": {
+                                        "type": "integer"
+                                    },
+                                    "bp": {
+                                        "type": "string"
+                                    },
+                                    "diplome": {
+                                        "type": "string"
+                                    },
+                                    "distinction": {
+                                        "type": "string"
+                                    },
+                                    "maritalstatus_id": {
+                                        "type": "integer"
+                                    },
+                                    "nationality_id": {
+                                        "type": "integer"
+                                    },
+                                    "fullname_father": {
+                                        "type": "string"
+                                    },
+                                    "fullname_mother": {
+                                        "type": "string"
+                                    },
+                                    "comment": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "integer"
+                                    },
+                                    "profile_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Utilisateur modifié avec succès."
+                    },
+                    "400": {
+                        "description": "Erreur de validation."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/users/photo": {
             "post": {
                 "tags": [
@@ -689,6 +1087,10 @@
         {
             "name": "Password",
             "description": "Password"
+        },
+        {
+            "name": "Profiles",
+            "description": "Profiles"
         },
         {
             "name": "Register",

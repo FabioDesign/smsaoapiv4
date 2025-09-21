@@ -43,17 +43,21 @@ Route::post('password/addpass', [PasswordController::class, 'addpass']);
 // Route pour les paramètres
 Route::get('settings/country/{lg}', [SettingController::class, 'country']);
 Route::get('settings/province/{lg}', [SettingController::class, 'province']);
-Route::get('settings/nationality/{lg}', [SettingController::class, 'nationality']);
+Route::get('settings/town/{lg}/{region_id}', [SettingController::class, 'town']);
 Route::get('settings/cells/{lg}/{sector_id}', [SettingController::class, 'cells']);
+Route::get('settings/nationality/{lg}', [SettingController::class, 'nationality']);
 Route::get('settings/region/{lg}/{country_id}', [SettingController::class, 'region']);
 Route::get('settings/sector/{lg}/{district_id}', [SettingController::class, 'sector']);
 Route::get('settings/district/{lg}/{province_id}', [SettingController::class, 'district']);
 
 Route::middleware(['auth:api'])->group(function () {
-    // Route pour les mots de passe
-    Route::post('password/editpass', [PasswordController::class, 'editpass']);
-    // Route pour la photo de profil
-    Route::post('users/photo', [UserController::class, 'photo']);
-    // Route pour la deconnexion
-    Route::post('users/logout', [UserController::class, 'logout']);
+  Route::resources([
+    'users' => UserController::class,
+  ]);
+  // Route pour les mots de passe
+  Route::post('password/editpass', [PasswordController::class, 'editpass']);
+  // Route pour la photo de profil
+  Route::post('users/photo', [UserController::class, 'photo']);
+  // Route pour la deconnexion
+  Route::post('users/logout', [UserController::class, 'logout']);
 });

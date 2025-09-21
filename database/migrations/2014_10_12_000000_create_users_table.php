@@ -32,6 +32,8 @@ return new class extends Migration
             $table->string('bp', 255)->nullable();
             $table->string('diplome', 255)->nullable();
             $table->text('distinction')->nullable();
+            $table->string('fullname_father', 255);
+            $table->string('fullname_mother', 255);
             $table->string('fullname_person', 255);
             $table->string('number_person', 255);
             $table->string('residence_person', 255);
@@ -44,13 +46,14 @@ return new class extends Migration
             $table->timestamp('login_at')->nullable();
             $table->tinyinteger('status')->default('0');
             $table->timestamps();
-            $table->timestamp('validator_at')->nullable();
-            $table->integer('validator_id')->default('0');
-            $table->integer('user_id')->default('0');
+            $table->timestamp('activated_at')->nullable();
+            $table->timestamp('blocked_at')->nullable();
+            $table->integer('activated_id')->default('0');
+            $table->integer('blocked_id')->default('0');
             $table->integer('profile_id')->default('0');
             $table->integer('maritalstatus_id');
             $table->integer('cellule_id');
-            $table->integer('district_id');
+            $table->integer('town_id');
             $table->integer('nationality_id')->default('0');
         });
     }

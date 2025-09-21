@@ -7,6 +7,9 @@ use PHPMailer\PHPMailer\Exception;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller as Controller;
 
+/**
+ * @OA\Info(title="API DOCUMENT RWANDA", version="1.0")
+ */
 class BaseController extends Controller
 {
   /**

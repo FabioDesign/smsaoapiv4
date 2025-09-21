@@ -21,8 +21,6 @@ class DatabaseSeeder extends Seeder
                 ProfileSeeder::class,
                 // Permission
                 PermissionSeeder::class,
-                // Type de Parents
-                TypeParentSeeder::class,
                 // Pièces à fournir
                 RequestdocSeeder::class,
                 // Situation matrimoniale
