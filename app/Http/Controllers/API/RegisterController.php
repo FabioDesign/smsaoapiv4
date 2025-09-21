@@ -211,9 +211,9 @@ class RegisterController extends BaseController
             'fullname_father' => 'required',
             'fullname_mother' => 'required',
             'residence_person' => 'required',
-            'maritalstatus_id' => 'required|min:1',
-            'cellule_id' => 'required|min:1',
-            'town_id' => 'required|min:1',
+            'maritalstatus_id' => 'required|integer|min:1',
+            'cellule_id' => 'required|integer|min:1',
+            'town_id' => 'required|integer|min:1',
 			'photo' => 'required|file|mimes:png,jpeg,jpg|max:2048',
         ]);
 		App::setLocale($request->lg);
