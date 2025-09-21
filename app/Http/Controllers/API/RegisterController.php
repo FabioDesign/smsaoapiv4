@@ -332,7 +332,7 @@ class RegisterController extends BaseController
                 return $this->sendError("Erreur enregistrement de l'utilisateur");
             }
         } else {
-            Log::warning("User::store - Recaptcha : " . json_encode($data));
+            Log::warning("User::store - Recaptcha : " . json_encode($resultJson));
             return $this->sendError("Recaptcha erroné, veuillez réessayer svp.");
         }
     }
