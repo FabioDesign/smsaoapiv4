@@ -193,6 +193,7 @@ class RegisterController extends BaseController
         //Validator
         $validator = Validator::make($request->all(), [
             'lg' => 'required',
+            'g-recaptcha-response' => 'required',
             'lastname' => 'required',
             'firstname' => 'required',
             'gender' => 'required|in:M,F',
@@ -238,7 +239,7 @@ class RegisterController extends BaseController
         $context = stream_context_create($options);
         $result = file_get_contents($url, false, $context);
         $resultJson = json_decode($result);
-        if($resultJson->success == true){
+        if ($resultJson->success == true) {
             // Upload photo
             $dir = 'assets/photos';
             $image = $request->file('photo');
@@ -279,8 +280,8 @@ class RegisterController extends BaseController
                 'town_id' => $request->town_id,
                 'nationality_id' => $request->nationality_id,
                 'maritalstatus_id' => $request->maritalstatus_id,
-                'password_at' => now(),
-                'password' => Hash::make($request->password),
+                // 'password_at' => now(),
+                // 'password' => Hash::make($request->password),
             ];
             DB::beginTransaction(); // Démarrer une transaction
             try {
@@ -330,7 +331,7 @@ class RegisterController extends BaseController
                 Log::warning("User::store - Erreur enregistrement de l'utilisateur : " . $e->getMessage() . " " . json_encode($set));
                 return $this->sendError("Erreur enregistrement de l'utilisateur");
             }
-        }else{
+        } else {
             Log::warning("User::store - Recaptcha : " . json_encode($data));
             return $this->sendError("Recaptcha erroné, veuillez réessayer svp.");
         }
