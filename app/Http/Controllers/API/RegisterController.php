@@ -223,6 +223,7 @@ class RegisterController extends BaseController
             return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
         }
         // Paramètre de Recapcha
+        /*
         $url = 'https://www.google.com/recaptcha/api/siteverify';
         $data = [
             'remoteip' => $request->ip(),
@@ -240,6 +241,7 @@ class RegisterController extends BaseController
         $result = file_get_contents($url, false, $context);
         $resultJson = json_decode($result);
         if ($resultJson->success == true) {
+        */
             // Upload photo
             $dir = 'assets/photos';
             $image = $request->file('photo');
@@ -331,9 +333,11 @@ class RegisterController extends BaseController
                 Log::warning("User::store - Erreur enregistrement de l'utilisateur : " . $e->getMessage() . " " . json_encode($set));
                 return $this->sendError("Erreur enregistrement de l'utilisateur");
             }
+        /*
         } else {
             Log::warning("User::store - Recaptcha : " . json_encode($data));
             return $this->sendError("Recaptcha erroné, veuillez réessayer svp.");
         }
+        */
     }
 }
