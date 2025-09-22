@@ -205,8 +205,8 @@ class UserController extends BaseController
             'lastname' => 'required',
             'firstname' => 'required',
             'gender' => 'required|in:M,F',
-            'number' => 'unique:users,number,'.$uid.',uid',
-            'email' => 'unique:users,email,'.$uid.',uid',
+            'number' => 'required|unique:users,number,'.$uid.',uid',
+            'email' => 'required|unique:users,email,'.$uid.',uid',
             'birthday' => 'required|date_format:Y-m-d',
             'birthplace' => 'required',
             'profession' => 'required',
@@ -257,11 +257,13 @@ class UserController extends BaseController
             'street_number' => $request->street_number,
             'house_number' => $request->house_number,
             'family_number' => $request->family_number,
+            'register_number' => $request->register_number,
             'fullname_person' => $request->fullname_person,
             'number_person' => $request->number_person,
             'fullname_father' => $request->fullname_father,
             'fullname_mother' => $request->fullname_mother,
             'residence_person' => $request->residence_person,
+            'comment' => $request->comment,
             'maritalstatus_id' => $request->maritalstatus_id,
             'cellule_id' => $request->cellule_id,
             'town_id' => $request->town_id,
@@ -321,6 +323,121 @@ class UserController extends BaseController
             DB::rollBack(); // Annuler la transaction en cas d'erreur
             Log::warning("User::update - Erreur lors de la modification de l'utilisateur : " . $e->getMessage() . " " . json_encode($set));
             return $this->sendError("Erreur lors de la modification de l'utilisateur");
+        }
+	}
+    //Modification
+    /**
+    * @OA\Post(
+    *   path="/api/users/profil",
+    *   tags={"Users"},
+    *   operationId="profilUser",
+    *   description="Modification du profil utilisateur",
+    *   security={{"bearer":{}}},
+    *   @OA\RequestBody(
+    *      required=true,
+    *      @OA\JsonContent(
+    *              required={"lastname", "firstname", "gender", "number", "email", "birthday", "birthplace", "profession", "village", "street_number", "house_number", "family_number", "fullname_person", "number_person", "residence_person", "cellule_id", "maritalstatus_id", "town_id", "fullname_father", "fullname_mother"},
+    *             @OA\Property(property="lastname", type="string"),
+    *             @OA\Property(property="firstname", type="string"),
+    *             @OA\Property(property="gender", type="string"),
+    *             @OA\Property(property="number", type="string"),
+    *             @OA\Property(property="email", type="string"),
+    *             @OA\Property(property="birthday", type="date"),
+    *             @OA\Property(property="birthplace", type="string"),
+    *             @OA\Property(property="profession", type="string"),
+    *             @OA\Property(property="village", type="string"),
+    *             @OA\Property(property="street_number", type="string"),
+    *             @OA\Property(property="house_number", type="string"),
+    *             @OA\Property(property="family_number", type="integer"),
+    *             @OA\Property(property="fullname_person", type="string"),
+    *             @OA\Property(property="number_person", type="string"),
+    *             @OA\Property(property="residence_person", type="string"),
+    *             @OA\Property(property="cellule_id", type="integer"),
+    *             @OA\Property(property="town_id", type="integer"),
+    *             @OA\Property(property="bp", type="string"),
+    *             @OA\Property(property="diplome", type="string"),
+    *             @OA\Property(property="distinction", type="string"),
+    *             @OA\Property(property="maritalstatus_id", type="integer"),
+    *             @OA\Property(property="nationality_id", type="integer"),
+    *             @OA\Property(property="fullname_father", type="string"),
+    *             @OA\Property(property="fullname_mother", type="string"),
+    *      )
+    *   ),
+    *   @OA\Response(response=200, description="Profil utilisateur modifié avec succès."),
+    *   @OA\Response(response=400, description="Erreur de validation."),
+    *   @OA\Response(response=404, description="Page introuvable.")
+    * )
+    */
+    public function profil(Request $request): JsonResponse {
+        //User
+        $user = Auth::user();
+        //Data
+        Log::notice("User::profil - ID User : {$user->id} - Requête : " . json_encode($request->all()));
+        //Validator
+        $validator = Validator::make($request->all(), [
+            'lastname' => 'required',
+            'firstname' => 'required',
+            'gender' => 'required|in:M,F',
+            'number' => 'required|unique:users,number,'.$user->id,
+            'email' => 'required|unique:users,email,'.$user->id,
+            'birthday' => 'required|date_format:Y-m-d',
+            'birthplace' => 'required',
+            'profession' => 'required',
+            'village' => 'required',
+            'street_number' => 'required',
+            'house_number' => 'required',
+            'family_number' => 'required',
+            'fullname_person' => 'required',
+            'number_person' => 'required',
+            'fullname_father' => 'required',
+            'fullname_mother' => 'required',
+            'residence_person' => 'required',
+            'maritalstatus_id' => 'required|min:1',
+            'cellule_id' => 'required|min:1',
+            'town_id' => 'required|min:1',
+        ]);
+        //Error field
+        if ($validator->fails()) {
+            Log::warning("User::profil - Validator : " . json_encode($request->all()));
+            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
+        }
+        // Formatage du nom et prénoms
+        $email = Str::lower($request->email);
+        $lastname = mb_strtoupper($request->lastname, 'UTF-8');
+        $firstname = mb_convert_case(Str::lower($request->firstname), MB_CASE_TITLE, "UTF-8");
+        // Formatage des données
+        $set = [
+            'lastname' => $lastname,
+            'firstname' => $firstname,
+            'gender' => $request->gender,
+            'number' => $request->number,
+            'email' => $email,
+            'birthday' => $request->birthday,
+            'birthplace' => $request->birthplace,
+            'profession' => $request->profession,
+            'village' => $request->village,
+            'street_number' => $request->street_number,
+            'house_number' => $request->house_number,
+            'family_number' => $request->family_number,
+            'fullname_person' => $request->fullname_person,
+            'number_person' => $request->number_person,
+            'fullname_father' => $request->fullname_father,
+            'fullname_mother' => $request->fullname_mother,
+            'residence_person' => $request->residence_person,
+            'maritalstatus_id' => $request->maritalstatus_id,
+            'cellule_id' => $request->cellule_id,
+            'town_id' => $request->town_id,
+        ];
+        DB::beginTransaction(); // Démarrer une transaction
+        try {
+            // Création de l'utilisateur
+            User::findOrFail($user->id)->update($set);
+            DB::commit(); // Valider la transaction
+            return $this->sendSuccess('Profil utilisateur modifié avec succès.', $set, 201);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Annuler la transaction en cas d'erreur
+            Log::warning("User::profil - Erreur lors de la modification de Profil utilisateur : " . $e->getMessage() . " " . json_encode($set));
+            return $this->sendError("Erreur lors de la modification de Profil utilisateur");
         }
 	}
     //Photo de profil
