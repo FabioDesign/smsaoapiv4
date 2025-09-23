@@ -54,12 +54,12 @@ Route::middleware(['auth:api'])->group(function () {
   Route::resources([
     'users' => UserController::class,
   ]);
-  // Route pour les mots de passe
-  Route::post('password/editpass', [PasswordController::class, 'editpass']);
   // Route pour la modification du profil utilisateur
   Route::post('users/profil', [UserController::class, 'profil']);
   // Route pour la photo de profil
   Route::post('users/photo', [UserController::class, 'photo']);
   // Route pour la deconnexion
   Route::post('users/logout', [UserController::class, 'logout']);
+  // Route pour les mots de passe
+  Route::post('password/editpass', [PasswordController::class, 'editpass']);
 });

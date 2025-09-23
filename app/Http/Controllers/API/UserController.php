@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\{App, Auth, DB, Log, Validator};
-use App\Models\{District, Permission, Profile, Province, User};
+use App\Models\{Cells, Country, District, MaritalStatus, Nationality, Permission, Profile, Province, Sector, User};
 use App\Http\Controllers\API\BaseController as BaseController;
 
 class UserController extends BaseController
@@ -91,19 +91,35 @@ class UserController extends BaseController
 		App::setLocale($user->lg);
         try {
             // Récupérer les données
-            $query = User::where('uid', $uid)
-            ->join('cells', 'cells.id','=','users.cellule_id')
-            ->join('sectors', 'sectors.id','=','cells.sector_id')
-            ->join('districts', 'districts.id','=','sectors.district_id')
-            ->first();
+            $query = User::where('uid', $uid)->first();
             if (!$query) {
                 Log::warning("User::show - Aucun utilisateur trouvé pour l'ID : " . $uid);
                 return $this->sendError("Aucune donnée trouvée.", [], 404);
             }
-            // ID de la région
-            $region = District::where('id', $query->town_id)->first();
-            // ID du pays
-            $province = Province::where('id', $region->id)->first();
+            // Cellules
+            $cells = Cells::where('id', $query->cellule_id)->first();
+            // Sectors
+            $sector = Sector::where('id', $cells->sector_id)->first();
+            // Districts
+            $district = District::where('id', $sector->district_id)->first();
+            // Provinces
+            $province = Province::select('id', $user->lg . ' as label')
+            ->where('id', $district->province_id)
+            ->first();
+            // Villes
+            $towns = District::where('id', $query->town_id)->first();
+            // Régions
+            $region = Province::select('id', $user->lg . ' as label', 'country_id')
+            ->where('id', $towns->province_id)
+            ->first();
+            // Pays
+            $country = Country::select('id', $user->lg . ' as label')
+            ->where('id', $region->country_id)
+            ->first();
+            // Situation matrimoniale
+            $maritalstatus = MaritalStatus::select('id', $user->lg . ' as label')
+            ->where('id', $query->maritalstatus_id)
+            ->first();
             $data = [
                 'lastname' => $query->lastname,
                 'firstname' => $query->firstname,
@@ -127,20 +143,68 @@ class UserController extends BaseController
                 'number_person' => $query->number_person,
                 'residence_person' => $query->residence_person,
                 'comment' => $query->comment,
-                'status' => $query->status,
+                'status' => match((int)$query->status) {
+                    0 => 'Inactif',
+                    1 => 'Actif',
+                    2 => 'Bloqué'
+                },
                 'created_at' => Carbon::parse($query->created_at)->format('d/m/Y H:i'),
-                'profile_id' => $query->profile_id,
-                'cellule_id' => $query->cellule_id,
-                'sector_id' => $query->sector_id,
-                'district_id' => $query->district_id,
-                'province_id' => $query->province_id,
-                'town_id' => $query->town_id,
-                'region_id' => $region->province_id,
-                'country_id' => $province->country_id,
-                'nationality_id' => $query->nationality_id,
-                'maritalstatus_id' => $query->maritalstatus_id,
                 'photo' => env('APP_URL') . '/assets/photos/' . $query->photo,
+                'cells' => [
+                    'id' => $cells->id,
+                    'label' => $cells->label,
+                ],
+                'sectors' => [
+                    'id' => $sector->id,
+                    'label' => $sector->label,
+                ],
+                'districts' => [
+                    'id' => $district->id,
+                    'label' => $district->label,
+                ],
+                'provinces' => [
+                    'id' => $province->id,
+                    'label' => $province->label,
+                ],
+                'towns' => [
+                    'id' => $towns->id,
+                    'label' => $towns->label,
+                ],
+                'regions' => [
+                    'id' => $region->id,
+                    'label' => $region->label,
+                ],
+                'country' => [
+                    'id' => $country->id,
+                    'label' => $country->label,
+                ],
+                'maritalstatus' => [
+                    'id' => $maritalstatus->id,
+                    'label' => $maritalstatus->label,
+                ],
             ];
+            // Nationalité
+            $data['nationality'] = '';
+            if ($query->nationality_id != 0) {
+                $nationality = Nationality::select('id', $user->lg . ' as label')
+                ->where('id', $query->nationality_id)
+                ->first();
+                $data['nationality'] = [
+                    'id' => $nationality->id,
+                    'label' => $nationality->label,
+                ];
+            }
+            // Profile
+            $data['profile'] = '';
+            if ($query->profile_id != 0) {
+                $profile = Profile::select('id', $user->lg . ' as label')
+                ->where('id', $query->profile_id)
+                ->first();
+                $data['profile'] = [
+                    'id' => $profile->id,
+                    'label' => $profile->label,
+                ];
+            }
             return $this->sendSuccess('Détail sur un Utilisateur.', $data);
         } catch(\Exception $e) {
             Log::warning("User::show - Erreur d'affichage de l'utilisateur : ".$e->getMessage());
