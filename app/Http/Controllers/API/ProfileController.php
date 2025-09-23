@@ -30,7 +30,7 @@ class ProfileController extends BaseController
 		App::setLocale($user->lg);
         try {
             // Code to list profiles
-            $query = Profile::select('uid', $user->lg . ' as label', $user->lg . ' as description', 'status', 'created_at')
+            $query = Profile::select('uid', $user->lg . ' as label', 'description_' . $user->lg . ' as description', 'status', 'created_at')
             ->orderByDesc('created_at')
             ->get();
             // Vérifier si les données existent
@@ -65,13 +65,13 @@ class ProfileController extends BaseController
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
-    public function show($id): JsonResponse {
+    public function show($uid): JsonResponse {
         //User
         $user = Auth::user();
         // Vérifier si l'ID est présent et valide
-        $profile = Profile::find($id);
+        $profile = Profile::where('uid', $uid)->first();
         if (!$profile) {
-            Log::warning("Profile::show - Aucun profil trouvé pour l'ID : " . $id);
+            Log::warning("Profile::show - Aucun profil trouvé pour l'ID : " . $uid);
             return $this->sendError("Aucune donnée trouvée.", [], 404);
         }
         try {

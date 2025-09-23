@@ -113,7 +113,7 @@ class UserController extends BaseController
             ->where('id', $towns->province_id)
             ->first();
             // Pays
-            $country = Country::select('id', $user->lg . ' as label')
+            $country = Country::select('id', $user->lg . ' as label', 'alpha')
             ->where('id', $region->country_id)
             ->first();
             // Situation matrimoniale
@@ -174,9 +174,10 @@ class UserController extends BaseController
                     'id' => $region->id,
                     'label' => $region->label,
                 ],
-                'country' => [
+                'countries' => [
                     'id' => $country->id,
                     'label' => $country->label,
+                    'alpha' => $country->alpha,
                 ],
                 'maritalstatus' => [
                     'id' => $maritalstatus->id,
