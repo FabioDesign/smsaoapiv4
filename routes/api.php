@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\{
     PasswordController,
+    ProfileController,
     RegisterController,
     SettingController,
     UserController,
@@ -53,6 +54,7 @@ Route::get('settings/district/{lg}/{province_id}', [SettingController::class, 'd
 Route::middleware(['auth:api'])->group(function () {
   Route::resources([
     'users' => UserController::class,
+    'profiles' => ProfileController::class,
   ]);
   // Route pour la modification du profil utilisateur
   Route::post('users/profil', [UserController::class, 'profil']);

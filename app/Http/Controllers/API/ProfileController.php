@@ -6,7 +6,7 @@ use \Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\{Permission, Profile, User};
 use Illuminate\Http\{Request, JsonResponse};
-use Illuminate\Support\Facades\{DB, Validator, Log, Auth};
+use Illuminate\Support\Facades\{App, DB, Validator, Log, Auth};
 use App\Http\Controllers\API\BaseController as BaseController;
 
 class ProfileController extends BaseController
@@ -68,8 +68,11 @@ class ProfileController extends BaseController
     public function show($uid): JsonResponse {
         //User
         $user = Auth::user();
+		App::setLocale($user->lg);
         // Vérifier si l'ID est présent et valide
-        $profile = Profile::where('uid', $uid)->first();
+        $profile = Profile::select('id', $user->lg . ' as label', 'description_' . $user->lg . ' as description', 'status')
+        ->where('uid', $uid)
+        ->first();
         if (!$profile) {
             Log::warning("Profile::show - Aucun profil trouvé pour l'ID : " . $uid);
             return $this->sendError("Aucune donnée trouvée.", [], 404);
@@ -84,10 +87,13 @@ class ProfileController extends BaseController
             ->values()
             ->all();
             // Retourner les détails du profil avec les permissions
-            return $this->sendSuccess('Détails sur le profil : ' . $profile->libelle, [
-                'libelle' => $profile->libelle,
+            return $this->sendSuccess('Détails sur le profil', [
+                'label' => $profile->label,
                 'description' => $profile->description,
-                'status' => $profile->status,
+                'status' => match((int)$profile->status) {
+                    0 => 'Désactivé',
+                    1 => 'Activé'
+                },
                 'permissions' => $permissions,
             ]);
         } catch(\Exception $e) {
@@ -106,9 +112,11 @@ class ProfileController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"libelle", "permissions"},
-    *         @OA\Property(property="libelle", type="string", example="Dashboard"),
-    *         @OA\Property(property="description", type="text", example="Tableau de bord"),
+    *         required={"en", "fr", "permissions"},
+    *         @OA\Property(property="en", type="string", example="Dashboard"),
+    *         @OA\Property(property="fr", type="string", example="Tableau de bord"),
+    *         @OA\Property(property="description_en", type="text", example="Dashboard"),
+    *         @OA\Property(property="description_fr", type="text", example="Tableau de bord"),
     *         @OA\Property(property="permissions", type="array", @OA\Items(
     *               @OA\Property(property="menu_id", type="integer"),
     *               @OA\Property(property="action_id", type="integer"),
@@ -125,40 +133,36 @@ class ProfileController extends BaseController
     public function store(Request $request): JsonResponse {
         //User
         $user = Auth::user();
+		App::setLocale($user->lg);
         //Data
         Log::notice("Profile::store - ID User : {$user->id} - Requête : " . json_encode($request->all()));
         //Validator
         $validator = Validator::make($request->all(), [
-            'libelle' => 'required|string|max:255|unique:profiles,libelle',
-            'description' => 'string',
+            'en' => 'required|string|max:255|unique:profiles,en',
+            'fr' => 'required|string|max:255|unique:profiles,fr',
+            'description_en' => 'present',
+            'description_fr' => 'present',
             'permissions' => 'required|array',
-        ], [
-            'libelle.required' => "Libellé obligatoire.",
-            'libelle.unique' => "Libellé déjà utilisé.",
-            'libelle.string' => "Libellé doit être une chaîne de caractères.",
-            'libelle.max' => "Libellé ne doit pas dépasser 255 caractères.",
-            'description.string' => "Description chaine de caractère.",
-            'permissions.required' => "Permissions obligatoire.",
-            'permissions.array' => "Permissions doivent être un tableau.",
         ]);
         //Error field
         if($validator->fails()){
             Log::warning("Profile::store - Validator : " . json_encode($request->all()));
-            return $this->sendError($validator->errors()->first());
+            return $this->sendError('Champs invalides.', $validator->errors(), 422);
         }
         // Création de la reclamation
         $set = [
             'status' => 1,
-            'user_id' => $user->id,
-            'libelle' => $request->libelle,
-            'description' => $request->description ?? '',
+            'en' => $request->en,
+            'fr' => $request->fr,
+            'created_user' => $user->id,
+            'description_en' => $request->description_en ?? '',
+            'description_fr' => $request->description_fr ?? '',
         ];
         DB::beginTransaction(); // Démarrer une transaction
         try {
             $profil = Profile::create($set);
             // Valider la transaction
             DB::commit();
-            Log::info("Profile::store - Profil enregistré avec succès : " . json_encode($set));
             // Si des permissions sont fournies, les associer au profil
             if ($request->has('permissions') && is_array($request->permissions)) {
                 foreach ($request->permissions as $permissions) {
@@ -171,7 +175,12 @@ class ProfileController extends BaseController
                     ]);
                 }
             }
-            return $this->sendSuccess("Profil enregistré avec succès.", [], 201);
+            return $this->sendSuccess("Profil enregistré avec succès.", [
+                'en' => $request->en,
+                'fr' => $request->fr,
+                'description_en' => $request->description_en,
+                'description_fr' => $request->description_fr,
+            ], 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Annuler la transaction en cas d'erreur
             Log::warning("Profile::store : " . $e->getMessage() . " " . json_encode($set));
@@ -181,7 +190,7 @@ class ProfileController extends BaseController
     // Modification
     /**
     * @OA\Put(
-    *   path="/api/profiles/{id}",
+    *   path="/api/profiles/{uid}",
     *   tags={"Profiles"},
     *   operationId="editProfile",
     *   description="Modification d'un profil",
@@ -189,9 +198,11 @@ class ProfileController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"libelle", "permissions", "status"},
-    *         @OA\Property(property="libelle", type="string", example="Dashboard"),
-    *         @OA\Property(property="description", type="text", example="Tableau de bord"),
+    *         required={"en", "fr", "permissions", "status"},
+    *         @OA\Property(property="en", type="string", example="Dashboard"),
+    *         @OA\Property(property="fr", type="string", example="Tableau de bord"),
+    *         @OA\Property(property="description_en", type="text", example="Dashboard"),
+    *         @OA\Property(property="description_fr", type="text", example="Tableau de bord"),
     *         @OA\Property(property="status", type="integer", example=1),
     *         @OA\Property(property="permissions", type="array", @OA\Items(
     *               @OA\Property(property="menu_id", type="integer"),
@@ -206,55 +217,50 @@ class ProfileController extends BaseController
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
-    public function update(request $request, $id): JsonResponse {
+    public function update(request $request, $uid): JsonResponse {
         //User
         $user = Auth::user();
+		App::setLocale($user->lg);
         //Data
         Log::notice("Profile::update - ID User : {$user->id} - Requête : " . json_encode($request->all()));
         //Validator
         $validator = Validator::make($request->all(), [
-            'libelle' => 'required|string|max:255|unique:profiles,libelle,' . $id,
-            'description' => 'string',
+            'en' => 'required|string|max:255|unique:profiles,en,' . $uid,
+            'fr' => 'required|string|max:255|unique:profiles,fr,' . $uid,
+            'description_en' => 'present',
+            'description_fr' => 'present',
             'status' => 'required|integer|in:0,1',
             'permissions' => 'required|array',
-        ], [
-            'libelle.required' => "Libellé obligatoire.",
-            'libelle.unique' => "Libellé déjà utilisé.",
-            'libelle.string' => "Libellé doit être une chaîne de caractères.",
-            'libelle.max' => "Libellé ne doit pas dépasser 255 caractères.",
-            'description.string' => "Description chaine de caractère.",
-            'status.*' => "Statut obligatoire.",
-            'permissions.required' => "Permissions obligatoire.",
-            'permissions.array' => "Permissions doivent être un tableau.",
         ]);
         //Error field
         if($validator->fails()){
             Log::warning("Profile::update - Validator : " . json_encode($request->all()));
-            return $this->sendError($validator->errors()->first());
+            return $this->sendError('Champs invalides.', $validator->errors(), 422);
         }
         // Vérifier si l'ID est présent et valide
-        $query = Profile::find($id);
+        $query = Profile::where('uid', $uid)->first();
         if (!$query) {
-            Log::warning("Profile::update - Aucun profil trouvé pour l'ID : " . $id);
+            Log::warning("Profile::update - Aucun profil trouvé pour l'ID : " . $uid);
             return $this->sendError("Aucune donnée trouvée.", [], 404);
         }
         // Création de la reclamation
         $set = [
-            'user_id' => $user->id,
+            'en' => $request->en,
+            'fr' => $request->fr,
+            'updated_user' => $user->id,
             'status' => $request->status,
-            'libelle' => $request->libelle,
-            'description' => $request->description ?? '',
+            'description_en' => $request->description_en ?? '',
+            'description_fr' => $request->description_fr ?? '',
         ];
         DB::beginTransaction(); // Démarrer une transaction
         try {
             $query->update($set);
             // Valider la transaction
             DB::commit();
-            Log::info("Profile::update - Profil enregistré avec succès : " . json_encode($set));
             // Si des permissions sont fournies, les associer au profil
             if ($request->has('permissions') && is_array($request->permissions)) {
                 // Supprimer les permissions existantes pour ce profil
-                Permission::where('profile_id', $id)->delete();
+                Permission::where('profile_id', $query->id)->delete();
                 // Parcourir les permissions fournies
                 foreach ($request->permissions as $permissions) {
                     $permission = Str::of($permissions)->explode('|');
@@ -262,11 +268,16 @@ class ProfileController extends BaseController
                     Permission::create([
                         'menu_id' => $permission[0],
                         'action_id' => $permission[1],
-                        'profile_id' => $id,
+                        'profile_id' => $query->id,
                     ]);
                 }
             }
-            return $this->sendSuccess("Profil modifié avec succès.", [], 201);
+            return $this->sendSuccess("Profil modifié avec succès.", [
+                'en' => $request->en,
+                'fr' => $request->fr,
+                'description_en' => $request->description_en,
+                'description_fr' => $request->description_fr,
+            ], 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Annuler la transaction en cas d'erreur
             Log::warning("Profile::update : " . $e->getMessage() . " " . json_encode($set));
@@ -276,7 +287,7 @@ class ProfileController extends BaseController
     // Suppression d'un profil
     /**
     *   @OA\Delete(
-    *   path="/api/profiles/{id}",
+    *   path="/api/profiles/{uid}",
     *   tags={"Profiles"},
     *   operationId="deleteProfile",
     *   description="Suppression d'un profil",
@@ -289,6 +300,7 @@ class ProfileController extends BaseController
     public function destroy($id): JsonResponse {
         //User
         $user = Auth::user();
+		App::setLocale($user->lg);
         //Data
         Log::notice("Profile::destroy - ID User : {$user->id} - Requête : " . $id);
         try {
@@ -303,7 +315,7 @@ class ProfileController extends BaseController
                 Log::warning("Profile::destroy - Tentative de suppression d'un profil inexistante : " . $id);
                 return $this->sendError("Profile introuvable.", [], 403);
             }
-            Log::info("Profile::destroy - Profil supprimé : " . $id);
+            Permission::where('profile_id', $id)->delete();
             return $this->sendSuccess("Profile supprimé avec succès.");
         } catch(\Exception $e) {
             Log::warning("Profile::destroy - Erreur lors de la suppression d'un profil : " . $e->getMessage());

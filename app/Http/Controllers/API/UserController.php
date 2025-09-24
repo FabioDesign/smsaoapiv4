@@ -293,7 +293,7 @@ class UserController extends BaseController
         //Error field
         if ($validator->fails()) {
             Log::warning("User::update - Validator : " . json_encode($request->all()));
-            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
+            return $this->sendError('Champs invalides.', $validator->errors(), 422);
         }
         // Vérifier si l'ID est présent et valide
         $query = User::where('uid', $uid)->first();
