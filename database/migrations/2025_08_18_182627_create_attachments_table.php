@@ -18,7 +18,7 @@ return new class extends Migration
             $table->tinyinteger('status')->default('1');
             $table->timestamps();
             $table->integer('user_id');
-            $table->integer('fichier_id');
+            $table->integer('file_id');
             $table->integer('demande_id');
         });
     }

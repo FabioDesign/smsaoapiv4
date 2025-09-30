@@ -70,7 +70,7 @@ class ProfileController extends BaseController
         $user = Auth::user();
 		App::setLocale($user->lg);
         // Vérifier si l'ID est présent et valide
-        $profile = Profile::select('id', $user->lg . ' as label', 'description_' . $user->lg . ' as description', 'status')
+        $profile = Profile::select($user->lg . ' as label', 'description_' . $user->lg . ' as description', 'status')
         ->where('uid', $uid)
         ->first();
         if (!$profile) {
@@ -90,10 +90,7 @@ class ProfileController extends BaseController
             return $this->sendSuccess('Détails sur le profil', [
                 'label' => $profile->label,
                 'description' => $profile->description,
-                'status' => match((int)$profile->status) {
-                    0 => 'Désactivé',
-                    1 => 'Activé'
-                },
+                'status' => $profile->status ? 'Activé' : 'Désactivé',
                 'permissions' => $permissions,
             ]);
         } catch(\Exception $e) {
@@ -120,7 +117,7 @@ class ProfileController extends BaseController
     *         @OA\Property(property="permissions", type="array", @OA\Items(
     *               @OA\Property(property="menu_id", type="integer"),
     *               @OA\Property(property="action_id", type="integer"),
-    *               example="[1|2, 3|4]"
+    *               example="[1|1, 1|2, 1|3]"
     *           )
     *         ),
     *      )
@@ -160,7 +157,7 @@ class ProfileController extends BaseController
         ];
         DB::beginTransaction(); // Démarrer une transaction
         try {
-            $profil = Profile::create($set);
+            $profile = Profile::create($set);
             // Valider la transaction
             DB::commit();
             // Si des permissions sont fournies, les associer au profil
@@ -171,7 +168,7 @@ class ProfileController extends BaseController
                     Permission::create([
                         'menu_id' => $permission[0],
                         'action_id' => $permission[1],
-                        'profile_id' => $profil->id,
+                        'profile_id' => $profile->id,
                     ]);
                 }
             }
@@ -207,7 +204,7 @@ class ProfileController extends BaseController
     *         @OA\Property(property="permissions", type="array", @OA\Items(
     *               @OA\Property(property="menu_id", type="integer"),
     *               @OA\Property(property="action_id", type="integer"),
-    *               example="[1|2, 3|4]"
+    *               example="[1|1, 1|2, 1|3]"
     *           )
     *         )
     *      )
@@ -238,8 +235,8 @@ class ProfileController extends BaseController
             return $this->sendError('Champs invalides.', $validator->errors(), 422);
         }
         // Vérifier si l'ID est présent et valide
-        $query = Profile::where('uid', $uid)->first();
-        if (!$query) {
+        $profile = Profile::where('uid', $uid)->first();
+        if (!$profile) {
             Log::warning("Profile::update - Aucun profil trouvé pour l'ID : " . $uid);
             return $this->sendError("Aucune donnée trouvée.", [], 404);
         }
@@ -254,13 +251,13 @@ class ProfileController extends BaseController
         ];
         DB::beginTransaction(); // Démarrer une transaction
         try {
-            $query->update($set);
+            $profile->update($set);
             // Valider la transaction
             DB::commit();
             // Si des permissions sont fournies, les associer au profil
             if ($request->has('permissions') && is_array($request->permissions)) {
                 // Supprimer les permissions existantes pour ce profil
-                Permission::where('profile_id', $query->id)->delete();
+                Permission::where('profile_id', $profile->id)->delete();
                 // Parcourir les permissions fournies
                 foreach ($request->permissions as $permissions) {
                     $permission = Str::of($permissions)->explode('|');
@@ -268,7 +265,7 @@ class ProfileController extends BaseController
                     Permission::create([
                         'menu_id' => $permission[0],
                         'action_id' => $permission[1],
-                        'profile_id' => $query->id,
+                        'profile_id' => $profile->id,
                     ]);
                 }
             }
@@ -292,31 +289,32 @@ class ProfileController extends BaseController
     *   operationId="deleteProfile",
     *   description="Suppression d'un profil",
     *   security={{"bearer":{}}},
-    *   @OA\Response(response=200, description="Menu supprimé avec succès."),
+    *   @OA\Response(response=200, description="Profil supprimé avec succès."),
     *   @OA\Response(response=401, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
-    public function destroy($id): JsonResponse {
+    public function destroy($uid): JsonResponse {
         //User
         $user = Auth::user();
 		App::setLocale($user->lg);
         //Data
-        Log::notice("Profile::destroy - ID User : {$user->id} - Requête : " . $id);
+        Log::notice("Profile::destroy - ID User : {$user->id} - Requête : " . $uid);
         try {
             // Vérification des dépendances en utilisant exists() pour une meilleure performance
-            if (User::where('profile_id', $id)->exists()) {
-                Log::warning("Profile::destroy - Tentative de suppression d'un profil avec des permissions associées : " . $id);
+            $user = User::where('profiles.uid', $uid)->join('profiles', 'profiles.id','=','users.profile_id')->first();
+            if ($user) {
+                Log::warning("Profile::destroy - Tentative de suppression d'un profil avec des permissions associées : " . $uid);
                 return $this->sendError("Impossible de supprimer le profil.", [], 403);
             }
             //Suppression
-            $deleted = Profile::destroy($id);
+            $deleted = Profile::destroy($user->profile_id);
             if (!$deleted) {
-                Log::warning("Profile::destroy - Tentative de suppression d'un profil inexistante : " . $id);
-                return $this->sendError("Profile introuvable.", [], 403);
+                Log::warning("Profile::destroy - Tentative de suppression d'un profil inexistante : " . $uid);
+                return $this->sendError("Profil introuvable.", [], 403);
             }
-            Permission::where('profile_id', $id)->delete();
-            return $this->sendSuccess("Profile supprimé avec succès.");
+            Permission::where('profile_id', $user->profile_id)->delete();
+            return $this->sendSuccess("Profil supprimé avec succès.");
         } catch(\Exception $e) {
             Log::warning("Profile::destroy - Erreur lors de la suppression d'un profil : " . $e->getMessage());
             return $this->sendError("Erreur lors de la suppression d'un profil.");

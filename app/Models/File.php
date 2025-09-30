@@ -6,19 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Profile extends Model
+class File extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'en',
-        'fr',
         'uid',
         'status',
-        'created_user',
-        'updated_user',
-        'description_en',
-        'description_fr',
+        'required',
+        'document_id',
+        'requestdoc_id',
     ];
 
     protected static function boot()
@@ -30,10 +27,5 @@ class Profile extends Model
                 $model->uid = Str::uuid()->toString();
             }
         });
-    }
-
-    public function permissions()
-    {
-        return $this->hasMany(Permission::class);
     }
 }

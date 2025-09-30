@@ -240,15 +240,24 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "libelle",
+                                    "en",
+                                    "fr",
                                     "permissions"
                                 ],
                                 "properties": {
-                                    "libelle": {
+                                    "en": {
                                         "type": "string",
                                         "example": "Dashboard"
                                     },
-                                    "description": {
+                                    "fr": {
+                                        "type": "string",
+                                        "example": "Tableau de bord"
+                                    },
+                                    "description_en": {
+                                        "type": "text",
+                                        "example": "Dashboard"
+                                    },
+                                    "description_fr": {
                                         "type": "text",
                                         "example": "Tableau de bord"
                                     },
@@ -314,9 +323,7 @@
                         "bearer": []
                     }
                 ]
-            }
-        },
-        "/api/profiles/{id}": {
+            },
             "put": {
                 "tags": [
                     "Profiles"
@@ -329,16 +336,25 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "libelle",
+                                    "en",
+                                    "fr",
                                     "permissions",
                                     "status"
                                 ],
                                 "properties": {
-                                    "libelle": {
+                                    "en": {
                                         "type": "string",
                                         "example": "Dashboard"
                                     },
-                                    "description": {
+                                    "fr": {
+                                        "type": "string",
+                                        "example": "Tableau de bord"
+                                    },
+                                    "description_en": {
+                                        "type": "text",
+                                        "example": "Dashboard"
+                                    },
+                                    "description_fr": {
                                         "type": "text",
                                         "example": "Tableau de bord"
                                     },
@@ -952,6 +968,138 @@
                 "responses": {
                     "200": {
                         "description": "Utilisateur modifié avec succès."
+                    },
+                    "400": {
+                        "description": "Erreur de validation."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/users/profil": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Modification du profil utilisateur",
+                "operationId": "profilUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "lastname",
+                                    "firstname",
+                                    "gender",
+                                    "number",
+                                    "email",
+                                    "birthday",
+                                    "birthplace",
+                                    "profession",
+                                    "village",
+                                    "street_number",
+                                    "house_number",
+                                    "family_number",
+                                    "fullname_person",
+                                    "number_person",
+                                    "residence_person",
+                                    "cellule_id",
+                                    "maritalstatus_id",
+                                    "town_id",
+                                    "fullname_father",
+                                    "fullname_mother"
+                                ],
+                                "properties": {
+                                    "lastname": {
+                                        "type": "string"
+                                    },
+                                    "firstname": {
+                                        "type": "string"
+                                    },
+                                    "gender": {
+                                        "type": "string"
+                                    },
+                                    "number": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "birthday": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "birthplace": {
+                                        "type": "string"
+                                    },
+                                    "profession": {
+                                        "type": "string"
+                                    },
+                                    "village": {
+                                        "type": "string"
+                                    },
+                                    "street_number": {
+                                        "type": "string"
+                                    },
+                                    "house_number": {
+                                        "type": "string"
+                                    },
+                                    "family_number": {
+                                        "type": "integer"
+                                    },
+                                    "fullname_person": {
+                                        "type": "string"
+                                    },
+                                    "number_person": {
+                                        "type": "string"
+                                    },
+                                    "residence_person": {
+                                        "type": "string"
+                                    },
+                                    "cellule_id": {
+                                        "type": "integer"
+                                    },
+                                    "town_id": {
+                                        "type": "integer"
+                                    },
+                                    "bp": {
+                                        "type": "string"
+                                    },
+                                    "diplome": {
+                                        "type": "string"
+                                    },
+                                    "distinction": {
+                                        "type": "string"
+                                    },
+                                    "maritalstatus_id": {
+                                        "type": "integer"
+                                    },
+                                    "nationality_id": {
+                                        "type": "integer"
+                                    },
+                                    "fullname_father": {
+                                        "type": "string"
+                                    },
+                                    "fullname_mother": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profil utilisateur modifié avec succès."
                     },
                     "400": {
                         "description": "Erreur de validation."

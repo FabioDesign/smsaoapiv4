@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Profile extends Model
+class Document extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,11 @@ class Profile extends Model
         'en',
         'fr',
         'uid',
+        'code',
         'status',
+        'amount',
+        'user_id',
+        'deadline',
         'created_user',
         'updated_user',
         'description_en',
@@ -32,8 +36,8 @@ class Profile extends Model
         });
     }
 
-    public function permissions()
+    public function files()
     {
-        return $this->hasMany(Permission::class);
+        return $this->hasMany(File::class, 'document_id');
     }
 }

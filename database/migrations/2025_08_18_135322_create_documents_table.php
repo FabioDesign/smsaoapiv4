@@ -14,16 +14,17 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->uuid('uid')->unique();
-            $table->string('code', 2)->unique();
+            $table->string('code', 5)->unique();
             $table->string('en', 255);
             $table->string('fr', 255);
-            $table->string('amount', 50);
-            $table->string('deadline', 255);
+            $table->string('amount', 50)->nullable();
+            $table->string('deadline', 255)->nullable();
             $table->text('description_en');
             $table->text('description_fr');
             $table->tinyinteger('status');
             $table->timestamps();
-            $table->integer('user_id');
+            $table->integer('created_user');
+            $table->integer('updated_user')->default('0');
         });
     }
 

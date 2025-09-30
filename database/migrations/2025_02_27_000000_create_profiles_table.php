@@ -20,10 +20,8 @@ return new class extends Migration
             $table->text('description_fr')->nullable();
             $table->tinyInteger('status')->default('1');
             $table->timestamps();
-            $table->timestamp('deleted_at')->nullable();
-            $table->integer('created_user')->nullable();
-            $table->integer('updated_user')->nullable();
-            $table->integer('deleted_user')->nullable();
+            $table->integer('created_user');
+            $table->integer('updated_user')->default('0');
         });
     }
 
