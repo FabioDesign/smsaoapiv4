@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use \Carbon\Carbon;
 use Illuminate\Support\Str;
-use App\Models\{Fichier, Requestdoc};
+use App\Models\{File, Requestdoc};
 use Illuminate\Http\{Request, JsonResponse};
 use Illuminate\Support\Facades\{App, DB, Validator, Log, Auth};
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -99,8 +99,8 @@ class RequestdocController extends BaseController
     *      required=true,
     *      @OA\JsonContent(
     *         required={"en", "fr"},
-    *         @OA\Property(property="en", type="string", example="Passport"),
-    *         @OA\Property(property="fr", type="string", example="Passport"),
+    *         @OA\Property(property="en", type="string"),
+    *         @OA\Property(property="fr", type="string"),
     *      )
     *   ),
     *   @OA\Response(response=200, description="Pièce jointe enregistée avec succès."),
@@ -129,7 +129,7 @@ class RequestdocController extends BaseController
             'status' => 1,
             'en' => $request->en,
             'fr' => $request->fr,
-            'user_id' => $user->id,
+            'created_user' => $user->id,
         ];
         DB::beginTransaction(); // Démarrer une transaction
         try {
@@ -158,9 +158,9 @@ class RequestdocController extends BaseController
     *      required=true,
     *      @OA\JsonContent(
     *         required={"en", "fr", "status"},
-    *         @OA\Property(property="en", type="string", example="Passport"),
-    *         @OA\Property(property="fr", type="string", example="Passport"),
-    *         @OA\Property(property="status", type="integer", example=1),
+    *         @OA\Property(property="en", type="string"),
+    *         @OA\Property(property="fr", type="string"),
+    *         @OA\Property(property="status", type="integer"),
     *      )
     *   ),
     *   @OA\Response(response=200, description="Pièce jointe modifiée avec succès."),
@@ -195,7 +195,7 @@ class RequestdocController extends BaseController
         $set = [
             'en' => $request->en,
             'fr' => $request->fr,
-            'user_id' => $user->id,
+            'updated_user' => $user->id,
             'status' => $request->status,
         ];
         DB::beginTransaction(); // Démarrer une transaction
@@ -233,18 +233,22 @@ class RequestdocController extends BaseController
         //Data
         Log::notice("Requestdoc::destroy - ID User : {$user->id} - Requête : " . $uid);
         try {
-            // Vérification des dépendances en utilisant exists() pour une meilleure performance
-            $query = Fichier::where('uid', $uid)->join('requestdocs', 'requestdocs.id','=','fichiers.requestdoc_id')->first();
-            if ($query) {
-                Log::warning("Requestdoc::destroy - Tentative de suppression d'une pièce jointe : " . $uid);
-                return $this->sendError("Impossible de supprimer la pièce jointe.", [], 403);
+            // Vérification si la pièce jointe est attribué à un document
+            $requestdoc = Requestdoc::select('requestdocs.id', 'requestdoc_id')
+            ->where('requestdocs.uid', $uid)
+            ->leftJoin('files', 'files.requestdoc_id','=','requestdocs.id')
+            ->first();
+            if ($requestdoc->requestdoc_id != null) {
+                Log::warning("Requestdoc::destroy - Tentative de suppression d'une pièce jointe déjà attribuée à un document : " . $uid);
+                return $this->sendError("Pièce jointe est déjà attribuée à un document.", [], 403);
             }
-            //Suppression
-            $deleted = Requestdoc::destroy($query->requestdoc_id);
+            // Suppression
+            $deleted = Requestdoc::destroy($requestdoc->id);
             if (!$deleted) {
                 Log::warning("Requestdoc::destroy - Tentative de suppression d'une pièce jointe inexistante : " . $uid);
-                return $this->sendError("Pièce jointe introuvable.", [], 403);
+                return $this->sendError("Impossible de supprimer la pièce jointe.", [], 403);
             }
+            File::where('requestdoc_id', $requestdoc->id)->delete();
             return $this->sendSuccess("Pièce jointe supprimée avec succès.");
         } catch(\Exception $e) {
             Log::warning("Requestdoc::destroy - Erreur lors de la suppression d'une pièce jointe : " . $e->getMessage());

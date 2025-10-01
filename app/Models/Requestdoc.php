@@ -16,11 +16,12 @@ class Requestdoc extends Model
      * @var array
      */
     protected $fillable = [
-        'uid',
-        'status',
-        'user_id',
         'en',
         'fr',
+        'uid',
+        'status',
+        'created_user',
+        'updated_user',
     ];
 
     protected static function boot()
