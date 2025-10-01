@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_id')->constrained()->onDelete('cascade');
-            $table->foreignId('action_id')->constrained()->onDelete('cascade');
-            $table->foreignId('profile_id')->constrained()->onDelete('cascade');
+            $table->integer('menu_id');
+            $table->integer('action_id');
+            $table->integer('profile_id');
+            $table->unique(['menu_id', 'action_id', 'profile_id']);
         });
     }
 

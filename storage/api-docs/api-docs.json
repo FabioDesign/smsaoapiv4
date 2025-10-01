@@ -5,6 +5,241 @@
         "version": "1.0"
     },
     "paths": {
+        "/api/documents": {
+            "get": {
+                "tags": [
+                    "Documents"
+                ],
+                "description": "Liste des documents",
+                "operationId": "listDocs",
+                "responses": {
+                    "200": {
+                        "description": "Liste des documents."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Documents"
+                ],
+                "description": "Enregistrement d'un document",
+                "operationId": "storeDocs",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code",
+                                    "en",
+                                    "fr",
+                                    "description_en",
+                                    "description_fr",
+                                    "files"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "en": {
+                                        "type": "string"
+                                    },
+                                    "fr": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "string"
+                                    },
+                                    "deadline": {
+                                        "type": "string"
+                                    },
+                                    "description_en": {
+                                        "type": "text"
+                                    },
+                                    "description_fr": {
+                                        "type": "text"
+                                    },
+                                    "files": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "requestdoc_id": {
+                                                    "type": "integer"
+                                                },
+                                                "required": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object",
+                                            "example": "[1|1, 2|1, 3|0]"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Document enregisté avec succès."
+                    },
+                    "400": {
+                        "description": "Erreur de validation."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/documents/{uid}": {
+            "get": {
+                "tags": [
+                    "Documents"
+                ],
+                "description": "Détail d'un document",
+                "operationId": "showDocs",
+                "responses": {
+                    "200": {
+                        "description": "Détail d'un document."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Documents"
+                ],
+                "description": "Modification d'un document",
+                "operationId": "editDocs",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code",
+                                    "en",
+                                    "fr",
+                                    "description_en",
+                                    "description_fr",
+                                    "files",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "en": {
+                                        "type": "string"
+                                    },
+                                    "fr": {
+                                        "type": "string"
+                                    },
+                                    "amount": {
+                                        "type": "string"
+                                    },
+                                    "deadline": {
+                                        "type": "string"
+                                    },
+                                    "description_en": {
+                                        "type": "text"
+                                    },
+                                    "description_fr": {
+                                        "type": "text"
+                                    },
+                                    "status": {
+                                        "type": "integer"
+                                    },
+                                    "files": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "requestdoc_id": {
+                                                    "type": "integer"
+                                                },
+                                                "required": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object",
+                                            "example": "[1|1, 2|1, 3|0]"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Document modifié avec succès."
+                    },
+                    "400": {
+                        "description": "Erreur de validation."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Documents"
+                ],
+                "description": "Suppression d'un document",
+                "operationId": "deleteDocs",
+                "responses": {
+                    "200": {
+                        "description": "Document supprimé avec succès."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/password/verifemail": {
             "post": {
                 "tags": [
@@ -246,20 +481,16 @@
                                 ],
                                 "properties": {
                                     "en": {
-                                        "type": "string",
-                                        "example": "Dashboard"
+                                        "type": "string"
                                     },
                                     "fr": {
-                                        "type": "string",
-                                        "example": "Tableau de bord"
+                                        "type": "string"
                                     },
                                     "description_en": {
-                                        "type": "text",
-                                        "example": "Dashboard"
+                                        "type": "text"
                                     },
                                     "description_fr": {
-                                        "type": "text",
-                                        "example": "Tableau de bord"
+                                        "type": "text"
                                     },
                                     "permissions": {
                                         "type": "array",
@@ -273,7 +504,7 @@
                                                 }
                                             },
                                             "type": "object",
-                                            "example": "[1|2, 3|4]"
+                                            "example": "[1|1, 1|2, 1|3]"
                                         }
                                     }
                                 },
@@ -343,24 +574,19 @@
                                 ],
                                 "properties": {
                                     "en": {
-                                        "type": "string",
-                                        "example": "Dashboard"
+                                        "type": "string"
                                     },
                                     "fr": {
-                                        "type": "string",
-                                        "example": "Tableau de bord"
+                                        "type": "string"
                                     },
                                     "description_en": {
-                                        "type": "text",
-                                        "example": "Dashboard"
+                                        "type": "text"
                                     },
                                     "description_fr": {
-                                        "type": "text",
-                                        "example": "Tableau de bord"
+                                        "type": "text"
                                     },
                                     "status": {
-                                        "type": "integer",
-                                        "example": 1
+                                        "type": "integer"
                                     },
                                     "permissions": {
                                         "type": "array",
@@ -374,7 +600,7 @@
                                                 }
                                             },
                                             "type": "object",
-                                            "example": "[1|2, 3|4]"
+                                            "example": "[1|1, 1|2, 1|3]"
                                         }
                                     }
                                 },
@@ -408,7 +634,7 @@
                 "operationId": "deleteProfile",
                 "responses": {
                     "200": {
-                        "description": "Menu supprimé avec succès."
+                        "description": "Profil supprimé avec succès."
                     },
                     "401": {
                         "description": "Aucune donnée trouvée."
@@ -647,6 +873,178 @@
                         "description": "Page introuvable."
                     }
                 }
+            }
+        },
+        "/api/requestdoc": {
+            "get": {
+                "tags": [
+                    "Requestdoc"
+                ],
+                "description": "Liste des pièces jointes",
+                "operationId": "listRequestdoc",
+                "responses": {
+                    "200": {
+                        "description": "Liste des pièces jointes."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Requestdoc"
+                ],
+                "description": "Enregistrement d'une pièce jointe",
+                "operationId": "storeRequestdoc",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "en",
+                                    "fr"
+                                ],
+                                "properties": {
+                                    "en": {
+                                        "type": "string",
+                                        "example": "Passport"
+                                    },
+                                    "fr": {
+                                        "type": "string",
+                                        "example": "Passport"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pièce jointe enregistée avec succès."
+                    },
+                    "400": {
+                        "description": "Erreur de validation."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/requestdoc/{uid}": {
+            "get": {
+                "tags": [
+                    "Requestdoc"
+                ],
+                "description": "Détail d'une pièce jointe",
+                "operationId": "showRequestdoc",
+                "responses": {
+                    "200": {
+                        "description": "Détail d'une pièce jointe."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Requestdoc"
+                ],
+                "description": "Modification d'une pièce jointe",
+                "operationId": "editRequestdoc",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "en",
+                                    "fr",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "en": {
+                                        "type": "string",
+                                        "example": "Passport"
+                                    },
+                                    "fr": {
+                                        "type": "string",
+                                        "example": "Passport"
+                                    },
+                                    "status": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pièce jointe modifiée avec succès."
+                    },
+                    "400": {
+                        "description": "Erreur de validation."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Requestdoc"
+                ],
+                "description": "Suppression d'une pièce jointe",
+                "operationId": "deleteRequestdoc",
+                "responses": {
+                    "200": {
+                        "description": "Pièce jointe supprimée avec succès."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
             }
         },
         "/api/settings/nationality/{lg}": {
@@ -1233,6 +1631,10 @@
     },
     "tags": [
         {
+            "name": "Documents",
+            "description": "Documents"
+        },
+        {
             "name": "Password",
             "description": "Password"
         },
@@ -1243,6 +1645,10 @@
         {
             "name": "Register",
             "description": "Register"
+        },
+        {
+            "name": "Requestdoc",
+            "description": "Requestdoc"
         },
         {
             "name": "Settings",

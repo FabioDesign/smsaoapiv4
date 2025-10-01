@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use \Carbon\Carbon;
 use Illuminate\Support\Str;
-use App\Models\{Permission, Profile, User};
+use App\Models\{Permission, Profile};
 use Illuminate\Http\{Request, JsonResponse};
 use Illuminate\Support\Facades\{App, DB, Validator, Log, Auth};
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -46,7 +46,7 @@ class ProfileController extends BaseController
                 'status' => $data->status ? 'Activé':'Désactivé',
                 'date' => Carbon::parse($data->created_at)->format('d/m/Y H:i'),
             ]);
-            return $this->sendSuccess("Liste des profils récupérée avec succès.", $data);
+            return $this->sendSuccess("Liste des profils.", $data);
         } catch (\Exception $e) {
             Log::warning("Profile::index - Erreur lors de la récupération des profils: " . $e->getMessage());
             return $this->sendError("Erreur lors de la récupération des profils.");
@@ -70,7 +70,7 @@ class ProfileController extends BaseController
         $user = Auth::user();
 		App::setLocale($user->lg);
         // Vérifier si l'ID est présent et valide
-        $profile = Profile::select($user->lg . ' as label', 'description_' . $user->lg . ' as description', 'status')
+        $profile = Profile::select('id', $user->lg . ' as label', 'description_' . $user->lg . ' as description', 'status')
         ->where('uid', $uid)
         ->first();
         if (!$profile) {
@@ -110,10 +110,10 @@ class ProfileController extends BaseController
     *      required=true,
     *      @OA\JsonContent(
     *         required={"en", "fr", "permissions"},
-    *         @OA\Property(property="en", type="string", example="Dashboard"),
-    *         @OA\Property(property="fr", type="string", example="Tableau de bord"),
-    *         @OA\Property(property="description_en", type="text", example="Dashboard"),
-    *         @OA\Property(property="description_fr", type="text", example="Tableau de bord"),
+    *         @OA\Property(property="en", type="string"),
+    *         @OA\Property(property="fr", type="string"),
+    *         @OA\Property(property="description_en", type="text"),
+    *         @OA\Property(property="description_fr", type="text"),
     *         @OA\Property(property="permissions", type="array", @OA\Items(
     *               @OA\Property(property="menu_id", type="integer"),
     *               @OA\Property(property="action_id", type="integer"),
@@ -165,7 +165,7 @@ class ProfileController extends BaseController
                 foreach ($request->permissions as $permissions) {
                     $permission = Str::of($permissions)->explode('|');
                     // Enregistrer la permission
-                    Permission::create([
+                    Permission::firstOrCreate([
                         'menu_id' => $permission[0],
                         'action_id' => $permission[1],
                         'profile_id' => $profile->id,
@@ -196,11 +196,11 @@ class ProfileController extends BaseController
     *      required=true,
     *      @OA\JsonContent(
     *         required={"en", "fr", "permissions", "status"},
-    *         @OA\Property(property="en", type="string", example="Dashboard"),
-    *         @OA\Property(property="fr", type="string", example="Tableau de bord"),
-    *         @OA\Property(property="description_en", type="text", example="Dashboard"),
-    *         @OA\Property(property="description_fr", type="text", example="Tableau de bord"),
-    *         @OA\Property(property="status", type="integer", example=1),
+    *         @OA\Property(property="en", type="string"),
+    *         @OA\Property(property="fr", type="string"),
+    *         @OA\Property(property="description_en", type="text"),
+    *         @OA\Property(property="description_fr", type="text"),
+    *         @OA\Property(property="status", type="integer"),
     *         @OA\Property(property="permissions", type="array", @OA\Items(
     *               @OA\Property(property="menu_id", type="integer"),
     *               @OA\Property(property="action_id", type="integer"),
@@ -262,7 +262,7 @@ class ProfileController extends BaseController
                 foreach ($request->permissions as $permissions) {
                     $permission = Str::of($permissions)->explode('|');
                     // Enregistrer la permission
-                    Permission::create([
+                    Permission::firstOrCreate([
                         'menu_id' => $permission[0],
                         'action_id' => $permission[1],
                         'profile_id' => $profile->id,
@@ -295,25 +295,28 @@ class ProfileController extends BaseController
     * )
     */
     public function destroy($uid): JsonResponse {
-        //User
+        // User
         $user = Auth::user();
 		App::setLocale($user->lg);
-        //Data
+        // Data
         Log::notice("Profile::destroy - ID User : {$user->id} - Requête : " . $uid);
         try {
-            // Vérification des dépendances en utilisant exists() pour une meilleure performance
-            $user = User::where('profiles.uid', $uid)->join('profiles', 'profiles.id','=','users.profile_id')->first();
-            if ($user) {
-                Log::warning("Profile::destroy - Tentative de suppression d'un profil avec des permissions associées : " . $uid);
-                return $this->sendError("Impossible de supprimer le profil.", [], 403);
+            // Vérification si le profil est attribué à un utilisateur
+            $profile = Profile::select('profiles.id', 'profile_id')
+            ->where('profiles.uid', $uid)
+            ->leftJoin('users', 'users.profile_id','=','profiles.id')
+            ->first();
+            if ($profile->profile_id != null) {
+                Log::warning("Profile::destroy - Tentative de suppression d'un profil déjà attribué à un utilisateur : " . $uid);
+                return $this->sendError("Profil déjà attribué à un utilisateur.", [], 403);
             }
-            //Suppression
-            $deleted = Profile::destroy($user->profile_id);
+            // Suppression
+            $deleted = Profile::destroy($profile->id);
             if (!$deleted) {
                 Log::warning("Profile::destroy - Tentative de suppression d'un profil inexistante : " . $uid);
-                return $this->sendError("Profil introuvable.", [], 403);
+                return $this->sendError("Impossible de supprimer le profil.", [], 403);
             }
-            Permission::where('profile_id', $user->profile_id)->delete();
+            Permission::where('profile_id', $profile->id)->delete();
             return $this->sendSuccess("Profil supprimé avec succès.");
         } catch(\Exception $e) {
             Log::warning("Profile::destroy - Erreur lors de la suppression d'un profil : " . $e->getMessage());

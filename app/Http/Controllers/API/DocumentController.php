@@ -49,7 +49,7 @@ class DocumentController extends BaseController
                 'status' => $data->status ? 'Activé':'Désactivé',
                 'date' => Carbon::parse($data->created_at)->format('d/m/Y H:i'),
             ]);
-            return $this->sendSuccess("Liste des documents récupérée avec succès.", $data);
+            return $this->sendSuccess("Liste des documents.", $data);
         } catch (\Exception $e) {
             Log::warning("Document::index - Erreur lors de la récupération des documents: " . $e->getMessage());
             return $this->sendError("Erreur lors de la récupération des documents.");
@@ -73,7 +73,7 @@ class DocumentController extends BaseController
         $user = Auth::user();
 		App::setLocale($user->lg);
         // Vérifier si l'ID est présent et valide
-        $document = Document::select('code', $user->lg . ' as label', 'amount', 'deadline', 'description_' . $user->lg . ' as description', 'status')
+        $document = Document::select('id', 'code', $user->lg . ' as label', 'amount', 'deadline', 'description_' . $user->lg . ' as description', 'status')
         ->where('uid', $uid)
         ->first();
         if (!$document) {
@@ -84,7 +84,7 @@ class DocumentController extends BaseController
             // Charger les files avec eager loading et les transformer directement
             $files = $document->files
             ->join('requestdocs', 'requestdocs.id','=','files.requestdoc_id')
-            ->sortBy(['files.uid', $user->lg . ' as label', 'files.status', 'required'])
+            ->sortBy(['files.uid', $user->lg . ' as label', 'required', 'files.status'])
             ->map(function ($file) {
                 return [
                     'uid' => $file->uid,
@@ -122,13 +122,13 @@ class DocumentController extends BaseController
     *      required=true,
     *      @OA\JsonContent(
     *         required={"code", "en", "fr", "description_en", "description_fr", "files"},
-    *         @OA\Property(property="code", type="string", example="PP"),
-    *         @OA\Property(property="en", type="string", example="Passport"),
-    *         @OA\Property(property="fr", type="string", example="Passport"),
-    *         @OA\Property(property="amount", type="string", example="1000"),
-    *         @OA\Property(property="deadline", type="string", example="2 jours"),
-    *         @OA\Property(property="description_en", type="text", example="Passport"),
-    *         @OA\Property(property="description_fr", type="text", example="Passport"),
+    *         @OA\Property(property="code", type="string"),
+    *         @OA\Property(property="en", type="string"),
+    *         @OA\Property(property="fr", type="string"),
+    *         @OA\Property(property="amount", type="string"),
+    *         @OA\Property(property="deadline", type="string"),
+    *         @OA\Property(property="description_en", type="text"),
+    *         @OA\Property(property="description_fr", type="text"),
     *         @OA\Property(property="files", type="array", @OA\Items(
     *               @OA\Property(property="requestdoc_id", type="integer"),
     *               @OA\Property(property="required", type="integer"),
@@ -186,10 +186,10 @@ class DocumentController extends BaseController
                 foreach ($request->files as $files) {
                     $file = Str::of($files)->explode('|');
                     // Enregistrer le fichier
-                    File::create([
+                    File::firstOrCreate([
+                        'document_id' => $document->id,
                         'requestdoc_id' => $file[0],
                         'required' => $file[1],
-                        'document_id' => $document->id,
                     ]);
                 }
             }
@@ -220,14 +220,14 @@ class DocumentController extends BaseController
     *      required=true,
     *      @OA\JsonContent(
     *         required={"code", "en", "fr", "description_en", "description_fr", "files", "status"},
-    *         @OA\Property(property="code", type="string", example="PP"),
-    *         @OA\Property(property="en", type="string", example="Passport"),
-    *         @OA\Property(property="fr", type="string", example="Passport"),
-    *         @OA\Property(property="amount", type="string", example="1000"),
-    *         @OA\Property(property="deadline", type="string", example="2 jours"),
-    *         @OA\Property(property="description_en", type="text", example="Passport"),
-    *         @OA\Property(property="description_fr", type="text", example="Passport"),
-    *         @OA\Property(property="status", type="integer", example=1),
+    *         @OA\Property(property="code", type="string"),
+    *         @OA\Property(property="en", type="string"),
+    *         @OA\Property(property="fr", type="string"),
+    *         @OA\Property(property="amount", type="string"),
+    *         @OA\Property(property="deadline", type="string"),
+    *         @OA\Property(property="description_en", type="text"),
+    *         @OA\Property(property="description_fr", type="text"),
+    *         @OA\Property(property="status", type="integer"),
     *         @OA\Property(property="files", type="array", @OA\Items(
     *               @OA\Property(property="requestdoc_id", type="integer"),
     *               @OA\Property(property="required", type="integer"),
@@ -293,10 +293,10 @@ class DocumentController extends BaseController
                 foreach ($request->files as $files) {
                     $file = Str::of($files)->explode('|');
                     // Enregistrer le fichier
-                    File::create([
+                    File::firstOrCreate([
+                        'document_id' => $document->id,
                         'requestdoc_id' => $file[0],
                         'required' => $file[1],
-                        'document_id' => $document->id,
                     ]);
                 }
             }
@@ -335,18 +335,22 @@ class DocumentController extends BaseController
         //Data
         Log::notice("Document::destroy - ID User : {$user->id} - Requête : " . $uid);
         try {
-            // Vérification des dépendances en utilisant exists() pour une meilleure performance
-            $file = File::where('documents.uid', $uid)->join('documents', 'documents.id','=','files.document_id')->first();
-            if ($file) {
-                Log::warning("Document::destroy - Tentative de suppression d'un document avec des permissions associées : " . $uid);
-                return $this->sendError("Impossible de supprimer le document.", [], 403);
+            // Vérification si le document est attribué à une demande
+            $document = Document::select('documents.id', 'document_id')
+            ->where('documents.uid', $uid)
+            ->leftJoin('demands', 'demands.document_id','=','documents.id')
+            ->first();
+            if ($document->document_id != null) {
+                Log::warning("Document::destroy - Tentative de suppression d'un document déjà attribué à une demande : " . $uid);
+                return $this->sendError("Document est déjà attribué à une demande.", [], 403);
             }
-            //Suppression
-            $deleted = Document::destroy($file->document_id);
+            // Suppression
+            $deleted = document::destroy($document->id);
             if (!$deleted) {
                 Log::warning("Document::destroy - Tentative de suppression d'un document inexistante : " . $uid);
-                return $this->sendError("Document introuvable.", [], 403);
+                return $this->sendError("Impossible de supprimer le document.", [], 403);
             }
+            File::where('document_id', $document->id)->delete();
             return $this->sendSuccess("Document supprimé avec succès.");
         } catch(\Exception $e) {
             Log::warning("Document::destroy - Erreur lors de la suppression d'un document : " . $e->getMessage());
