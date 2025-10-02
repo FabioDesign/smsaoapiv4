@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Support\Facades\{App, Auth, DB, Log, Validator};
+use Illuminate\Support\Facades\{App, Auth, DB, Hash, Log, Validator};
 use App\Models\{Cells, Country, District, MaritalStatus, Nationality, Permission, Profile, Province, Sector, User};
 use App\Http\Controllers\API\BaseController as BaseController;
 
