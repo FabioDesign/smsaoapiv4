@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use \Carbon\Carbon;
 use Illuminate\Support\Str;
-use App\Models\{Permission, Profile};
+use App\Models\{Action, Permission, Profile};
 use Illuminate\Http\{Request, JsonResponse};
 use Illuminate\Support\Facades\{App, DB, Validator, Log, Auth};
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -321,6 +321,74 @@ class ProfileController extends BaseController
         } catch(\Exception $e) {
             Log::warning("Profile::destroy - Erreur lors de la suppression d'un profil : " . $e->getMessage());
             return $this->sendError("Erreur lors de la suppression d'un profil.");
+        }
+    }
+    //Liste des menus
+    /**
+    * @OA\Get(
+    *   path="/api/profiles/menus",
+    *   tags={"Profiles"},
+    *   operationId="listMenu",
+    *   description="Liste des menus",
+    *   security={{"bearer":{}}},
+    *   @OA\Response(response=200, description="Liste des menus."),
+    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=404, description="Page introuvable.")
+    * )
+    */
+    public function menus(): JsonResponse {
+        try {
+            // Code to list menus
+            $query = Menu::select('id', $user->lg . ' as label')
+            ->get();
+            // Vérifier si les données existent
+            if ($query->isEmpty()) {
+                Log::warning("Menu::index - Aucune menu trouvé.");
+                return $this->sendError("Aucune donnée trouvée.", [], 404);
+            }
+            // Transformer les données
+            $data = $query->map(fn($data) => [
+                'id' => $data->id,
+                'label' => $data->label,
+            ]);
+            return $this->sendSuccess("Liste des menus.", $data);
+        } catch (\Exception $e) {
+            Log::warning("Menu::index - Erreur lors de la récupération des menus: " . $e->getMessage());
+            return $this->sendError("Erreur lors de la récupération des menus.");
+        }
+    }
+    //Liste des actions
+    /**
+    * @OA\Get(
+    *   path="/api/profiles/actions",
+    *   tags={"Profiles"},
+    *   operationId="listAction",
+    *   description="Liste des actions",
+    *   security={{"bearer":{}}},
+    *   @OA\Response(response=200, description="Liste des actions."),
+    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=404, description="Page introuvable.")
+    * )
+    */
+    public function actions(): JsonResponse {
+        try {
+            // Code to list actions
+            $query = Action::select('id', $user->lg . ' as label')
+            ->get();
+            // Vérifier si les données existent
+            if ($query->isEmpty()) {
+                Log::warning("Action::index - Aucune action trouvée");
+                return $this->sendError("Aucune donnée trouvée.", [], 404);
+            }
+            // Transformer les données
+            $data = $query->map(fn($data) => [
+                'id' => $data->id,
+                'label' => $data->label,
+            ]);
+            return $this->sendSuccess("Liste des actions.", $data);
+        } catch (\Exception $e) {
+            Log::warning("Action::index - Erreur lors de la récupération des actions: " . $e->getMessage());
+            return $this->sendError("Erreur lors de la récupération des actions.");
         }
     }
 }

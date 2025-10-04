@@ -4,9 +4,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\{
+    DocumentController,
     PasswordController,
     ProfileController,
     RegisterController,
+    RequestdocController,
     SettingController,
     UserController,
 };
@@ -55,6 +57,8 @@ Route::middleware(['auth:api'])->group(function () {
   Route::resources([
     'users' => UserController::class,
     'profiles' => ProfileController::class,
+    'documents' => DocumentController::class,
+    'requestdoc' => RequestdocController::class,
   ]);
   // Route pour la modification du profil utilisateur
   Route::post('users/profil', [UserController::class, 'profil']);
@@ -64,4 +68,8 @@ Route::middleware(['auth:api'])->group(function () {
   Route::post('users/logout', [UserController::class, 'logout']);
   // Route pour les mots de passe
   Route::post('password/editpass', [PasswordController::class, 'editpass']);
+  // Route pour les actions
+  Route::get('profiles/actions', [ProfileController::class, 'actions']);
+  // Route pour les menus
+  Route::get('profiles/menus', [ProfileController::class, 'menus']);
 });

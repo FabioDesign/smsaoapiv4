@@ -650,6 +650,56 @@
                 ]
             }
         },
+        "/api/profiles/menus": {
+            "get": {
+                "tags": [
+                    "Profiles"
+                ],
+                "description": "Liste des menus",
+                "operationId": "listMenu",
+                "responses": {
+                    "200": {
+                        "description": "Liste des menus."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/profiles/actions": {
+            "get": {
+                "tags": [
+                    "Profiles"
+                ],
+                "description": "Liste des actions",
+                "operationId": "listAction",
+                "responses": {
+                    "200": {
+                        "description": "Liste des actions."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/api/register/sendotp": {
             "post": {
                 "tags": [
@@ -916,12 +966,10 @@
                                 ],
                                 "properties": {
                                     "en": {
-                                        "type": "string",
-                                        "example": "Passport"
+                                        "type": "string"
                                     },
                                     "fr": {
-                                        "type": "string",
-                                        "example": "Passport"
+                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
@@ -989,16 +1037,13 @@
                                 ],
                                 "properties": {
                                     "en": {
-                                        "type": "string",
-                                        "example": "Passport"
+                                        "type": "string"
                                     },
                                     "fr": {
-                                        "type": "string",
-                                        "example": "Passport"
+                                        "type": "string"
                                     },
                                     "status": {
-                                        "type": "integer",
-                                        "example": 1
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object"
@@ -1187,16 +1232,16 @@
                 }
             }
         },
-        "/api/users?num=1&limit=10&status=0": {
+        "/api/spouses": {
             "get": {
                 "tags": [
-                    "Users"
+                    "Spouses"
                 ],
-                "description": "Liste des Utilisateurs",
-                "operationId": "listUser",
+                "description": "Liste des Conjoints",
+                "operationId": "listSpouse",
                 "responses": {
                     "200": {
-                        "description": "Liste des Utilisateurs."
+                        "description": "Liste des Conjoints."
                     },
                     "401": {
                         "description": "Aucune donnée trouvée."
@@ -1627,6 +1672,31 @@
                     }
                 ]
             }
+        },
+        "/api/users?num=1&limit=10&status=0": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Liste des Utilisateurs",
+                "operationId": "listUser",
+                "responses": {
+                    "200": {
+                        "description": "Liste des Utilisateurs."
+                    },
+                    "401": {
+                        "description": "Aucune donnée trouvée."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
         }
     },
     "tags": [
@@ -1653,6 +1723,10 @@
         {
             "name": "Settings",
             "description": "Settings"
+        },
+        {
+            "name": "Spouses",
+            "description": "Spouses"
         },
         {
             "name": "Users",

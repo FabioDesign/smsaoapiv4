@@ -10,17 +10,17 @@ use Illuminate\Support\Facades\{App, Auth, DB, Hash, Log, Validator};
 use App\Models\{Cells, Country, District, MaritalStatus, Nationality, Permission, Profile, Province, Sector, User};
 use App\Http\Controllers\API\BaseController as BaseController;
 
-class UserController extends BaseController
+class SpouseController extends BaseController
 {
-    // Liste des Utilisateurs
+    // Liste des Conjoints
     /**
     * @OA\Get(
-    *   path="/api/users?num=1&limit=10&status=0",
-    *   tags={"Users"},
-    *   operationId="listUser",
-    *   description="Liste des Utilisateurs",
+    *   path="/api/spouses",
+    *   tags={"Spouses"},
+    *   operationId="listSpouse",
+    *   description="Liste des Conjoints",
     *   security={{"bearer":{}}},
-    *   @OA\Response(response=200, description="Liste des Utilisateurs."),
+    *   @OA\Response(response=200, description="Liste des Conjoints."),
     *   @OA\Response(response=401, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
@@ -30,11 +30,8 @@ class UserController extends BaseController
         $user = Auth::user();
 		App::setLocale($user->lg);
         try {
-            $num = isset($request->num) ? (int) $request->num:1;
-            $limit = isset($request->limit) ? (int) $request->limit:10;
-            $status = isset($request->status) ? (int) $request->status:'';
             // Récupérer les données
-            $query = User::select('users.uid', 'lastname', 'firstname', 'number', 'email', $user->lg . ' as label', 'users.status', 'users.created_at')
+            $query = User::select('users.uid', 'lastname', 'firstname', 'gender', 'number', 'email', $user->lg . ' as label', 'users.status', 'users.created_at')
             ->leftJoin('profiles', 'profiles.id','=','users.profile_id')
             ->where('profile_id', '!=', 1)
             ->where('users.id', '!=', $user->id)
@@ -62,7 +59,7 @@ class UserController extends BaseController
                 },
                 'date' => Carbon::parse($data->created_at)->format('d/m/Y H:i'),
             ]);
-            return $this->sendSuccess('Liste des utilisateurs.', [
+            return $this->sendSuccess('Liste des Conjoints.', [
                 'lists' => $data,
                 'total'  => $query->total(),
                 'current_page' => $query->currentPage(),
