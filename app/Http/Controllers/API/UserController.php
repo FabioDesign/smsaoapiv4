@@ -335,6 +335,7 @@ class UserController extends BaseController
             'status' => $request->status,
             'profile_id' => $request->profile_id,
             'password' => Hash::make($password),
+            'password_at' => now(),
         ];
         // Test de modification de status
         $mail = 0;
