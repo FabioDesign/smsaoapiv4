@@ -17,7 +17,7 @@ class SettingController extends BaseController
     *   operationId="nationality",
     *   description="Liste de Nationalités.",
     *   @OA\Response(response=200, description="Liste de Nationalités."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -36,7 +36,7 @@ class SettingController extends BaseController
     *   operationId="country",
     *   description="Liste de Pays.",
     *   @OA\Response(response=200, description="Liste de Pays."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -57,7 +57,7 @@ class SettingController extends BaseController
     *   operationId="province",
     *   description="Liste de provinces.",
     *   @OA\Response(response=200, description="Liste de provinces."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -76,7 +76,7 @@ class SettingController extends BaseController
     *   operationId="region",
     *   description="Liste de régions.",
     *   @OA\Response(response=200, description="Liste de régions."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -97,7 +97,7 @@ class SettingController extends BaseController
     *   operationId="district",
     *   description="Liste de districts.",
     *   @OA\Response(response=200, description="Liste de districts."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -118,7 +118,7 @@ class SettingController extends BaseController
     *   operationId="sector",
     *   description="Liste de secteurs.",
     *   @OA\Response(response=200, description="Liste de secteurs."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -140,7 +140,7 @@ class SettingController extends BaseController
     *   operationId="cells",
     *   description="Liste de cellules.",
     *   @OA\Response(response=200, description="Liste de cellules."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */

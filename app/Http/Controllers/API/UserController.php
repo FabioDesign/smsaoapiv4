@@ -21,7 +21,7 @@ class UserController extends BaseController
     *   description="Liste des Utilisateurs",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Liste des Utilisateurs."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -34,7 +34,7 @@ class UserController extends BaseController
             $limit = isset($request->limit) ? (int) $request->limit:10;
             $status = isset($request->status) ? (int) $request->status:'';
             // Récupérer les données
-            $query = User::select('users.uid', 'lastname', 'firstname', 'number', 'email', $user->lg . ' as label', 'users.status', 'users.created_at')
+            $query = User::select('users.uid', 'lastname', 'firstname', 'gender', 'number', 'email', $user->lg . ' as label', 'users.status', 'users.created_at')
             ->leftJoin('profiles', 'profiles.id','=','users.profile_id')
             ->where('profile_id', '!=', 1)
             ->where('users.id', '!=', $user->id)
@@ -44,14 +44,14 @@ class UserController extends BaseController
             // Vérifier si les données existent
             if ($query->isEmpty()) {
                 Log::warning("User::index - Aucun utilisateur trouvé");
-                return $this->sendError("Aucune donnée trouvée.", [], 404);
+                return $this->sendSuccess("Aucune donnée trouvée.");
             }
             // Transformer les données
             $data = $query->map(fn($data) => [
                 'uid' => $data->uid,
                 'lastname' => $data->lastname,
                 'firstname' => $data->firstname,
-                'gender' => $data->gender ? 'Masculin' : 'Féminin',
+                'gender' => $data->gender,
                 'number' => $data->number,
                 'email' => $data->email,
                 'profile' => $data->label,
@@ -82,7 +82,7 @@ class UserController extends BaseController
     *   description="Détail d'Utilisateur",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Détail d'Utilisateur."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -95,7 +95,7 @@ class UserController extends BaseController
             $query = User::where('uid', $uid)->first();
             if (!$query) {
                 Log::warning("User::show - Aucun utilisateur trouvé pour l'ID : " . $uid);
-                return $this->sendError("Aucune donnée trouvée.", [], 404);
+                return $this->sendSuccess("Aucune donnée trouvée.");
             }
             // Cellules
             $cells = Cells::where('id', $query->cellule_id)->first();
@@ -300,7 +300,7 @@ class UserController extends BaseController
         $query = User::where('uid', $uid)->first();
         if (!$query) {
             Log::warning("User::update - Aucun utilisateur trouvé pour l'ID : " . $uid);
-            return $this->sendError("Aucune donnée trouvée.", [], 404);
+            return $this->sendSuccess("Aucune donnée trouvée.");
         }
         // Formatage du nom et prénoms
         $email = Str::lower($request->email);
@@ -683,7 +683,6 @@ class UserController extends BaseController
     *   description="Deconnecte l'utilisateur en supprimant son token d'accès",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Déconnexion éffectuée avec succès."),
-    *   @OA\Response(response=401, description="Echec d'authentification."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */

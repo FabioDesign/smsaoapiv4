@@ -20,7 +20,7 @@ class DocumentController extends BaseController
     *   description="Liste des documents",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Liste des documents."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -36,7 +36,7 @@ class DocumentController extends BaseController
             // Vérifier si les données existent
             if ($query->isEmpty()) {
                 Log::warning("Document::index - Aucun document trouvé.");
-                return $this->sendError("Aucune donnée trouvée.", [], 404);
+                return $this->sendSuccess("Aucune donnée trouvée.");
             }
             // Transformer les données
             $data = $query->map(fn($data) => [
@@ -64,7 +64,7 @@ class DocumentController extends BaseController
     *   description="Détail d'un document",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Détail d'un document."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -78,7 +78,7 @@ class DocumentController extends BaseController
         ->first();
         if (!$document) {
             Log::warning("Document::show - Aucun document trouvé pour l'ID : " . $uid);
-            return $this->sendError("Aucune donnée trouvée.", [], 404);
+            return $this->sendSuccess("Aucune donnée trouvée.");
         }
         try {
             // Charger les files avec eager loading et les transformer directement
@@ -267,7 +267,7 @@ class DocumentController extends BaseController
         $document = Document::where('uid', $uid)->first();
         if (!$document) {
             Log::warning("Document::update - Aucun document trouvé pour l'ID : " . $uid);
-            return $this->sendError("Aucune donnée trouvée.", [], 404);
+            return $this->sendSuccess("Aucune donnée trouvée.");
         }
         // Création de la reclamation
         $set = [
@@ -324,7 +324,7 @@ class DocumentController extends BaseController
     *   description="Suppression d'un document",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Document supprimé avec succès."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */

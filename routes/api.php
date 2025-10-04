@@ -69,7 +69,7 @@ Route::middleware(['auth:api'])->group(function () {
   // Route pour les mots de passe
   Route::post('password/editpass', [PasswordController::class, 'editpass']);
   // Route pour les actions
-  Route::get('profiles/actions', [ProfileController::class, 'actions']);
+  Route::get('actions/lists', [ProfileController::class, 'actions']);
   // Route pour les menus
-  Route::get('profiles/menus', [ProfileController::class, 'menus']);
+  Route::get('menus/lists', [ProfileController::class, 'menus']);
 });

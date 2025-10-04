@@ -20,7 +20,7 @@ class RequestdocController extends BaseController
     *   description="Liste des pièces jointes",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Liste des pièces jointes."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -36,7 +36,7 @@ class RequestdocController extends BaseController
             // Vérifier si les données existent
             if ($query->isEmpty()) {
                 Log::warning("Requestdoc::index - Aucune pièce jointe trouvée.");
-                return $this->sendError("Aucune donnée trouvée.", [], 404);
+                return $this->sendSuccess("Aucune donnée trouvée.");
             }
             // Transformer les données
             $data = $query->map(fn($data) => [
@@ -60,7 +60,7 @@ class RequestdocController extends BaseController
     *   description="Détail d'une pièce jointe",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Détail d'une pièce jointe."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -74,7 +74,7 @@ class RequestdocController extends BaseController
         ->first();
         if (!$requestdoc) {
             Log::warning("Requestdoc::show - Aucune pièce jointe trouvée pour l'ID : " . $uid);
-            return $this->sendError("Aucune donnée trouvée.", [], 404);
+            return $this->sendSuccess("Aucune donnée trouvée.");
         }
         try {
             // Retourner les détails d'une pièce jointe
@@ -189,7 +189,7 @@ class RequestdocController extends BaseController
         $query = Requestdoc::where('uid', $uid)->first();
         if (!$query) {
             Log::warning("Requestdoc::update - Aucune pièce jointe trouvée pour l'ID : " . $uid);
-            return $this->sendError("Aucune donnée trouvée.", [], 404);
+            return $this->sendSuccess("Aucune donnée trouvée.");
         }
         // Création de la reclamation
         $set = [
@@ -222,7 +222,7 @@ class RequestdocController extends BaseController
     *   description="Suppression d'une pièce jointe",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Pièce jointe supprimée avec succès."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */

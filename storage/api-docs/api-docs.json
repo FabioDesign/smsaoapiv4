@@ -650,7 +650,7 @@
                 ]
             }
         },
-        "/api/profiles/menus": {
+        "/api/menus/lists": {
             "get": {
                 "tags": [
                     "Profiles"
@@ -675,7 +675,7 @@
                 ]
             }
         },
-        "/api/profiles/actions": {
+        "/api/actions/lists": {
             "get": {
                 "tags": [
                     "Profiles"

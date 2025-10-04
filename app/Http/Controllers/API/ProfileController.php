@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use \Carbon\Carbon;
 use Illuminate\Support\Str;
-use App\Models\{Action, Permission, Profile};
+use App\Models\{Action, Menu, Permission, Profile};
 use Illuminate\Http\{Request, JsonResponse};
 use Illuminate\Support\Facades\{App, DB, Validator, Log, Auth};
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -20,7 +20,7 @@ class ProfileController extends BaseController
     *   description="Liste des profils",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Liste des profils."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -36,7 +36,7 @@ class ProfileController extends BaseController
             // Vérifier si les données existent
             if ($query->isEmpty()) {
                 Log::warning("Profile::index - Aucun profil trouvé.");
-                return $this->sendError("Aucune donnée trouvée.", [], 404);
+                return $this->sendSuccess("Aucune donnée trouvée.");
             }
             // Transformer les données
             $data = $query->map(fn($data) => [
@@ -61,7 +61,7 @@ class ProfileController extends BaseController
     *   description="Détail d'un profil",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Détail d'un profil."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -75,7 +75,7 @@ class ProfileController extends BaseController
         ->first();
         if (!$profile) {
             Log::warning("Profile::show - Aucun profil trouvé pour l'ID : " . $uid);
-            return $this->sendError("Aucune donnée trouvée.", [], 404);
+            return $this->sendSuccess("Aucune donnée trouvée.");
         }
         try {
             // Charger les permissions avec eager loading et les transformer directement
@@ -238,7 +238,7 @@ class ProfileController extends BaseController
         $profile = Profile::where('uid', $uid)->first();
         if (!$profile) {
             Log::warning("Profile::update - Aucun profil trouvé pour l'ID : " . $uid);
-            return $this->sendError("Aucune donnée trouvée.", [], 404);
+            return $this->sendSuccess("Aucune donnée trouvée.");
         }
         // Création de la reclamation
         $set = [
@@ -290,7 +290,7 @@ class ProfileController extends BaseController
     *   description="Suppression d'un profil",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Profil supprimé avec succès."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -326,25 +326,27 @@ class ProfileController extends BaseController
     //Liste des menus
     /**
     * @OA\Get(
-    *   path="/api/profiles/menus",
+    *   path="/api/menus/lists",
     *   tags={"Profiles"},
     *   operationId="listMenu",
     *   description="Liste des menus",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Liste des menus."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
     public function menus(): JsonResponse {
+        // User
+        $user = Auth::user();
+		App::setLocale($user->lg);
         try {
             // Code to list menus
-            $query = Menu::select('id', $user->lg . ' as label')
-            ->get();
+            $query = Menu::select('id', $user->lg . ' as label')->get();
             // Vérifier si les données existent
             if ($query->isEmpty()) {
                 Log::warning("Menu::index - Aucune menu trouvé.");
-                return $this->sendError("Aucune donnée trouvée.", [], 404);
+                return $this->sendSuccess("Aucune donnée trouvée.");
             }
             // Transformer les données
             $data = $query->map(fn($data) => [
@@ -360,25 +362,27 @@ class ProfileController extends BaseController
     //Liste des actions
     /**
     * @OA\Get(
-    *   path="/api/profiles/actions",
+    *   path="/api/actions/lists",
     *   tags={"Profiles"},
     *   operationId="listAction",
     *   description="Liste des actions",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Liste des actions."),
-    *   @OA\Response(response=401, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
     public function actions(): JsonResponse {
+        // User
+        $user = Auth::user();
+		App::setLocale($user->lg);
         try {
             // Code to list actions
-            $query = Action::select('id', $user->lg . ' as label')
-            ->get();
+            $query = Action::select('id', $user->lg . ' as label')->get();
             // Vérifier si les données existent
             if ($query->isEmpty()) {
                 Log::warning("Action::index - Aucune action trouvée");
-                return $this->sendError("Aucune donnée trouvée.", [], 404);
+                return $this->sendSuccess("Aucune donnée trouvée.");
             }
             // Transformer les données
             $data = $query->map(fn($data) => [
