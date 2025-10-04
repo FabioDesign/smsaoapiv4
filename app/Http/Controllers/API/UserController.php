@@ -334,8 +334,6 @@ class UserController extends BaseController
             'town_id' => $request->town_id,
             'status' => $request->status,
             'profile_id' => $request->profile_id,
-            'password' => Hash::make($password),
-            'password_at' => now(),
         ];
         // Test de modification de status
         $mail = 0;
@@ -345,6 +343,8 @@ class UserController extends BaseController
                     $mail = 1;
                     $set['activated_at'] = now();
                     $set['activated_id'] = $user->id;
+                    $set['password_at'] = now();
+                    $set['password'] = Hash::make($password);
                     $status = __('message.activated');
                     break;
                 case 2:
@@ -384,7 +384,15 @@ class UserController extends BaseController
                 // Envoi de l'email
                 $this->sendMail($email, '', $subject, $message);
             }
-            return $this->sendSuccess('Utilisateur modifié avec succès.', $set, 201);
+            // Retourner les données de l'utilisateur
+            $data = [
+                'lastname' => $lastname,
+                'firstname' => $firstname,
+                'gender' => $request->gender,
+                'number' => $request->number,
+                'email' => $email,
+            ];
+            return $this->sendSuccess('Utilisateur modifié avec succès.', $data, 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Annuler la transaction en cas d'erreur
             Log::warning("User::update - Erreur lors de la modification de l'utilisateur : " . $e->getMessage() . " " . json_encode($set));
