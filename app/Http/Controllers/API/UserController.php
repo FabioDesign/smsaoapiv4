@@ -342,8 +342,8 @@ class UserController extends BaseController
             switch ($request->status) {
                 case 1:
                     $mail = 1;
-                    $set['active_at'] = now();
-                    $set['active_id'] = $user->id;
+                    $set['activated_at'] = now();
+                    $set['activated_id'] = $user->id;
                     $status = __('message.activated');
                     break;
                 case 2:
