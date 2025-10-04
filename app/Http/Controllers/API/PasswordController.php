@@ -191,11 +191,6 @@ class PasswordController extends BaseController
             Log::warning("Email ou Code OTP erroné : " . $request->email);
             return $this->sendError("Email ou Code OTP erroné.", [], 404);
         }
-        // Vérifier si l'OTP a expiré
-        if (!($user->otp_at >= now()->subMinutes(10))) {
-            Log::warning("Code OTP a expiré : " . $request->email);
-            return $this->sendError("Code OTP a expiré.", [], 404);
-        }
         try {
             // Mettre à jour du password
             $user->update([
