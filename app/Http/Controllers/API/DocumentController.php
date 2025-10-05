@@ -6,7 +6,7 @@ use \Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\{Document, File};
 use Illuminate\Http\{Request, JsonResponse};
-use Illuminate\Support\Facades\{App, DB, Validator, Log, Auth};
+use Illuminate\Support\Facades\{App, Auth, DB, Log, Validator};
 use App\Http\Controllers\API\BaseController as BaseController;
 
 class DocumentController extends BaseController
@@ -20,7 +20,7 @@ class DocumentController extends BaseController
     *   description="Liste des documents",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Liste des documents."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -64,7 +64,7 @@ class DocumentController extends BaseController
     *   description="Détail d'un document",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Détail d'un document."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -249,9 +249,9 @@ class DocumentController extends BaseController
         Log::notice("Document::update - ID User : {$user->id} - Requête : " . json_encode($request->all()));
         //Validator
         $validator = Validator::make($request->all(), [
-            'code' => 'required|string|max:5|unique:documents,code,' . $uid,
-            'en' => 'required|string|max:255|unique:documents,en,' . $uid,
-            'fr' => 'required|string|max:255|unique:documents,fr,' . $uid,
+            'code' => 'required|string|max:5|unique:documents,code,' . $uid . ',uid',
+            'en' => 'required|string|max:255|unique:documents,en,' . $uid . ',uid',
+            'fr' => 'required|string|max:255|unique:documents,fr,' . $uid . ',uid',
             'amount' => 'present',
             'deadline' => 'present',
             'description_en' => 'required',
@@ -324,7 +324,7 @@ class DocumentController extends BaseController
     *   description="Suppression d'un document",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Document supprimé avec succès."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */

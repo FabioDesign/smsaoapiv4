@@ -26,7 +26,7 @@ class RegisterController extends BaseController
     *      )
     *   ),
     *   @OA\Response(response=200, description="Renvoyer OTP."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -100,7 +100,7 @@ class RegisterController extends BaseController
     *      )
     *   ),
     *   @OA\Response(response=200, description="Validation du Code OTP."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */

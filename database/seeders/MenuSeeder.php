@@ -17,7 +17,6 @@ class MenuSeeder extends Seeder
             ["en" => 'Dashboard'],
             [
                 "fr" => 'Tableau de bord',
-                "en" => 'Dashboard',
                 "status" => 1,
                 "icone" => 'dashboard-icon',
                 "target" => '/dashboard',
@@ -29,7 +28,6 @@ class MenuSeeder extends Seeder
             ["en" => 'Documents'],
             [
                 "fr" => 'Documents',
-                "en" => 'Documents',
                 "status" => 1,
                 "icone" => 'documents-icon',
                 "target" => '/documents',
@@ -41,7 +39,6 @@ class MenuSeeder extends Seeder
             ["en" => 'Documents to provide'],
             [
                 "fr" => 'Pièces à fournir',
-                "en" => 'Documents to provide',
                 "status" => 1,
                 "icone" => 'attachments-icon',
                 "target" => '/attachments',
@@ -53,7 +50,6 @@ class MenuSeeder extends Seeder
             ["en" => 'Settings'],
             [
                 "fr" => 'Paramètres',
-                "en" => 'Settings',
                 "status" => 1,
                 "icone" => 'settings-icon',
                 "target" => '/settings',
@@ -65,7 +61,6 @@ class MenuSeeder extends Seeder
             ["en" => 'Profile Management'],
             [
                 "fr" => 'Gestion des Profils',
-                "en" => 'Profile Management',
                 "status" => 1,
                 "icone" => 'profile-icon',
                 "target" => '/profile',
@@ -77,7 +72,6 @@ class MenuSeeder extends Seeder
             ["en" => 'User Management'],
             [
                 "fr" => 'Gestion des Utilisateurs',
-                "en" => 'User Management',
                 "status" => 1,
                 "icone" => 'user-icon',
                 "target" => '/users',
@@ -89,7 +83,6 @@ class MenuSeeder extends Seeder
             ["en" => 'Appointments'],
             [
                 "fr" => 'Rendez-vous',
-                "en" => 'Appointments',
                 "status" => 1,
                 "icone" => 'appointments-icon',
                 "target" => '/appointments',
@@ -101,7 +94,6 @@ class MenuSeeder extends Seeder
             ["en" => 'Audit trail'],
             [
                 "fr" => "Piste d'audit",
-                "en" => 'Audit trail',
                 "status" => 1,
                 "icone" => 'audit_trail-icon',
                 "target" => '/audit_trail',

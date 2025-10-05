@@ -5,9 +5,8 @@ use \Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\Rules\Password;
-use Illuminate\Support\Facades\{App, Auth, DB, Hash, Log, Validator};
-use App\Models\{Cells, Country, District, MaritalStatus, Nationality, Permission, Profile, Province, Sector, User};
+use Illuminate\Support\Facades\{App, Auth, DB, Log, Validator};
+use App\Models\{Cells, Country, District, MaritalStatus, Nationality, Permission, Profile, Province, Sector, Spouse, User};
 use App\Http\Controllers\API\BaseController as BaseController;
 
 class SpouseController extends BaseController
@@ -21,26 +20,23 @@ class SpouseController extends BaseController
     *   description="Liste des Conjoints",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Liste des Conjoints."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
-    public function index(Request $request): JsonResponse {
+    public function index(): JsonResponse {
         //User
         $user = Auth::user();
 		App::setLocale($user->lg);
         try {
             // Récupérer les données
-            $query = User::select('users.uid', 'lastname', 'firstname', 'gender', 'number', 'email', $user->lg . ' as label', 'users.status', 'users.created_at')
-            ->leftJoin('profiles', 'profiles.id','=','users.profile_id')
-            ->where('profile_id', '!=', 1)
-            ->where('users.id', '!=', $user->id)
-            ->when(($status != ''), fn($q) => $q->where('users.status', $status))
-            ->orderByDesc('users.created_at')
-            ->paginate($limit, ['*'], 'page', $num);
+            $query = User::select('users.uid', 'lastname', 'firstname', 'gender', 'number', 'email', 'rank', 'spouses.created_at')
+            ->join('spouses', 'spouses.spouse_id','=','users.id')
+            ->where('user_id', $user->id)
+            ->get();
             // Vérifier si les données existent
             if ($query->isEmpty()) {
-                Log::warning("User::index - Aucun utilisateur trouvé");
+                Log::warning("User::index - Aucun conjoint trouvé");
                 return $this->sendSuccess("Aucune donnée trouvée.");
             }
             // Transformer les données
@@ -48,38 +44,28 @@ class SpouseController extends BaseController
                 'uid' => $data->uid,
                 'lastname' => $data->lastname,
                 'firstname' => $data->firstname,
-                'gender' => $data->gender ? 'Masculin' : 'Féminin',
+                'gender' => $data->gender,
                 'number' => $data->number,
                 'email' => $data->email,
-                'profile' => $data->label,
-                'status' => match((int)$data->status) {
-                    0 => 'Inactif',
-                    1 => 'Actif',
-                    2 => 'Bloqué'
-                },
+                'rank' => $data->rank,
                 'date' => Carbon::parse($data->created_at)->format('d/m/Y H:i'),
             ]);
-            return $this->sendSuccess('Liste des Conjoints.', [
-                'lists' => $data,
-                'total'  => $query->total(),
-                'current_page' => $query->currentPage(),
-                'last_page' => $query->lastPage(),
-            ]);
+            return $this->sendSuccess('Liste des Conjoints.', $data);
         } catch(\Exception $e) {
-            Log::warning("User::index - Erreur d'affichage de l'utilisateur : ".$e->getMessage());
-            return $this->sendError("Erreur d'affichage de l'utilisateur");
+            Log::warning("User::index - Erreur d'affichage du conjoint : ".$e->getMessage());
+            return $this->sendError("Erreur d'affichage du conjoint");
         }
     }
-    // Détail d'Utilisateur
+    // Détail du conjoint
     /**
     * @OA\Get(
-    *   path="/api/users/{uid}",
-    *   tags={"Users"},
-    *   operationId="showUser",
-    *   description="Détail d'Utilisateur",
+    *   path="/api/spouses/{uid}",
+    *   tags={"Spouses"},
+    *   operationId="showSpouse",
+    *   description="Détail du conjoint",
     *   security={{"bearer":{}}},
-    *   @OA\Response(response=200, description="Détail d'Utilisateur."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=200, description="Détail du conjoint."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -91,9 +77,11 @@ class SpouseController extends BaseController
             // Récupérer les données
             $query = User::where('uid', $uid)->first();
             if (!$query) {
-                Log::warning("User::show - Aucun utilisateur trouvé pour l'ID : " . $uid);
+                Log::warning("User::show - Aucun conjoint trouvé pour l'ID : " . $uid);
                 return $this->sendSuccess("Aucune donnée trouvée.");
             }
+            // Conjoint
+            $spouses = Spouse::where('uid', $uid)->first();
             // Cellules
             $cells = Cells::where('id', $query->cellule_id)->first();
             // Sectors
@@ -141,11 +129,6 @@ class SpouseController extends BaseController
                 'number_person' => $query->number_person,
                 'residence_person' => $query->residence_person,
                 'comment' => $query->comment,
-                'status' => match((int)$query->status) {
-                    0 => 'Inactif',
-                    1 => 'Actif',
-                    2 => 'Bloqué'
-                },
                 'created_at' => Carbon::parse($query->created_at)->format('d/m/Y H:i'),
                 'photo' => env('APP_URL') . '/assets/photos/' . $query->photo,
                 'cells' => [
@@ -204,19 +187,19 @@ class SpouseController extends BaseController
                     'label' => $profile->label,
                 ];
             }
-            return $this->sendSuccess('Détail sur un Utilisateur.', $data);
+            return $this->sendSuccess('Détail sur un conjoint.', $data);
         } catch(\Exception $e) {
-            Log::warning("User::show - Erreur d'affichage de l'utilisateur : ".$e->getMessage());
-            return $this->sendError("Erreur d'affichage de l'utilisateur");
+            Log::warning("User::show - Erreur d'affichage du conjoint : ".$e->getMessage());
+            return $this->sendError("Erreur d'affichage du conjoint");
         }
     }
     //Modification
     /**
     * @OA\Put(
-    *   path="/api/users/{uid}",
-    *   tags={"Users"},
-    *   operationId="editUser",
-    *   description="Modification d'un Utilisateur",
+    *   path="/api/spouses/{uid}",
+    *   tags={"Spouses"},
+    *   operationId="editSpouse",
+    *   description="Modification d'un conjoint",
     *   security={{"bearer":{}}},
     *   @OA\RequestBody(
     *      required=true,
@@ -252,7 +235,7 @@ class SpouseController extends BaseController
     *             @OA\Property(property="profile_id", type="integer"),
     *      )
     *   ),
-    *   @OA\Response(response=200, description="Utilisateur modifié avec succès."),
+    *   @OA\Response(response=200, description="conjoint modifié avec succès."),
     *   @OA\Response(response=400, description="Erreur de validation."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
@@ -268,8 +251,8 @@ class SpouseController extends BaseController
             'lastname' => 'required',
             'firstname' => 'required',
             'gender' => 'required|in:M,F',
-            'number' => 'required|unique:users,number,'.$uid.',uid',
-            'email' => 'required|unique:users,email,'.$uid.',uid',
+            'number' => 'required|unique:users,number,' . $uid . ',uid',
+            'email' => 'required|unique:users,email,' . $uid . ',uid',
             'birthday' => 'required|date_format:Y-m-d',
             'birthplace' => 'required',
             'profession' => 'required',
@@ -296,7 +279,7 @@ class SpouseController extends BaseController
         // Vérifier si l'ID est présent et valide
         $query = User::where('uid', $uid)->first();
         if (!$query) {
-            Log::warning("User::update - Aucun utilisateur trouvé pour l'ID : " . $uid);
+            Log::warning("User::update - Aucun conjoint trouvé pour l'ID : " . $uid);
             return $this->sendSuccess("Aucune donnée trouvée.");
         }
         // Formatage du nom et prénoms
@@ -355,7 +338,7 @@ class SpouseController extends BaseController
         }
         DB::beginTransaction(); // Démarrer une transaction
         try {
-            // Création de l'utilisateur
+            // Création du conjoint
             $query->update($set);
             DB::commit(); // Valider la transaction
             // Test send mail
@@ -382,7 +365,7 @@ class SpouseController extends BaseController
                 // Envoi de l'email
                 $this->sendMail($email, '', $subject, $message);
             }
-            // Retourner les données de l'utilisateur
+            // Retourner les données du conjoint
             $data = [
                 'lastname' => $lastname,
                 'firstname' => $firstname,
@@ -390,308 +373,11 @@ class SpouseController extends BaseController
                 'number' => $request->number,
                 'email' => $email,
             ];
-            return $this->sendSuccess('Utilisateur modifié avec succès.', $data, 201);
+            return $this->sendSuccess('conjoint modifié avec succès.', $data, 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Annuler la transaction en cas d'erreur
-            Log::warning("User::update - Erreur lors de la modification de l'utilisateur : " . $e->getMessage() . " " . json_encode($set));
-            return $this->sendError("Erreur lors de la modification de l'utilisateur");
+            Log::warning("User::update - Erreur lors de la modification du conjoint : " . $e->getMessage() . " " . json_encode($set));
+            return $this->sendError("Erreur lors de la modification du conjoint");
         }
 	}
-    //Modification
-    /**
-    * @OA\Post(
-    *   path="/api/users/profil",
-    *   tags={"Users"},
-    *   operationId="profilUser",
-    *   description="Modification du profil utilisateur",
-    *   security={{"bearer":{}}},
-    *   @OA\RequestBody(
-    *      required=true,
-    *      @OA\JsonContent(
-    *              required={"lastname", "firstname", "gender", "number", "email", "birthday", "birthplace", "profession", "village", "street_number", "house_number", "family_number", "fullname_person", "number_person", "residence_person", "cellule_id", "maritalstatus_id", "town_id", "fullname_father", "fullname_mother"},
-    *             @OA\Property(property="lastname", type="string"),
-    *             @OA\Property(property="firstname", type="string"),
-    *             @OA\Property(property="gender", type="string"),
-    *             @OA\Property(property="number", type="string"),
-    *             @OA\Property(property="email", type="string"),
-    *             @OA\Property(property="birthday", type="date"),
-    *             @OA\Property(property="birthplace", type="string"),
-    *             @OA\Property(property="profession", type="string"),
-    *             @OA\Property(property="village", type="string"),
-    *             @OA\Property(property="street_number", type="string"),
-    *             @OA\Property(property="house_number", type="string"),
-    *             @OA\Property(property="family_number", type="integer"),
-    *             @OA\Property(property="fullname_person", type="string"),
-    *             @OA\Property(property="number_person", type="string"),
-    *             @OA\Property(property="residence_person", type="string"),
-    *             @OA\Property(property="cellule_id", type="integer"),
-    *             @OA\Property(property="town_id", type="integer"),
-    *             @OA\Property(property="bp", type="string"),
-    *             @OA\Property(property="diplome", type="string"),
-    *             @OA\Property(property="distinction", type="string"),
-    *             @OA\Property(property="maritalstatus_id", type="integer"),
-    *             @OA\Property(property="nationality_id", type="integer"),
-    *             @OA\Property(property="fullname_father", type="string"),
-    *             @OA\Property(property="fullname_mother", type="string"),
-    *      )
-    *   ),
-    *   @OA\Response(response=200, description="Profil utilisateur modifié avec succès."),
-    *   @OA\Response(response=400, description="Erreur de validation."),
-    *   @OA\Response(response=404, description="Page introuvable.")
-    * )
-    */
-    public function profil(Request $request): JsonResponse {
-        //User
-        $user = Auth::user();
-        //Data
-        Log::notice("User::profil - ID User : {$user->id} - Requête : " . json_encode($request->all()));
-        //Validator
-        $validator = Validator::make($request->all(), [
-            'lastname' => 'required',
-            'firstname' => 'required',
-            'gender' => 'required|in:M,F',
-            'number' => 'required|unique:users,number,'.$user->id,
-            'email' => 'required|unique:users,email,'.$user->id,
-            'birthday' => 'required|date_format:Y-m-d',
-            'birthplace' => 'required',
-            'profession' => 'required',
-            'village' => 'required',
-            'street_number' => 'required',
-            'house_number' => 'required',
-            'family_number' => 'required',
-            'fullname_person' => 'required',
-            'number_person' => 'required',
-            'fullname_father' => 'required',
-            'fullname_mother' => 'required',
-            'residence_person' => 'required',
-            'maritalstatus_id' => 'required|min:1',
-            'cellule_id' => 'required|min:1',
-            'town_id' => 'required|min:1',
-        ]);
-        //Error field
-        if ($validator->fails()) {
-            Log::warning("User::profil - Validator : " . json_encode($request->all()));
-            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
-        }
-        // Formatage du nom et prénoms
-        $email = Str::lower($request->email);
-        $lastname = mb_strtoupper($request->lastname, 'UTF-8');
-        $firstname = mb_convert_case(Str::lower($request->firstname), MB_CASE_TITLE, "UTF-8");
-        // Formatage des données
-        $set = [
-            'lastname' => $lastname,
-            'firstname' => $firstname,
-            'gender' => $request->gender,
-            'number' => $request->number,
-            'email' => $email,
-            'birthday' => $request->birthday,
-            'birthplace' => $request->birthplace,
-            'profession' => $request->profession,
-            'village' => $request->village,
-            'street_number' => $request->street_number,
-            'house_number' => $request->house_number,
-            'family_number' => $request->family_number,
-            'fullname_person' => $request->fullname_person,
-            'number_person' => $request->number_person,
-            'fullname_father' => $request->fullname_father,
-            'fullname_mother' => $request->fullname_mother,
-            'residence_person' => $request->residence_person,
-            'maritalstatus_id' => $request->maritalstatus_id,
-            'cellule_id' => $request->cellule_id,
-            'town_id' => $request->town_id,
-        ];
-        DB::beginTransaction(); // Démarrer une transaction
-        try {
-            // Création de l'utilisateur
-            User::findOrFail($user->id)->update($set);
-            DB::commit(); // Valider la transaction
-            return $this->sendSuccess('Profil utilisateur modifié avec succès.', $set, 201);
-        } catch (\Exception $e) {
-            DB::rollBack(); // Annuler la transaction en cas d'erreur
-            Log::warning("User::profil - Erreur lors de la modification de Profil utilisateur : " . $e->getMessage() . " " . json_encode($set));
-            return $this->sendError("Erreur lors de la modification de Profil utilisateur");
-        }
-	}
-    //Photo de profil
-    /**
-     * @OA\Post(
-     *   path="/api/users/photo",
-     *   tags={"Users"},
-     *   operationId="photo",
-     *   description="Modification de la photo de profil",
-     *   security={{"bearer":{}}},
-     *   @OA\RequestBody(
-     *      required=true,
-     *      @OA\MediaType(
-     *          mediaType="multipart/form-data",
-     *          @OA\Schema(
-     *             required={"photo"},
-     *             @OA\Property(property="photo", type="string", format="binary"),
-     *          )
-     *      )
-     *   ),
-     *   @OA\Response(response=200, description="Photo de profil modifiée avec succès."),
-     *   @OA\Response(response=401, description="Non autorisé."),
-     *   @OA\Response(response=404, description="Page introuvable."),
-     * )
-     */
-    public function photo(Request $request)
-    {
-        $user = Auth::user();
-        //Validator
-        $validator = Validator::make($request->all(), [
-			'photo' => 'required|file|mimes:png,jpeg,jpg|max:2048',
-        ]);
-		App::setLocale($user->lg);
-        //Error field
-        if ($validator->fails()) {
-            Log::warning("User::photo - Validator : " . json_encode($request->all()));
-            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
-        }
-        // Upload photo
-        $dir = 'assets/photos';
-        $image = $request->file('photo');
-        $ext = $image->getClientOriginalExtension();
-        $photo = User::filenameUnique($ext);
-        if (!($image->move($dir, $photo))) {
-            Log::warning("User::photo - Erreur de téléchargement de la photo : " . $e->getMessage());
-            return $this->sendError("Erreur de téléchargement de la photo.");
-        }
-        try {
-            $set = [
-                'photo' => $photo,
-            ];
-            User::findOrFail($user->id)->update($set);
-            return $this->sendSuccess('Photo de profil modifiée avec succès.', [], 201);
-        } catch(\Exception $e) {
-            Log::warning("Photo::store - Erreur de modification de la photo de profil : " . $e->getMessage());
-            return $this->sendError("Erreur de modification de la photo de profil");
-        }
-    }
-    //Authentification
-    /**
-    * @OA\Post(
-    *   path="/api/users/auth",
-    *   tags={"Users"},
-    *   operationId="login",
-    *   description="Authenticate Platform and Generate JWT",
-    *   @OA\RequestBody(
-    *      required=true,
-    *      @OA\JsonContent(
-    *         required={"login", "password", "lg"},
-    *         @OA\Property(property="login", type="string"),
-    *         @OA\Property(property="password", type="string"),
-    *         @OA\Property(property="lg", type="string")
-    *      )
-    *   ),
-    *   @OA\Response(response=200, description="Authentification éffectuée avec succès."),
-    *   @OA\Response(response=401, description="Echec d'authentification."),
-    *   @OA\Response(response=404, description="Page introuvable.")
-    * )
-    */
-    public function login(Request $request): JsonResponse
-    {
-        //Validator
-        $validator = Validator::make($request->all(), [
-          'login' => 'required',
-          'password' => 'required',
-          'lg' => 'required',
-        ]);
-		App::setLocale($request->lg);
-        //Error field
-        if ($validator->fails()) {
-          Log::warning("User::login - Validator : ".$validator->errors());
-          return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
-        }
-        $credentialNum = [
-            'number' => $request->login,
-            'password' => $request->password,
-            'status' => 1,
-        ];
-        $credentialEml = [
-            'email' => $request->login,
-            'password' => $request->password,
-            'status' => 1,
-        ];
-        if ((Auth::attempt($credentialNum))||(Auth::attempt($credentialEml))) {
-            try {
-                $user = Auth::user();
-                // Vérifier si le profil existe
-                $profil = Profile::find($user->profile_id);
-                if (!$profil) {
-                    Log::warning("Aucun profil trouvé pour l'utilisateur : " . $user->id);
-                    return $this->sendError(__('message.noprofil'), [], 404);
-                }
-                // Ajouter les informations de l'utilisateur et du profil dans la réponse
-                $data = [];
-                $data['access_token'] =  $user->createToken('MyApp')->accessToken;
-                $data['infos'] = [
-                    'lastname' => $user->lastname,
-                    'firstname' => $user->firstname,
-                    'number' => $user->number,
-                    'email' => $user->email,
-                    'birthday_at' => Carbon::parse($user->birthday_at)->format('d/m/Y'),
-                    'birthplace' => $user->birthplace,
-                    'profile' => $request->lg == 'en' ? $profil->en : $profil->fr,
-                    'photo' => env('APP_URL') . '/assets/photos/' . $user->photo,
-                ];
-                // Code to list permissions
-                $permissions = Permission::select('menus.id', $request->lg . ' as label', 'target', 'icone')
-                ->join('menus', 'menus.id', '=', 'permissions.menu_id')
-                ->where('profile_id', $user->profile_id) // Seulement les menus du profil de l'utilisateur
-                ->where('status', 1) // Seulement les menus activés
-                ->where('action_id', 1) // Seulement les actions de voir
-                ->orderBy('position')
-                ->get();
-                // Vérifier si les données existent
-                if ($permissions->isEmpty()) {
-                    Log::warning("Aucun menu trouvé pour ce profil : " . $user->profile_id);
-                    return $this->sendError(__('message.nomenu'), [], 404);
-                }
-                // Transformer les données
-                $query = $permissions->map(fn($permission) => [
-                    'id' => $permission->id,
-                    'menu' => $permission->label,
-                    'target' => $permission->target,
-                    'icone' => $permission->icone,
-                ]);
-                $data['permissions'] = $query;
-                User::findOrFail($user->id)->update([
-                    'login_at' => now(),
-                    'lg' => $request->lg,
-                ]);
-                // Logs::createLog('Connexion', $user->id, 1);
-                return $this->sendSuccess(__('message.authsucc'), $data);
-            } catch (\Exception $e) {
-                Log::warning("Echec de connexion à la base de données : " . $e->getMessage());
-                return $this->sendError(__('message.error'));
-            }
-        } else {
-            Log::warning("Authentication : " . json_encode($request->all()));
-            return $this->sendError(__('message.autherr'), [], 401);
-        }
-    }
-    //Déconnexion
-    /**
-    * @OA\Post(
-    *   path="/api/users/logout",
-    *   tags={"Users"},
-    *   operationId="logout",
-    *   description="Deconnecte l'utilisateur en supprimant son token d'accès",
-    *   security={{"bearer":{}}},
-    *   @OA\Response(response=200, description="Déconnexion éffectuée avec succès."),
-    *   @OA\Response(response=401, description="Echec d'authentification."),
-    *   @OA\Response(response=404, description="Page introuvable.")
-    * )
-    */
-    public function logout(Request $request)
-    {
-        try {
-            $request->user()->token()->revoke();
-            return $this->sendSuccess(__('message.logoutsucc'));
-        } catch (\Exception $e) {
-            Log::error("Logout error: " . $e->getMessage());
-            return $this->sendError(__('message.logouterr'));
-        }
-    }
 }

@@ -21,7 +21,7 @@ class UserController extends BaseController
     *   description="Liste des Utilisateurs",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Liste des Utilisateurs."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -82,7 +82,7 @@ class UserController extends BaseController
     *   description="Détail d'Utilisateur",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Détail d'Utilisateur."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -271,8 +271,8 @@ class UserController extends BaseController
             'lastname' => 'required',
             'firstname' => 'required',
             'gender' => 'required|in:M,F',
-            'number' => 'required|unique:users,number,'.$uid.',uid',
-            'email' => 'required|unique:users,email,'.$uid.',uid',
+            'number' => 'required|unique:users,number,' . $uid . ',uid',
+            'email' => 'required|unique:users,email,' . $uid . ',uid',
             'birthday' => 'required|date_format:Y-m-d',
             'birthplace' => 'required',
             'profession' => 'required',

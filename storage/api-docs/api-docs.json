@@ -16,8 +16,8 @@
                     "200": {
                         "description": "Liste des documents."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -120,8 +120,8 @@
                     "200": {
                         "description": "Détail d'un document."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -226,8 +226,8 @@
                     "200": {
                         "description": "Document supprimé avec succès."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -238,6 +238,206 @@
                         "bearer": []
                     }
                 ]
+            }
+        },
+        "/api/nationality/list/{lg}": {
+            "get": {
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Liste de Nationalités.",
+                "operationId": "nationality",
+                "responses": {
+                    "200": {
+                        "description": "Liste de Nationalités."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/country/list/{lg}": {
+            "get": {
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Liste de Pays.",
+                "operationId": "country",
+                "responses": {
+                    "200": {
+                        "description": "Liste de Pays."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/provinces/list/{lg}": {
+            "get": {
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Liste de provinces.",
+                "operationId": "province",
+                "responses": {
+                    "200": {
+                        "description": "Liste de provinces."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/regions/list/{lg}/{country_id}": {
+            "get": {
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Liste de régions.",
+                "operationId": "region",
+                "responses": {
+                    "200": {
+                        "description": "Liste de régions."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/districts/list/{lg}/{province_id}": {
+            "get": {
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Liste de districts.",
+                "operationId": "district",
+                "responses": {
+                    "200": {
+                        "description": "Liste de districts."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/sectors/list/{lg}/{district_id}": {
+            "get": {
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Liste de secteurs.",
+                "operationId": "sector",
+                "responses": {
+                    "200": {
+                        "description": "Liste de secteurs."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/cells/list/{lg}/{sector_id}": {
+            "get": {
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Liste de cellules.",
+                "operationId": "cells",
+                "responses": {
+                    "200": {
+                        "description": "Liste de cellules."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/menus/list/{lg}": {
+            "get": {
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Liste des menus",
+                "operationId": "listMenu",
+                "responses": {
+                    "200": {
+                        "description": "Liste des menus."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/actions/list/{lg}": {
+            "get": {
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Liste des actions",
+                "operationId": "listAction",
+                "responses": {
+                    "200": {
+                        "description": "Liste des actions."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
+            }
+        },
+        "/api/periods/list/{lg}": {
+            "get": {
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Liste des périodes",
+                "operationId": "listPeriod",
+                "responses": {
+                    "200": {
+                        "description": "Liste des périodes."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                }
             }
         },
         "/api/password/verifemail": {
@@ -274,8 +474,8 @@
                     "200": {
                         "description": "Vérification de l'email."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -320,8 +520,8 @@
                     "200": {
                         "description": "Vérification du Code OTP."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -376,8 +576,8 @@
                     "200": {
                         "description": "Mot de passe modifié avec succès."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -425,8 +625,8 @@
                     "200": {
                         "description": "Mot de passe modifié avec succès."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -450,8 +650,8 @@
                     "200": {
                         "description": "Liste des profils."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -542,8 +742,8 @@
                     "200": {
                         "description": "Détail d'un profil."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -636,58 +836,8 @@
                     "200": {
                         "description": "Profil supprimé avec succès."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
-                    },
-                    "404": {
-                        "description": "Page introuvable."
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/menus/lists": {
-            "get": {
-                "tags": [
-                    "Profiles"
-                ],
-                "description": "Liste des menus",
-                "operationId": "listMenu",
-                "responses": {
-                    "200": {
-                        "description": "Liste des menus."
-                    },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
-                    },
-                    "404": {
-                        "description": "Page introuvable."
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/actions/lists": {
-            "get": {
-                "tags": [
-                    "Profiles"
-                ],
-                "description": "Liste des actions",
-                "operationId": "listAction",
-                "responses": {
-                    "200": {
-                        "description": "Liste des actions."
-                    },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -734,8 +884,8 @@
                     "200": {
                         "description": "Renvoyer OTP."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -780,8 +930,8 @@
                     "200": {
                         "description": "Validation du Code OTP."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -936,8 +1086,8 @@
                     "200": {
                         "description": "Liste des pièces jointes."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -1006,8 +1156,8 @@
                     "200": {
                         "description": "Détail d'une pièce jointe."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -1078,8 +1228,8 @@
                     "200": {
                         "description": "Pièce jointe supprimée avec succès."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -1090,146 +1240,6 @@
                         "bearer": []
                     }
                 ]
-            }
-        },
-        "/api/settings/nationality/{lg}": {
-            "get": {
-                "tags": [
-                    "Settings"
-                ],
-                "description": "Liste de Nationalités.",
-                "operationId": "nationality",
-                "responses": {
-                    "200": {
-                        "description": "Liste de Nationalités."
-                    },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
-                    },
-                    "404": {
-                        "description": "Page introuvable."
-                    }
-                }
-            }
-        },
-        "/api/settings/country/{lg}": {
-            "get": {
-                "tags": [
-                    "Settings"
-                ],
-                "description": "Liste de Pays.",
-                "operationId": "country",
-                "responses": {
-                    "200": {
-                        "description": "Liste de Pays."
-                    },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
-                    },
-                    "404": {
-                        "description": "Page introuvable."
-                    }
-                }
-            }
-        },
-        "/api/settings/province/{lg}": {
-            "get": {
-                "tags": [
-                    "Settings"
-                ],
-                "description": "Liste de provinces.",
-                "operationId": "province",
-                "responses": {
-                    "200": {
-                        "description": "Liste de provinces."
-                    },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
-                    },
-                    "404": {
-                        "description": "Page introuvable."
-                    }
-                }
-            }
-        },
-        "/api/settings/region/{lg}/{country_id}": {
-            "get": {
-                "tags": [
-                    "Settings"
-                ],
-                "description": "Liste de régions.",
-                "operationId": "region",
-                "responses": {
-                    "200": {
-                        "description": "Liste de régions."
-                    },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
-                    },
-                    "404": {
-                        "description": "Page introuvable."
-                    }
-                }
-            }
-        },
-        "/api/settings/district/{lg}/{province_id}": {
-            "get": {
-                "tags": [
-                    "Settings"
-                ],
-                "description": "Liste de districts.",
-                "operationId": "district",
-                "responses": {
-                    "200": {
-                        "description": "Liste de districts."
-                    },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
-                    },
-                    "404": {
-                        "description": "Page introuvable."
-                    }
-                }
-            }
-        },
-        "/api/settings/sector/{lg}/{district_id}": {
-            "get": {
-                "tags": [
-                    "Settings"
-                ],
-                "description": "Liste de secteurs.",
-                "operationId": "sector",
-                "responses": {
-                    "200": {
-                        "description": "Liste de secteurs."
-                    },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
-                    },
-                    "404": {
-                        "description": "Page introuvable."
-                    }
-                }
-            }
-        },
-        "/api/settings/cells/{lg}/{sector_id}": {
-            "get": {
-                "tags": [
-                    "Settings"
-                ],
-                "description": "Liste de cellules.",
-                "operationId": "cells",
-                "responses": {
-                    "200": {
-                        "description": "Liste de cellules."
-                    },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
-                    },
-                    "404": {
-                        "description": "Page introuvable."
-                    }
-                }
             }
         },
         "/api/spouses": {
@@ -1243,8 +1253,202 @@
                     "200": {
                         "description": "Liste des Conjoints."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/spouses/{uid}": {
+            "get": {
+                "tags": [
+                    "Spouses"
+                ],
+                "description": "Détail du conjoint",
+                "operationId": "showSpouse",
+                "responses": {
+                    "200": {
+                        "description": "Détail du conjoint."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Spouses"
+                ],
+                "description": "Modification d'un conjoint",
+                "operationId": "editSpouse",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "lastname",
+                                    "firstname",
+                                    "gender",
+                                    "number",
+                                    "email",
+                                    "birthday",
+                                    "birthplace",
+                                    "profession",
+                                    "village",
+                                    "street_number",
+                                    "house_number",
+                                    "family_number",
+                                    "fullname_person",
+                                    "number_person",
+                                    "residence_person",
+                                    "cellule_id",
+                                    "maritalstatus_id",
+                                    "town_id",
+                                    "fullname_father",
+                                    "fullname_mother",
+                                    "status",
+                                    "profile_id"
+                                ],
+                                "properties": {
+                                    "lastname": {
+                                        "type": "string"
+                                    },
+                                    "firstname": {
+                                        "type": "string"
+                                    },
+                                    "gender": {
+                                        "type": "string"
+                                    },
+                                    "number": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "birthday": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "birthplace": {
+                                        "type": "string"
+                                    },
+                                    "profession": {
+                                        "type": "string"
+                                    },
+                                    "village": {
+                                        "type": "string"
+                                    },
+                                    "street_number": {
+                                        "type": "string"
+                                    },
+                                    "house_number": {
+                                        "type": "string"
+                                    },
+                                    "family_number": {
+                                        "type": "integer"
+                                    },
+                                    "register_number": {
+                                        "type": "integer"
+                                    },
+                                    "fullname_person": {
+                                        "type": "string"
+                                    },
+                                    "number_person": {
+                                        "type": "string"
+                                    },
+                                    "residence_person": {
+                                        "type": "string"
+                                    },
+                                    "cellule_id": {
+                                        "type": "integer"
+                                    },
+                                    "town_id": {
+                                        "type": "integer"
+                                    },
+                                    "bp": {
+                                        "type": "string"
+                                    },
+                                    "diplome": {
+                                        "type": "string"
+                                    },
+                                    "distinction": {
+                                        "type": "string"
+                                    },
+                                    "maritalstatus_id": {
+                                        "type": "integer"
+                                    },
+                                    "nationality_id": {
+                                        "type": "integer"
+                                    },
+                                    "fullname_father": {
+                                        "type": "string"
+                                    },
+                                    "fullname_mother": {
+                                        "type": "string"
+                                    },
+                                    "comment": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "integer"
+                                    },
+                                    "profile_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "conjoint modifié avec succès."
+                    },
+                    "400": {
+                        "description": "Erreur de validation."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/users?num=1&limit=10&status=0": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Liste des Utilisateurs",
+                "operationId": "listUser",
+                "responses": {
+                    "200": {
+                        "description": "Liste des Utilisateurs."
+                    },
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -1268,8 +1472,8 @@
                     "200": {
                         "description": "Détail d'Utilisateur."
                     },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
+                    "400": {
+                        "description": "Bad Request."
                     },
                     "404": {
                         "description": "Page introuvable."
@@ -1659,34 +1863,6 @@
                     "200": {
                         "description": "Déconnexion éffectuée avec succès."
                     },
-                    "401": {
-                        "description": "Echec d'authentification."
-                    },
-                    "404": {
-                        "description": "Page introuvable."
-                    }
-                },
-                "security": [
-                    {
-                        "bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/users?num=1&limit=10&status=0": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "description": "Liste des Utilisateurs",
-                "operationId": "listUser",
-                "responses": {
-                    "200": {
-                        "description": "Liste des Utilisateurs."
-                    },
-                    "401": {
-                        "description": "Aucune donnée trouvée."
-                    },
                     "404": {
                         "description": "Page introuvable."
                     }
@@ -1705,6 +1881,10 @@
             "description": "Documents"
         },
         {
+            "name": "Lists",
+            "description": "Lists"
+        },
+        {
             "name": "Password",
             "description": "Password"
         },
@@ -1719,10 +1899,6 @@
         {
             "name": "Requestdoc",
             "description": "Requestdoc"
-        },
-        {
-            "name": "Settings",
-            "description": "Settings"
         },
         {
             "name": "Spouses",

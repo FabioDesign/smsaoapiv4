@@ -18,11 +18,12 @@ return new class extends Migration
             $table->string('en', 255);
             $table->string('fr', 255);
             $table->string('amount', 50)->nullable();
-            $table->string('deadline', 255)->nullable();
+            $table->integer('number')->default('0');
             $table->text('description_en');
             $table->text('description_fr');
             $table->tinyinteger('status');
             $table->timestamps();
+            $table->integer('profile_id');
             $table->integer('created_user');
             $table->integer('updated_user')->default('0');
         });

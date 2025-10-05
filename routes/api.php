@@ -5,11 +5,11 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\{
     DocumentController,
+    ListsController,
     PasswordController,
     ProfileController,
     RegisterController,
     RequestdocController,
-    SettingController,
     UserController,
 };
 
@@ -43,15 +43,17 @@ Route::post('users/auth', [UserController::class, 'login']);
 Route::post('password/verifemail', [PasswordController::class, 'verifemail']);
 Route::post('password/verifotp', [PasswordController::class, 'verifotp']);
 Route::post('password/addpass', [PasswordController::class, 'addpass']);
-// Route pour les paramètres
-Route::get('settings/country/{lg}', [SettingController::class, 'country']);
-Route::get('settings/province/{lg}', [SettingController::class, 'province']);
-Route::get('settings/town/{lg}/{region_id}', [SettingController::class, 'town']);
-Route::get('settings/cells/{lg}/{sector_id}', [SettingController::class, 'cells']);
-Route::get('settings/nationality/{lg}', [SettingController::class, 'nationality']);
-Route::get('settings/region/{lg}/{country_id}', [SettingController::class, 'region']);
-Route::get('settings/sector/{lg}/{district_id}', [SettingController::class, 'sector']);
-Route::get('settings/district/{lg}/{province_id}', [SettingController::class, 'district']);
+// Route pour les listes
+Route::get('menus/list/{lg}', [ListsController::class, 'menus']);
+Route::get('actions/list/{lg}', [ListsController::class, 'actions']);
+Route::get('periods/list/{lg}', [ListsController::class, 'periods']);
+Route::get('country/list/{lg}', [ListsController::class, 'country']);
+Route::get('provinces/list/{lg}', [ListsController::class, 'provinces']);
+Route::get('cells/list/{lg}/{sector_id}', [ListsController::class, 'cells']);
+Route::get('nationality/list/{lg}', [ListsController::class, 'nationality']);
+Route::get('regions/list/{lg}/{country_id}', [ListsController::class, 'regions']);
+Route::get('sectors/list/{lg}/{district_id}', [ListsController::class, 'sectors']);
+Route::get('districts/list/{lg}/{province_id}', [ListsController::class, 'districts']);
 
 Route::middleware(['auth:api'])->group(function () {
   Route::resources([
@@ -68,8 +70,4 @@ Route::middleware(['auth:api'])->group(function () {
   Route::post('users/logout', [UserController::class, 'logout']);
   // Route pour les mots de passe
   Route::post('password/editpass', [PasswordController::class, 'editpass']);
-  // Route pour les actions
-  Route::get('actions/lists', [ProfileController::class, 'actions']);
-  // Route pour les menus
-  Route::get('menus/lists', [ProfileController::class, 'menus']);
 });

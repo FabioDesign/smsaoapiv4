@@ -20,7 +20,7 @@ class ProfileController extends BaseController
     *   description="Liste des profils",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Liste des profils."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -61,7 +61,7 @@ class ProfileController extends BaseController
     *   description="Détail d'un profil",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Détail d'un profil."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -222,8 +222,8 @@ class ProfileController extends BaseController
         Log::notice("Profile::update - ID User : {$user->id} - Requête : " . json_encode($request->all()));
         //Validator
         $validator = Validator::make($request->all(), [
-            'en' => 'required|string|max:255|unique:profiles,en,' . $uid,
-            'fr' => 'required|string|max:255|unique:profiles,fr,' . $uid,
+            'en' => 'required|string|max:255|unique:profiles,en,' . $uid . ',uid',
+            'fr' => 'required|string|max:255|unique:profiles,fr,' . $uid . ',uid',
             'description_en' => 'present',
             'description_fr' => 'present',
             'status' => 'required|integer|in:0,1',
@@ -290,7 +290,7 @@ class ProfileController extends BaseController
     *   description="Suppression d'un profil",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Profil supprimé avec succès."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -321,78 +321,6 @@ class ProfileController extends BaseController
         } catch(\Exception $e) {
             Log::warning("Profile::destroy - Erreur lors de la suppression d'un profil : " . $e->getMessage());
             return $this->sendError("Erreur lors de la suppression d'un profil.");
-        }
-    }
-    //Liste des menus
-    /**
-    * @OA\Get(
-    *   path="/api/menus/lists",
-    *   tags={"Profiles"},
-    *   operationId="listMenu",
-    *   description="Liste des menus",
-    *   security={{"bearer":{}}},
-    *   @OA\Response(response=200, description="Liste des menus."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
-    *   @OA\Response(response=404, description="Page introuvable.")
-    * )
-    */
-    public function menus(): JsonResponse {
-        // User
-        $user = Auth::user();
-		App::setLocale($user->lg);
-        try {
-            // Code to list menus
-            $query = Menu::select('id', $user->lg . ' as label')->get();
-            // Vérifier si les données existent
-            if ($query->isEmpty()) {
-                Log::warning("Menu::index - Aucune menu trouvé.");
-                return $this->sendSuccess("Aucune donnée trouvée.");
-            }
-            // Transformer les données
-            $data = $query->map(fn($data) => [
-                'id' => $data->id,
-                'label' => $data->label,
-            ]);
-            return $this->sendSuccess("Liste des menus.", $data);
-        } catch (\Exception $e) {
-            Log::warning("Menu::index - Erreur lors de la récupération des menus: " . $e->getMessage());
-            return $this->sendError("Erreur lors de la récupération des menus.");
-        }
-    }
-    //Liste des actions
-    /**
-    * @OA\Get(
-    *   path="/api/actions/lists",
-    *   tags={"Profiles"},
-    *   operationId="listAction",
-    *   description="Liste des actions",
-    *   security={{"bearer":{}}},
-    *   @OA\Response(response=200, description="Liste des actions."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
-    *   @OA\Response(response=404, description="Page introuvable.")
-    * )
-    */
-    public function actions(): JsonResponse {
-        // User
-        $user = Auth::user();
-		App::setLocale($user->lg);
-        try {
-            // Code to list actions
-            $query = Action::select('id', $user->lg . ' as label')->get();
-            // Vérifier si les données existent
-            if ($query->isEmpty()) {
-                Log::warning("Action::index - Aucune action trouvée");
-                return $this->sendSuccess("Aucune donnée trouvée.");
-            }
-            // Transformer les données
-            $data = $query->map(fn($data) => [
-                'id' => $data->id,
-                'label' => $data->label,
-            ]);
-            return $this->sendSuccess("Liste des actions.", $data);
-        } catch (\Exception $e) {
-            Log::warning("Action::index - Erreur lors de la récupération des actions: " . $e->getMessage());
-            return $this->sendError("Erreur lors de la récupération des actions.");
         }
     }
 }

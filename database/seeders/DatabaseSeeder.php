@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
                 ActionSeeder::class,
                 // Menu
                 MenuSeeder::class,
+                // Period
+                PeriodSeeder::class,
                 // Profil
                 ProfileSeeder::class,
                 // Permission

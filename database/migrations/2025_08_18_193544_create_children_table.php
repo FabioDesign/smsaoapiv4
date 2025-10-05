@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('children', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uid')->unique();
             $table->tinyinteger('rank');
             $table->string('filename', 255);
             $table->tinyinteger('status')->default('1');

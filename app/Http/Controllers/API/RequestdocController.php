@@ -20,7 +20,7 @@ class RequestdocController extends BaseController
     *   description="Liste des pièces jointes",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Liste des pièces jointes."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -45,7 +45,7 @@ class RequestdocController extends BaseController
                 'status' => $data->status ? 'Activé':'Désactivé',
                 'date' => Carbon::parse($data->created_at)->format('d/m/Y H:i'),
             ]);
-            return $this->sendSuccess("Liste des pièces jointes récupérée avec succès.", $data);
+            return $this->sendSuccess("Liste des pièces jointes.", $data);
         } catch (\Exception $e) {
             Log::warning("Requestdoc::index - Erreur lors de la récupération des pièces jointes: " . $e->getMessage());
             return $this->sendError("Erreur lors de la récupération des pièces jointes.");
@@ -60,7 +60,7 @@ class RequestdocController extends BaseController
     *   description="Détail d'une pièce jointe",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Détail d'une pièce jointe."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -116,8 +116,8 @@ class RequestdocController extends BaseController
         Log::notice("Requestdoc::store - ID User : {$user->id} - Requête : " . json_encode($request->all()));
         //Validator
         $validator = Validator::make($request->all(), [
-            'en' => 'required|string|max:255|unique:requestdoc,en',
-            'fr' => 'required|string|max:255|unique:requestdoc,fr',
+            'en' => 'required|string|max:255|unique:requestdocs,en',
+            'fr' => 'required|string|max:255|unique:requestdocs,fr',
         ]);
         //Error field
         if($validator->fails()){
@@ -176,8 +176,8 @@ class RequestdocController extends BaseController
         Log::notice("Requestdoc::update - ID User : {$user->id} - Requête : " . json_encode($request->all()));
         //Validator
         $validator = Validator::make($request->all(), [
-            'en' => 'required|string|max:255|unique:requestdoc,en,' . $uid,
-            'fr' => 'required|string|max:255|unique:requestdoc,fr,' . $uid,
+            'en' => 'required|string|max:255|unique:requestdocs,en,' . $uid . ',uid',
+            'fr' => 'required|string|max:255|unique:requestdocs,fr,' . $uid . ',uid',
             'status' => 'required|integer|in:0,1',
         ]);
         //Error field
@@ -222,7 +222,7 @@ class RequestdocController extends BaseController
     *   description="Suppression d'une pièce jointe",
     *   security={{"bearer":{}}},
     *   @OA\Response(response=200, description="Pièce jointe supprimée avec succès."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */

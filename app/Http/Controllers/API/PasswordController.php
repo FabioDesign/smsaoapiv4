@@ -27,7 +27,7 @@ class PasswordController extends BaseController
     *      )
     *   ),
     *   @OA\Response(response=200, description="Vérification de l'email."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -96,7 +96,7 @@ class PasswordController extends BaseController
     *      )
     *   ),
     *   @OA\Response(response=200, description="Vérification du Code OTP."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -155,7 +155,7 @@ class PasswordController extends BaseController
     *      )
     *   ),
     *   @OA\Response(response=200, description="Mot de passe modifié avec succès."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -221,7 +221,7 @@ class PasswordController extends BaseController
     *      )
     *   ),
     *   @OA\Response(response=200, description="Mot de passe modifié avec succès."),
-    *   @OA\Response(response=200, description="Aucune donnée trouvée."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
