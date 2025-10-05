@@ -112,8 +112,8 @@ class ProfileController extends BaseController
     *         required={"en", "fr", "permissions"},
     *         @OA\Property(property="en", type="string"),
     *         @OA\Property(property="fr", type="string"),
-    *         @OA\Property(property="description_en", type="text"),
-    *         @OA\Property(property="description_fr", type="text"),
+    *         @OA\Property(property="description_en", type="string"),
+    *         @OA\Property(property="description_fr", type="string"),
     *         @OA\Property(property="permissions", type="array", @OA\Items(
     *               @OA\Property(property="menu_id", type="integer"),
     *               @OA\Property(property="action_id", type="integer"),
@@ -198,8 +198,8 @@ class ProfileController extends BaseController
     *         required={"en", "fr", "permissions", "status"},
     *         @OA\Property(property="en", type="string"),
     *         @OA\Property(property="fr", type="string"),
-    *         @OA\Property(property="description_en", type="text"),
-    *         @OA\Property(property="description_fr", type="text"),
+    *         @OA\Property(property="description_en", type="string"),
+    *         @OA\Property(property="description_fr", type="string"),
     *         @OA\Property(property="status", type="integer"),
     *         @OA\Property(property="permissions", type="array", @OA\Items(
     *               @OA\Property(property="menu_id", type="integer"),

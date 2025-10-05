@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use \Carbon\Carbon;
 use Illuminate\Support\Str;
-use App\Models\{Document, File};
+use App\Models\{Document, File, Period};
 use Illuminate\Http\{Request, JsonResponse};
 use Illuminate\Support\Facades\{App, Auth, DB, Log, Validator};
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -30,7 +30,8 @@ class DocumentController extends BaseController
 		App::setLocale($user->lg);
         try {
             // Code to list documents
-            $query = Document::select('uid', 'code', $user->lg . ' as label', 'amount', 'number', 'description_' . $user->lg . ' as description', 'status', 'created_at')
+            $query = Document::select('uid', 'code', 'documents.' . $user->lg . ' as label', 'amount', 'number', 'description_' . $user->lg . ' as description', 'periods.' . $user->lg . ' as period', 'status', 'created_at')
+            ->join('periods', 'periods.id','=','documents.period_id')
             ->orderByDesc('created_at')
             ->get();
             // Vérifier si les données existent
@@ -45,6 +46,7 @@ class DocumentController extends BaseController
                 'label' => $data->label,
                 'amount' => $data->amount,
                 'number' => $data->number,
+                'period' => $data->period,
                 'description' => $data->description,
                 'status' => $data->status ? 'Activé':'Désactivé',
                 'date' => Carbon::parse($data->created_at)->format('d/m/Y H:i'),
@@ -81,6 +83,10 @@ class DocumentController extends BaseController
             return $this->sendSuccess("Aucune donnée trouvée.");
         }
         try {
+            // Periodes
+            $period = Period::select('id', $user->lg . ' as label')
+            ->where('id', $document->period_id)
+            ->first();
             // Charger les files avec eager loading et les transformer directement
             $files = $document->files
             ->join('requestdocs', 'requestdocs.id','=','files.requestdoc_id')
@@ -102,6 +108,10 @@ class DocumentController extends BaseController
                 'number' => $document->number,
                 'description' => $document->description,
                 'status' => $document->status ? 'Activé' : 'Désactivé',
+                'periods' => [
+                    'id' => $period->id,
+                    'label' => $period->label,
+                ],
                 'files' => $files,
             ]);
         } catch(\Exception $e) {
@@ -126,8 +136,9 @@ class DocumentController extends BaseController
     *         @OA\Property(property="fr", type="string"),
     *         @OA\Property(property="amount", type="string"),
     *         @OA\Property(property="number", type="string"),
-    *         @OA\Property(property="description_en", type="text"),
-    *         @OA\Property(property="description_fr", type="text"),
+    *         @OA\Property(property="period_id", type="integer"),
+    *         @OA\Property(property="description_en", type="string"),
+    *         @OA\Property(property="description_fr", type="string"),
     *         @OA\Property(property="files", type="array", @OA\Items(
     *               @OA\Property(property="requestdoc_id", type="integer"),
     *               @OA\Property(property="required", type="integer"),
@@ -154,6 +165,7 @@ class DocumentController extends BaseController
             'fr' => 'required|string|max:255|unique:documents,fr',
             'amount' => 'present',
             'number' => 'present',
+            'period_id' => 'present',
             'description_en' => 'required',
             'description_fr' => 'required',
             'files' => 'required|array',
@@ -172,6 +184,7 @@ class DocumentController extends BaseController
             'created_user' => $user->id,
             'amount' => $request->amount ?? '',
             'number' => $request->number ?? '',
+            'period_id' => $request->period_id ?? 0,
             'description_en' => $request->description_en,
             'description_fr' => $request->description_fr,
         ];
@@ -196,10 +209,6 @@ class DocumentController extends BaseController
                 'code' => $request->code,
                 'en' => $request->en,
                 'fr' => $request->fr,
-                'amount' => $request->amount,
-                'number' => $request->number,
-                'description_en' => $request->description_en,
-                'description_fr' => $request->description_fr,
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Annuler la transaction en cas d'erreur
@@ -224,8 +233,9 @@ class DocumentController extends BaseController
     *         @OA\Property(property="fr", type="string"),
     *         @OA\Property(property="amount", type="string"),
     *         @OA\Property(property="number", type="string"),
-    *         @OA\Property(property="description_en", type="text"),
-    *         @OA\Property(property="description_fr", type="text"),
+    *         @OA\Property(property="period_id", type="integer"),
+    *         @OA\Property(property="description_en", type="string"),
+    *         @OA\Property(property="description_fr", type="string"),
     *         @OA\Property(property="status", type="integer"),
     *         @OA\Property(property="files", type="array", @OA\Items(
     *               @OA\Property(property="requestdoc_id", type="integer"),
@@ -253,6 +263,7 @@ class DocumentController extends BaseController
             'fr' => 'required|string|max:255|unique:documents,fr,' . $uid . ',uid',
             'amount' => 'present',
             'number' => 'present',
+            'period_id' => 'present',
             'description_en' => 'required',
             'description_fr' => 'required',
             'status' => 'required|integer|in:0,1',
@@ -277,6 +288,7 @@ class DocumentController extends BaseController
             'status' => $request->status,
             'amount' => $request->amount ?? '',
             'number' => $request->number ?? '',
+            'period_id' => $request->period_id ?? 0,
             'description_en' => $request->description_en,
             'description_fr' => $request->description_fr,
         ];
@@ -303,10 +315,6 @@ class DocumentController extends BaseController
                 'code' => $request->code,
                 'en' => $request->en,
                 'fr' => $request->fr,
-                'amount' => $request->amount,
-                'number' => $request->number,
-                'description_en' => $request->description_en,
-                'description_fr' => $request->description_fr,
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Annuler la transaction en cas d'erreur
