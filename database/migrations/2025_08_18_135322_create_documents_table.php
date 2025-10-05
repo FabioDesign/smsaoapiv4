@@ -23,7 +23,7 @@ return new class extends Migration
             $table->text('description_fr');
             $table->tinyinteger('status');
             $table->timestamps();
-            $table->integer('profile_id');
+            $table->integer('period_id');
             $table->integer('created_user');
             $table->integer('updated_user')->default('0');
         });

@@ -30,7 +30,7 @@ class DocumentController extends BaseController
 		App::setLocale($user->lg);
         try {
             // Code to list documents
-            $query = Document::select('uid', 'code', $user->lg . ' as label', 'amount', 'deadline', 'description_' . $user->lg . ' as description', 'status', 'created_at')
+            $query = Document::select('uid', 'code', $user->lg . ' as label', 'amount', 'number', 'description_' . $user->lg . ' as description', 'status', 'created_at')
             ->orderByDesc('created_at')
             ->get();
             // Vérifier si les données existent
@@ -44,7 +44,7 @@ class DocumentController extends BaseController
                 'code' => $data->code,
                 'label' => $data->label,
                 'amount' => $data->amount,
-                'deadline' => $data->deadline,
+                'number' => $data->number,
                 'description' => $data->description,
                 'status' => $data->status ? 'Activé':'Désactivé',
                 'date' => Carbon::parse($data->created_at)->format('d/m/Y H:i'),
@@ -73,7 +73,7 @@ class DocumentController extends BaseController
         $user = Auth::user();
 		App::setLocale($user->lg);
         // Vérifier si l'ID est présent et valide
-        $document = Document::select('id', 'code', $user->lg . ' as label', 'amount', 'deadline', 'description_' . $user->lg . ' as description', 'status')
+        $document = Document::select('id', 'code', $user->lg . ' as label', 'amount', 'number', 'description_' . $user->lg . ' as description', 'status')
         ->where('uid', $uid)
         ->first();
         if (!$document) {
@@ -84,10 +84,9 @@ class DocumentController extends BaseController
             // Charger les files avec eager loading et les transformer directement
             $files = $document->files
             ->join('requestdocs', 'requestdocs.id','=','files.requestdoc_id')
-            ->sortBy(['files.uid', $user->lg . ' as label', 'required', 'files.status'])
+            ->sortBy([$user->lg . ' as label', 'required', 'files.status'])
             ->map(function ($file) {
                 return [
-                    'uid' => $file->uid,
                     'label' => $file->label,
                     'required' => $file->required ? 'Requis' : 'facultatif',
                     'status' => $file->status ? 'Activé' : 'Désactivé',
@@ -100,7 +99,7 @@ class DocumentController extends BaseController
                 'code' => $document->code,
                 'label' => $document->label,
                 'amount' => $document->amount,
-                'deadline' => $document->deadline,
+                'number' => $document->number,
                 'description' => $document->description,
                 'status' => $document->status ? 'Activé' : 'Désactivé',
                 'files' => $files,
@@ -126,7 +125,7 @@ class DocumentController extends BaseController
     *         @OA\Property(property="en", type="string"),
     *         @OA\Property(property="fr", type="string"),
     *         @OA\Property(property="amount", type="string"),
-    *         @OA\Property(property="deadline", type="string"),
+    *         @OA\Property(property="number", type="string"),
     *         @OA\Property(property="description_en", type="text"),
     *         @OA\Property(property="description_fr", type="text"),
     *         @OA\Property(property="files", type="array", @OA\Items(
@@ -138,7 +137,7 @@ class DocumentController extends BaseController
     *      )
     *   ),
     *   @OA\Response(response=200, description="Document enregisté avec succès."),
-    *   @OA\Response(response=400, description="Erreur de validation."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -154,7 +153,7 @@ class DocumentController extends BaseController
             'en' => 'required|string|max:255|unique:documents,en',
             'fr' => 'required|string|max:255|unique:documents,fr',
             'amount' => 'present',
-            'deadline' => 'present',
+            'number' => 'present',
             'description_en' => 'required',
             'description_fr' => 'required',
             'files' => 'required|array',
@@ -172,7 +171,7 @@ class DocumentController extends BaseController
             'code' => $request->code,
             'created_user' => $user->id,
             'amount' => $request->amount ?? '',
-            'deadline' => $request->deadline ?? '',
+            'number' => $request->number ?? '',
             'description_en' => $request->description_en,
             'description_fr' => $request->description_fr,
         ];
@@ -198,7 +197,7 @@ class DocumentController extends BaseController
                 'en' => $request->en,
                 'fr' => $request->fr,
                 'amount' => $request->amount,
-                'deadline' => $request->deadline,
+                'number' => $request->number,
                 'description_en' => $request->description_en,
                 'description_fr' => $request->description_fr,
             ], 201);
@@ -224,7 +223,7 @@ class DocumentController extends BaseController
     *         @OA\Property(property="en", type="string"),
     *         @OA\Property(property="fr", type="string"),
     *         @OA\Property(property="amount", type="string"),
-    *         @OA\Property(property="deadline", type="string"),
+    *         @OA\Property(property="number", type="string"),
     *         @OA\Property(property="description_en", type="text"),
     *         @OA\Property(property="description_fr", type="text"),
     *         @OA\Property(property="status", type="integer"),
@@ -237,7 +236,7 @@ class DocumentController extends BaseController
     *      )
     *   ),
     *   @OA\Response(response=200, description="Document modifié avec succès."),
-    *   @OA\Response(response=400, description="Erreur de validation."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -253,7 +252,7 @@ class DocumentController extends BaseController
             'en' => 'required|string|max:255|unique:documents,en,' . $uid . ',uid',
             'fr' => 'required|string|max:255|unique:documents,fr,' . $uid . ',uid',
             'amount' => 'present',
-            'deadline' => 'present',
+            'number' => 'present',
             'description_en' => 'required',
             'description_fr' => 'required',
             'status' => 'required|integer|in:0,1',
@@ -277,7 +276,7 @@ class DocumentController extends BaseController
             'updated_user' => $user->id,
             'status' => $request->status,
             'amount' => $request->amount ?? '',
-            'deadline' => $request->deadline ?? '',
+            'number' => $request->number ?? '',
             'description_en' => $request->description_en,
             'description_fr' => $request->description_fr,
         ];
@@ -305,7 +304,7 @@ class DocumentController extends BaseController
                 'en' => $request->en,
                 'fr' => $request->fr,
                 'amount' => $request->amount,
-                'deadline' => $request->deadline,
+                'number' => $request->number,
                 'description_en' => $request->description_en,
                 'description_fr' => $request->description_fr,
             ], 201);

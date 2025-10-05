@@ -104,7 +104,7 @@ class RequestdocController extends BaseController
     *      )
     *   ),
     *   @OA\Response(response=200, description="Pièce jointe enregistée avec succès."),
-    *   @OA\Response(response=400, description="Erreur de validation."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
@@ -164,7 +164,7 @@ class RequestdocController extends BaseController
     *      )
     *   ),
     *   @OA\Response(response=200, description="Pièce jointe modifiée avec succès."),
-    *   @OA\Response(response=400, description="Erreur de validation."),
+    *   @OA\Response(response=400, description="Bad Request."),
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
