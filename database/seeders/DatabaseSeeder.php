@@ -13,20 +13,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void{
         try {
             $this->call([
-                // Action
-                ActionSeeder::class,
-                // Menu
-                MenuSeeder::class,
-                // Period
-                PeriodSeeder::class,
-                // Profil
-                ProfileSeeder::class,
-                // Permission
-                PermissionSeeder::class,
-                // Pièces à fournir
-                RequestdocSeeder::class,
-                // Situation matrimoniale
-                MaritalStatusSeeder::class,
+                // Réseaux
+                NetworkSeeder::class,
+                // Préfixe
+                PrefixSeeder::class,
+                // Type SMS
+                SmsTypeSeeder::class,
+                // Type de compte
+                AccountTypeSeeder::class,
+                // Ville
+                TownSeeder::class,
             ]);
         } catch (QueryException $e) {
             $this->command->info('Erreur d’insertion détectée. Processus de seed ignoré pour cet enregistrement.');

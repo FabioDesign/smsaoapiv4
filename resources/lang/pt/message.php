@@ -17,17 +17,17 @@ return [
     'logouterr' => "Error while logging out.",
     'creataccount' => "Account creation",
     'actifaccount' => "Account activation",
-    'nodata' => "No data found.",
+    'nodata' => "Não foram encontrados dados.",
 
     //Password
     'forgotpwd' => "Forgot password.",
     'otp' => "The OTP code is",
 
     // Settings
-    'townlist' => "List of cities.",
-    'townlisterror' => "Error retrieving cities.",
-    'accountlist' => "List of account types.",
-    'accountlisterror' => "Error retrieving account types.",
+    'townlist' => "Lista de cidades.",
+    'townlisterror' => "Erro ao recuperar as cidades.",
+    'accountlist' => "Lista de tipos de conta.",
+    'accountlisterror' => "Erro ao recuperar os tipos de conta.",
     
     // Mail
     'dear' => "Dear",
