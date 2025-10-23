@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 
-use App\Models\{Checkotp, User};
+use App\Models\User;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\{Request, JsonResponse};
 use Illuminate\Support\Facades\{App, Auth, Hash, Log, Validator};
@@ -21,9 +21,9 @@ class PasswordController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"email", "lg"},
+    *         required={"lg", "email"},
+    *         @OA\Property(property="lg", type="string"),
     *         @OA\Property(property="email", type="string", example="fabio@yopmail.com"),
-    *         @OA\Property(property="lg", type="string")
     *      )
     *   ),
     *   @OA\Response(response=200, description="Vérification de l'email."),
@@ -34,13 +34,13 @@ class PasswordController extends BaseController
     public function verifemail(Request $request): JsonResponse {
         //Validator
         $validator = Validator::make($request->all(), [
+            'lg' => 'required|in:en,pt',
             'email' => 'required|email|exists:users,email',
-            'lg' => 'required',
         ]);
 		App::setLocale($request->lg);
         //Error field
-        if($validator->fails()){
-            Log::warning("Password forgot - Validator email : ".$request->email);
+        if ($validator->fails()) {
+            Log::warning("Password::verifemail - Validator : " . $validator->errors()->first() . " - ".json_encode($request->all()));
             return $this->sendSuccess(__('message.fielderr'), $validator->errors(), 422);
         }
         try {
@@ -48,22 +48,18 @@ class PasswordController extends BaseController
             $user = User::where('email', $request->email)->first();
             // Générer l'OTP sécurisé
             $otp = random_int(100, 999) . ' ' . random_int(100, 999);
-            // Gender
-            if ($user->gender == 'M')
-                $gender = __('message.mr');
-            else
-                $gender = __('message.mrs');
             //subject
             $subject = __('message.forgotpwd');
             $message = "<div style='color:#156082;font-size:11pt;line-height:1.5em;font-family:Century Gothic'>"
-            . __('message.dear') . " " . $gender ." ".$user->lastname.",<br><br>"
-            . __('message.otp') . " : <b>" . $otp . "</b><br><br>"
-            . __('message.bestregard') . " !<br>
-            <hr style='color:#156082;'>
-            </div>";
+            . __('message.dear') . " " . $user->lastname . ",<br><br>"
+            . __('message.otp') . " : <b>" . $otp . "</b><br><br>
+            <hr style='color:#156082;'>"
+            . __('message.bestregard') . " !<br>"
+            . env('MAIL_SIGNATURE')
+            . "</div>";
             try {
                 // Envoi de l'email
-                $this->sendMail($request->email, '', $subject, $message);
+                $this->sendMail($request->email, env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'), env('MAIL_CC'), $subject, $message);
                 // Mettre à jour l'utilisateur avec l'OTP et l'horodatage
                 $user->update([
                     'otp' => str_replace(' ', '', $otp),
@@ -89,10 +85,10 @@ class PasswordController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"email", "otp", "lg"},
+    *         required={"lg", "email", "otp"},
+    *         @OA\Property(property="lg", type="string"),
     *         @OA\Property(property="email", type="string"),
     *         @OA\Property(property="otp", type="string"),
-    *         @OA\Property(property="lg", type="string")
     *      )
     *   ),
     *   @OA\Response(response=200, description="Vérification du Code OTP."),
@@ -103,14 +99,14 @@ class PasswordController extends BaseController
     public function verifotp(Request $request): JsonResponse {
         //Validator
         $validator = Validator::make($request->all(), [
+            'lg' => 'required|in:en,pt',
             'email' => 'required|email|exists:users,email',
             'otp' => 'required|size:6',
-            'lg' => 'required',
         ]);
 		App::setLocale($request->lg);
         //Error field
-        if($validator->fails()){
-            Log::warning("Password forgot - Validator otp : ".$request->email);
+        if ($validator->fails()) {
+            Log::warning("Password::verifotp - Validator : " . $validator->errors()->first() . " - ".json_encode($request->all()));
             return $this->sendSuccess(__('message.fielderr'), $validator->errors(), 422);
         }
         try {
@@ -122,15 +118,15 @@ class PasswordController extends BaseController
             ->first();
             // Vérifier si les données existent
             if (!$user) {
-                Log::warning("Email ou Code OTP erroné : " . $request->email);
-                return $this->sendError("Email ou Code OTP erroné.", [], 404);
+                Log::warning("Email ou Code OTP erroné : " . json_encode($request->all()));
+                return $this->sendError(__('message.otperr'), [], 404);
             }
             // Vérifier si l'OTP a expiré
             if (!($user->otp_at >= now()->subMinutes(5))) {
-                Log::warning("Code OTP a expiré : " . $request->email);
-                return $this->sendError("Code OTP a expiré.", [], 404);
+                Log::warning("Code OTP a expiré : " . json_encode($request->all()));
+                return $this->sendError(__('message.otpexp'), [], 404);
             }
-            return $this->sendSuccess("Code OTP validé avec succès.", [], 201);
+            return $this->sendSuccess(__('message.otpsucc'));
         } catch(\Exception $e) {
             Log::warning("Une erreur est survenue, veuillez réessayer plus tard : " . $e->getMessage());
             return $this->sendError(__('message.error'));
@@ -146,12 +142,12 @@ class PasswordController extends BaseController
     *   @OA\RequestBody(
     *      required=true,
     *      @OA\JsonContent(
-    *         required={"email", "otp", "password", "password_confirmation", "lg"},
+    *         required={"lg", "email", "otp", "password", "password_confirmation"},
+    *         @OA\Property(property="lg", type="string"),
     *         @OA\Property(property="email", type="string"),
     *         @OA\Property(property="otp", type="string"),
     *         @OA\Property(property="password", type="string", format="password"),
     *         @OA\Property(property="password_confirmation", type="string", format="password"),
-    *         @OA\Property(property="lg", type="string")
     *      )
     *   ),
     *   @OA\Response(response=200, description="Mot de passe modifié avec succès."),
@@ -162,6 +158,7 @@ class PasswordController extends BaseController
     public function addpass(Request $request){
         //Validator
         $validator = Validator::make($request->all(), [
+            'lg' => 'required|in:en,pt',
             'email' => 'required|email|exists:users,email',
             'otp' => 'required|size:6',
             'password' => [
@@ -172,12 +169,11 @@ class PasswordController extends BaseController
                     ->numbers()   // Doit contenir des chiffres
                     ->symbols()   // Doit contenir des caractères spéciaux
             ],
-            'lg' => 'required',
         ]);
 		App::setLocale($request->lg);
         //Error field
-        if($validator->fails()){
-            Log::warning("Validator password forgot - password : " . json_encode($request->all()));
+        if ($validator->fails()) {
+            Log::warning("Password::addpass - Validator : " . $validator->errors()->first() . " - ".json_encode($request->all()));
             return $this->sendSuccess(__('message.fielderr'), $validator->errors(), 422);
         }
         // Récupérer les données
@@ -244,8 +240,8 @@ class PasswordController extends BaseController
             ],
         ]);
         //Error field
-        if($validator->fails()){
-            Log::warning("Validator password edit : " . json_encode($request->all()));
+        if ($validator->fails()) {
+            Log::warning("Password::editpass - Validator : " . $validator->errors()->first() . " - ".json_encode($request->all()));
             return $this->sendSuccess(__('message.fielderr'), $validator->errors(), 422);
         }
         // Vérification de l'ancien mot de passe

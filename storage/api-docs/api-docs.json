@@ -58,16 +58,16 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "email",
-                                    "lg"
+                                    "lg",
+                                    "email"
                                 ],
                                 "properties": {
+                                    "lg": {
+                                        "type": "string"
+                                    },
                                     "email": {
                                         "type": "string",
                                         "example": "fabio@yopmail.com"
-                                    },
-                                    "lg": {
-                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
@@ -101,18 +101,18 @@
                         "application/json": {
                             "schema": {
                                 "required": [
+                                    "lg",
                                     "email",
-                                    "otp",
-                                    "lg"
+                                    "otp"
                                 ],
                                 "properties": {
+                                    "lg": {
+                                        "type": "string"
+                                    },
                                     "email": {
                                         "type": "string"
                                     },
                                     "otp": {
-                                        "type": "string"
-                                    },
-                                    "lg": {
                                         "type": "string"
                                     }
                                 },
@@ -147,13 +147,16 @@
                         "application/json": {
                             "schema": {
                                 "required": [
+                                    "lg",
                                     "email",
                                     "otp",
                                     "password",
-                                    "password_confirmation",
-                                    "lg"
+                                    "password_confirmation"
                                 ],
                                 "properties": {
+                                    "lg": {
+                                        "type": "string"
+                                    },
                                     "email": {
                                         "type": "string"
                                     },
@@ -167,9 +170,6 @@
                                     "password_confirmation": {
                                         "type": "string",
                                         "format": "password"
-                                    },
-                                    "lg": {
-                                        "type": "string"
                                     }
                                 },
                                 "type": "object"

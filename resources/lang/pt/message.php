@@ -26,6 +26,9 @@ return [
     //Senha
     'forgotpwd' => "Esqueci a senha.",
     'otp' => "O código OTP é",
+    'otpsucc' => "Código OTP validado com sucesso.",
+    'otperr' => "Código OTP incorreto.",
+    'otpexp' => "O código OTP expirou.",
 
     // Configurações
     'userlist' => "Lista de utilizadores.",

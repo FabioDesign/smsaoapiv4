@@ -73,7 +73,7 @@ class BaseController extends Controller
       $mail->Subject = $subject;
       $mail->Body = $message;
       $mail->send();
-      Log::info('SendMail - Success : Email has been sent.');
+      Log::info('SendMail - Success : Email has been sent to' . $to);
     } catch(Exception $e) {
       Log::warning('SendMail - Error : ' . $e->getMessage());
     }

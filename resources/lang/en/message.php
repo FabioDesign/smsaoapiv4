@@ -26,6 +26,9 @@ return [
     //Password
     'forgotpwd' => "Forgot password.",
     'otp' => "The OTP code is",
+    'otpsucc' => "OTP code successfully validated.",
+    'otperr' => "Incorrect OTP code.",
+    'otpexp' => "OTP code has expired.",
 
     // Settings
     'userlist' => "List of users.",

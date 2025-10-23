@@ -46,7 +46,7 @@ class UserController extends BaseController
         Log::notice("User::store : " . json_encode($request->all()));
         //Validator
         $validator = Validator::make($request->all(), [
-            'lg' => 'required|in:pt,en',
+            'lg' => 'required|in:en,pt',
             'lastname' => 'required',
             'firstname' => 'required',
             'number' => 'required|unique:users,number',
@@ -127,9 +127,13 @@ class UserController extends BaseController
                 Dear Mr.,<br /><br />
                 Confirmation mail of registration of <b>" . $username . "</b><br />
                 Contact : <b>" . $request->number . "</b><br />
-                Email : <b>" . $email . "</b><br />";
-                if ($request->accountyp_id != 1) $message .= "Business Name : <b>" . $request->company . "</b><br />";
-                $message .=  "<br />Best Regards." . env('MAIL_SIGNATURE') . "</div>";
+                Email : <b>" . $email . "</b><br />
+                Business Name : <b>" . $request->company . "</b><br />";
+                $message .=  "<br />
+                <hr style='color:#156082;'>"
+                . __('message.bestregard')
+                . env('MAIL_SIGNATURE')
+                . "<hr style='color:#156082;'></div>";
                 // Envoi de l'email
                 $this->sendMail(env('MAIL_FROM_ADDRESS'), $email, $username, env('MAIL_CC'), $subject, $message);
 
@@ -138,15 +142,19 @@ class UserController extends BaseController
                     $content = "Dear M./Mrs. " . $username . "<br /><br />
                     Thank you for your registration on SMS illico, our platform of sending SMS through the web.<br />
                     Your registration has been taken into account and will be validated within 48 hours maximum after verification of provided information.<br />
-                    You will receive an SMS and a mail after the activation of your account.<br /><br />Best Regards.";
+                    You will receive an SMS and a mail after the activation of your account.<br /><br />";
                 } else {
                     $content = "Prezado(a) Sr.(a) " . $username . "<br /><br />
                     Obrigado pelo seu registo no SMS illico, a nossa plataforma de envio de SMS através da web.<br />
                     O seu registo foi registado e será validado no prazo máximo de 48 horas após a verificação das informações fornecidas.<br />
-                    Receberá um SMS e um e-mail após a ativação da sua conta.<br /><br />Cumprimentos.";
+                    Receberá um SMS e um e-mail após a ativação da sua conta.<br /><br />";
                 }
                 $message = "<div style='color:#156082;font-size:11pt;line-height:1.5em;font-family:Century Gothic'>
-                " . $content . env('MAIL_SIGNATURE') . "</div>";
+                " . $content
+                . "<hr style='color:#156082;'>"
+                . __('message.bestregard')
+                . env('MAIL_SIGNATURE')
+                . "<hr style='color:#156082;'></div>";
                 // Envoi de l'email
                 $this->sendMail($email, env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'), env('MAIL_CC'), $subject, $message);
                 // Retourner les données de l'utilisateur
