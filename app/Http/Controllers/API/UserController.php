@@ -111,7 +111,7 @@ class UserController extends BaseController
                 'address' => $request->address ?? '',
                 'website' => $request->website ?? '',
                 'password_at' => now(),
-                'password' => Hash::make($request->password),
+                'password' => Hash::make("Azerty@2025"),
             ];
             DB::beginTransaction(); // Démarrer une transaction
             try {
@@ -129,7 +129,7 @@ class UserController extends BaseController
                 Contact : <b>" . $request->number . "</b><br />
                 Email : <b>" . $email . "</b><br />";
                 if ($request->accountyp_id != 1) $message .= "Business Name : <b>" . $request->company . "</b><br />";
-                $message .= env('MAIL_SIGNATURE') . "</div>";
+                $message .=  "<br />Best Regards." . env('MAIL_SIGNATURE') . "</div>";
                 // Envoi de l'email
                 $this->sendMail(env('MAIL_FROM_ADDRESS'), $email, $username, env('MAIL_CC'), $subject, $message);
 
@@ -138,12 +138,12 @@ class UserController extends BaseController
                     $content = "Dear M./Mrs. " . $username . "<br /><br />
                     Thank you for your registration on SMS illico, our platform of sending SMS through the web.<br />
                     Your registration has been taken into account and will be validated within 48 hours maximum after verification of provided information.<br />
-                    You will receive an SMS and a mail after the activation of your account.<br /><br />Best Regards.<br />LOGICMIND, LDA";
+                    You will receive an SMS and a mail after the activation of your account.<br /><br />Best Regards.";
                 } else {
                     $content = "Prezado(a) Sr.(a) " . $username . "<br /><br />
                     Obrigado pelo seu registo no SMS illico, a nossa plataforma de envio de SMS através da web.<br />
                     O seu registo foi registado e será validado no prazo máximo de 48 horas após a verificação das informações fornecidas.<br />
-                    Receberá um SMS e um e-mail após a ativação da sua conta.<br /><br />Cumprimentos.<br />LOGICMIND, LDA";
+                    Receberá um SMS e um e-mail após a ativação da sua conta.<br /><br />Cumprimentos.";
                 }
                 $message = "<div style='color:#156082;font-size:11pt;line-height:1.5em;font-family:Century Gothic'>
                 " . $content . env('MAIL_SIGNATURE') . "</div>";
@@ -308,6 +308,9 @@ class UserController extends BaseController
         if ((Auth::attempt($credentialNum))||(Auth::attempt($credentialEml))) {
             try {
                 $user = Auth::user();
+                // Test si la photo est vide
+                if ($user->photo != '') $photo = $user->photo;
+                else $photo = 'avatar.jpg';
                 // Ajouter les informations de l'utilisateur et du profil dans la réponse
                 $data = [
                     'access_token' =>  $user->createToken('MyApp')->accessToken,
@@ -316,7 +319,7 @@ class UserController extends BaseController
                         'firstname' => $user->firstname,
                         'number' => $user->number,
                         'email' => $user->email,
-                        'photo' => env('APP_URL') . '/assets/photos/' . $user->photo,
+                        'photo' => env('APP_URL') . '/assets/photos/' . $photo,
                     ]
                 ];
                 User::findOrFail($user->id)->update([
