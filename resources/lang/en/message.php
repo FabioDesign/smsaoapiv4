@@ -2,11 +2,10 @@
 
 return [
     //Users
-    'mr' => "Mr.",
-    'mrs' => "Mrs",
-    'mr_mrs' => "Mr./Mrs.",
     'login' => "Email ou téléphone",
     'password' => "Password",
+    'active' => "active",
+    'inactive' => "inactive",
     'activated' => "activated",
     'blocked' => "blocked",
     'authsucc' => "Authentication completed successfully.",
@@ -18,16 +17,22 @@ return [
     'creataccount' => "Account creation",
     'actifaccount' => "Account activation",
     'nodata' => "No data found.",
+    'fielderr' => "Invalid fields.",
+    'saveusrsucc' => "User successfully registered.",
+    'saveusrerr' => "Error during user registration.",
+    'profilsucc' => "User profile successfully modified.",
+    'profilerr' => "Error while modifying User Profile.",
 
     //Password
     'forgotpwd' => "Forgot password.",
     'otp' => "The OTP code is",
 
     // Settings
+    'userlist' => "List of users.",
     'townlist' => "List of cities.",
-    'townlisterror' => "Error retrieving cities.",
+    'townlisterr' => "Error retrieving cities.",
     'accountlist' => "List of account types.",
-    'accountlisterror' => "Error retrieving account types.",
+    'accountlisterr' => "Error retrieving account types.",
     
     // Mail
     'dear' => "Dear",

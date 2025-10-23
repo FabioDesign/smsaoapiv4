@@ -1,46 +1,51 @@
 <?php
 
 return [
-    //Users
-    'mr' => "Mr.",
-    'mrs' => "Mrs",
-    'mr_mrs' => "Mr./Mrs.",
-    'login' => "Email ou téléphone",
-    'password' => "Password",
-    'activated' => "activated",
-    'blocked' => "blocked",
-    'authsucc' => "Authentication completed successfully.",
-    'autherr' => "Authentication failure.",
-    'noprofil' => "No profile available for this user.",
-    'nomenu' => "No menu available for this user.",
-    'logoutsucc' => "Logout successfully completed.",
-    'logouterr' => "Error while logging out.",
-    'creataccount' => "Account creation",
-    'actifaccount' => "Account activation",
-    'nodata' => "Não foram encontrados dados.",
+    //Utilizadores
+    'login' => "E-mail ou telefone",
+    'password' => "Senha",
+    'active' => "ativo",
+    'inactive' => "inativo",
+    'activated' => "ativado",
+    'blocked' => "bloqueado",
+    'authsucc' => "Autenticação concluída com sucesso.",
+    'autherr' => "Falha na autenticação.",
+    'noprofil' => "Não há perfil disponível para este utilizador.",
+    'nomenu' => "Não há menu disponível para este utilizador.",
+    'logoutsucc' => "Logout concluído com sucesso.",
+    'logouterr' => "Erro ao sair.",
+    'creataccount' => "Criação de conta",
+    'actifaccount' => "Ativação de conta",
+    'nodata' => "Nenhum dado encontrado.",
+    'fielderr' => "Campos inválidos.",
+    'saveusrsucc' => "Utilizador registado com sucesso.",
+    'saveusrerr' => "Erro ao registar o utilizador.",
+    'profilsucc' => "Perfil do utilizador alterado com sucesso.",
+    'profilerr' => "Erro ao alterar o perfil do utilizador.",
 
-    //Password
-    'forgotpwd' => "Forgot password.",
-    'otp' => "The OTP code is",
+    //Senha
+    'forgotpwd' => "Esqueci a senha.",
+    'otp' => "O código OTP é",
 
-    // Settings
+    // Configurações
+    'userlist' => "Lista de utilizadores.",
     'townlist' => "Lista de cidades.",
-    'townlisterror' => "Erro ao recuperar as cidades.",
+    'townlisterr' => "Erro ao recuperar cidades.",
     'accountlist' => "Lista de tipos de conta.",
-    'accountlisterror' => "Erro ao recuperar os tipos de conta.",
+    'accountlisterr' => "Erro ao recuperar tipos de conta.",
     
-    // Mail
-    'dear' => "Dear",
-    'bestregard' => "Best regards",
-    'verifeml' => "Vérification d'e-mail.",
-    'sendmailsucc' => "Mail sent successfully.",
-    'sendmailerr' => "Error sending email.",
-    'txtaccount' => "Your application for registration as a participant has been registered and is being processed.<br>
-    You will shortly receive a confirmation email with your login details.",
-    'txtadmin' => "Please log in to your space to validate the registration of :<br>",
-    'stataccount' => "Your account has just been ",
-    'paraconn' => "Please find your login details below :<br>",
+    // E-mail
+    'dear' => "Prezado",
+    'bestregard' => "Atenciosamente",
+    'verifeml' => "Verificação de e-mail.",
+    'sendmailsucc' => "E-mail enviado com sucesso.",
+    'sendmailerr' => "Erro ao enviar e-mail.",
+    'txtaccount' => "O seu pedido de registo como participante foi registado e está a ser processado.<br>
+    Em breve receberá um e-mail de confirmação com os seus dados de login.",
+    'txtadmin' => "Faça login no seu espaço para validar o registo de :<br>",
+    'stataccount' => "A sua conta acaba de ser ",
+    'paraconn' => "Encontre os seus dados de login abaixo :<br>",
 
-    // Message
-    'error' => "An error has occurred, please try again later !",
+    // Mensagem
+    'error' => "Ocorreu um erro, tente novamente mais tarde !",
 ];

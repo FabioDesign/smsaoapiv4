@@ -18,13 +18,15 @@ return new class extends Migration
             $table->string('firstname', 255);
             $table->string('number', 20);
             $table->string('email', 255);
-            $table->char('codepin', 4)->default('0000');
+            $table->char('codepin', 4)->default('7070');
             $table->string('company', 255)->nullable();
             $table->string('nif', 50)->nullable();
             $table->string('address', 255)->nullable();
             $table->string('website', 255)->nullable();
-            $table->decimal('volume', 10, 0);
+            $table->decimal('volume', 10, 0)->default('0');
             $table->char('lg', 2);
+            $table->string('photo', 20)->nullable();
+            $table->timestamp('photo_at')->nullable();
             $table->string('password', 255)->nullable();
             $table->timestamp('password_at')->nullable();
             $table->string('otp', 6)->nullable();

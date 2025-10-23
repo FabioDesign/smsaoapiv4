@@ -26,14 +26,14 @@ class ListsController extends BaseController
         try {
             $towns = Town::select('id', 'label')->get();
             // Vérifier si les données existent
-            if ($town->isEmpty()) {
+            if ($towns->isEmpty()) {
                 Log::warning("List::town - Aucune nationalité trouvée.");
                 return $this->sendSuccess(__('message.nodata'));
             }
-            return $this->sendSuccess(__('message.townlist'), $town);
+            return $this->sendSuccess(__('message.townlist'), $towns);
         } catch (\Exception $e) {
             Log::warning("List::town - Erreur lors de la récupération des Villes: " . $e->getMessage());
-            return $this->sendError(__('message.townlisterror'));
+            return $this->sendError(__('message.townlisterr'));
         }
     }
     // Liste de Type de Compte
@@ -51,16 +51,16 @@ class ListsController extends BaseController
     public function accountyp($lg): JsonResponse {
 		App::setLocale($lg);
         try {
-            $accountyp = AccountType::select('id', "$lg as label")->get();
+            $accountyps = AccountType::select('id', "$lg as label")->get();
             // Vérifier si les données existent
-            if ($accountyp->isEmpty()) {
+            if ($accountyps->isEmpty()) {
                 Log::warning("List::AccountType - Aucune nationalité trouvée.");
                 return $this->sendSuccess(__('message.nodata'));
             }
-            return $this->sendSuccess(__('message.accountlist'), $accountyp);
+            return $this->sendSuccess(__('message.accountlist'), $accountyps);
         } catch (\Exception $e) {
             Log::warning("List::AccountType - Erreur lors de la récupération des Type de Compte: " . $e->getMessage());
-            return $this->sendError(__('message.accountlisterror'));
+            return $this->sendError(__('message.accountlisterr'));
         }
     }
 }

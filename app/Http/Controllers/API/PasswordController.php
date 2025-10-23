@@ -41,7 +41,7 @@ class PasswordController extends BaseController
         //Error field
         if($validator->fails()){
             Log::warning("Password forgot - Validator email : ".$request->email);
-            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
+            return $this->sendSuccess(__('message.fielderr'), $validator->errors(), 422);
         }
         try {
             // Récupérer les données
@@ -111,7 +111,7 @@ class PasswordController extends BaseController
         //Error field
         if($validator->fails()){
             Log::warning("Password forgot - Validator otp : ".$request->email);
-            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
+            return $this->sendSuccess(__('message.fielderr'), $validator->errors(), 422);
         }
         try {
             // Récupérer les données
@@ -178,7 +178,7 @@ class PasswordController extends BaseController
         //Error field
         if($validator->fails()){
             Log::warning("Validator password forgot - password : " . json_encode($request->all()));
-            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
+            return $this->sendSuccess(__('message.fielderr'), $validator->errors(), 422);
         }
         // Récupérer les données
         $user = User::where([
@@ -246,7 +246,7 @@ class PasswordController extends BaseController
         //Error field
         if($validator->fails()){
             Log::warning("Validator password edit : " . json_encode($request->all()));
-            return $this->sendSuccess('Champs invalides.', $validator->errors(), 422);
+            return $this->sendSuccess(__('message.fielderr'), $validator->errors(), 422);
         }
         // Vérification de l'ancien mot de passe
         if (!Hash::check($request->oldpass, $user->password)) {

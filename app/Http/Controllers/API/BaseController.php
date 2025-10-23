@@ -17,7 +17,7 @@ class BaseController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function sendSuccess($message, $data = [], $status = 200){
+  public function sendSuccess($message, $data = [], $status = 200) {
     $response = [
       'status' => $status,
       'message' => $message,
@@ -30,7 +30,7 @@ class BaseController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function sendError($message, $data = [], $status = 400){
+  public function sendError($message, $data = [], $status = 400) {
     $response = [
       'status' => $status,
       'message' => $message,
@@ -41,7 +41,7 @@ class BaseController extends Controller
     return response()->json($response, $status);
   }
   //Send mail
-  public function sendMail($to, $cc, $subject, $content) {
+  public function sendMail($to, $emlfrom, $usrfrom, $cc, $subject, $message) {
     require base_path("vendor/autoload.php");
     $mail = new PHPMailer(true);   // Passing `true` enables exceptions
     $mail->CharSet = "UTF-8";
@@ -58,14 +58,10 @@ class BaseController extends Controller
       $mail->timeout = null;
       $mail->Encoding = 'base64';
 
-      $mail->setFrom(env('MAIL_USERNAME'), env('MAIL_FROM_NAME')); // sender email and name
+      $mail->setFrom($emlfrom, $usrfrom); // sender email and name
       $mail->addAddress($to);
-      if ($cc != '') {
-        foreach($cc as $email):
-          $mail->AddCC($email);
-        endforeach;
-      }
-      $mail->addReplyTo(env('MAIL_USERNAME'), env('MAIL_FROM_NAME')); // sender email and name);
+      $mail->AddCC($cc);
+      $mail->addReplyTo($emlfrom, $usrfrom); // sender email and name);
       $mail->SMTPOptions = [
         'ssl' => [
           'verify_peer' => false,
@@ -73,13 +69,11 @@ class BaseController extends Controller
           'allow_self_signed' => false
         ]
       ];
-      $mail->isHTML(true);                	// Set email content format to HTML
+      $mail->isHTML(true);                	// Set email comment format to HTML
       $mail->Subject = $subject;
-      $mail->Body = $content;
-      if ($mail->send())
-        Log::info('SendMail - Success : Email has been sent.');
-      else
-        Log::warning('SendMail - Failed : ' . $mail->ErrorInfo);
+      $mail->Body = $message;
+      $mail->send();
+      Log::info('SendMail - Success : Email has been sent.');
     } catch(Exception $e) {
       Log::warning('SendMail - Error : ' . $e->getMessage());
     }

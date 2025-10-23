@@ -30,28 +30,31 @@ Route::fallback(function() {
   ];
   return response()->json($response, 404);
 });
-// Route pour l'inscription
-Route::post('register/sendotp', [RegisterController::class, 'sendotp']);
-Route::post('register/validotp', [RegisterController::class, 'validotp']);
-Route::post('register/forms', [RegisterController::class, 'store']);
 // Route pour la connexion
 Route::post('users/auth', [UserController::class, 'login']);
+// Route pour l'inscription
+Route::post('users/register', [UserController::class, 'store']);
 // Routes pour les mots de passe oubliés
-Route::post('password/verifemail', [PasswordController::class, 'verifemail']);
-Route::post('password/verifotp', [PasswordController::class, 'verifotp']);
-Route::post('password/addpass', [PasswordController::class, 'addpass']);
+Route::controller(PasswordController::class)->group(function () {
+  Route::post('password/verifemail', 'verifemail');
+  Route::post('password/verifotp', 'verifotp');
+  Route::post('password/addpass', 'addpass');
+});
 // Route pour les listes
-Route::get('towns/list/{lg}', [ListsController::class, 'towns']);
-Route::get('accountyp/list/{lg}', [ListsController::class, 'accountyp']);
+Route::controller(ListsController::class)->group(function () {
+  Route::get('towns/list/{lg}', 'towns');
+  Route::get('accountyp/list/{lg}', 'accountyp');
+});
 
 Route::middleware(['auth:api'])->group(function () {
-  Route::resources([
-    'users' => UserController::class,
-  ]);
   // Route pour la modification du profil utilisateur
-  Route::post('users/profil', [UserController::class, 'profil']);
-  // Route pour la deconnexion
-  Route::post('users/logout', [UserController::class, 'logout']);
+  Route::controller(UserController::class)->group(function () {
+    Route::post('users/profil', 'profil');
+    // Route pour la photo de profil
+    Route::post('users/photo', 'photo');
+    // Route pour la deconnexion
+    Route::post('users/logout', 'logout');
+  });
   // Route pour les mots de passe
   Route::post('password/editpass', [PasswordController::class, 'editpass']);
 });

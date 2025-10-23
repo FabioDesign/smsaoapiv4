@@ -22,7 +22,9 @@ class User extends Authenticatable
         'uid',
         'nif',
         'otp',
+        'photo',
         'email',
+        'number',
         'volume',
         'otp_at',
         'status',
@@ -31,12 +33,12 @@ class User extends Authenticatable
         'address',
         'codepin',
         'company',
+        'photo_at',
         'login_at',
         'lastname',
         'password',
         'firstname',
         'password_at',
-        'phone_number',
         'accountyp_id',
     ];
 
