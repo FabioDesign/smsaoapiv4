@@ -327,7 +327,7 @@ class UserController extends BaseController
                         'firstname' => $user->firstname,
                         'number' => $user->number,
                         'email' => $user->email,
-                        'photo' => ENV('APP_URL') . '/assets/photos/' . $photo,
+                        'photo' => env('APP_URL') . '/assets/photos/' . $photo,
                     ]
                 ];
                 User::findOrFail($user->id)->update([
