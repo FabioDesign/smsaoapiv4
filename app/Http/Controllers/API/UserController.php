@@ -180,7 +180,7 @@ class UserController extends BaseController
     //Modification
     /**
     * @OA\Post(
-    *   path="/api/users/profil",
+    *   path="/api/users/profile",
     *   tags={"Users"},
     *   operationId="profilUser",
     *   description="Modification du profil utilisateur",
@@ -206,11 +206,11 @@ class UserController extends BaseController
     *   @OA\Response(response=404, description="Page introuvable.")
     * )
     */
-    public function profil(Request $request): JsonResponse {
+    public function profile(Request $request): JsonResponse {
         //User
         $user = Auth::user();
         //Data
-        Log::notice("User::profil - ID User : {$user->id} - Requête : " . json_encode($request->all()));
+        Log::notice("User::profile - ID User : {$user->id} - Requête : " . json_encode($request->all()));
         //Validator
         $validator = Validator::make($request->all(), [
             'lastname' => 'required',
@@ -223,7 +223,7 @@ class UserController extends BaseController
 		App::setLocale($user->lg);
         //Error field
         if ($validator->fails()) {
-            Log::warning("User::profil - Validator : " . $validator->errors()->first() . " - ".json_encode($request->all()));
+            Log::warning("User::profile - Validator : " . $validator->errors()->first() . " - ".json_encode($request->all()));
             return $this->sendSuccess(__('message.fielderr'), $validator->errors(), 422);
         }
         // Test sur DID
@@ -237,7 +237,7 @@ class UserController extends BaseController
             ]);
             // Error field
             if ($validator->fails()) {
-                Log::warning("User::profil - Validator : " . $validator->errors()->first() . " - ".json_encode($request->all()));
+                Log::warning("User::profile - Validator : " . $validator->errors()->first() . " - ".json_encode($request->all()));
                 return $this->sendError(__('message.fielderr'), $validator->errors()->first(), 422);
             }
         }
@@ -264,7 +264,7 @@ class UserController extends BaseController
             return $this->sendSuccess(__('message.profilsucc'), $set, 201);
         } catch (\Exception $e) {
             DB::rollBack(); // Annuler la transaction en cas d'erreur
-            Log::warning("User::profil - Erreur lors de la modification de Profil utilisateur : " . $e->getMessage() . " " . json_encode($set));
+            Log::warning("User::profile - Erreur lors de la modification de Profil utilisateur : " . $e->getMessage() . " " . json_encode($set));
             return $this->sendError(__('message.profilerr'));
         }
 	}

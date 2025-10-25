@@ -49,7 +49,7 @@ Route::controller(ListsController::class)->group(function () {
 Route::middleware(['auth:api'])->group(function () {
   // Route pour la modification du profil utilisateur
   Route::controller(UserController::class)->group(function () {
-    Route::post('users/profil', 'profil');
+    Route::post('users/profile', 'profile');
     // Route pour la photo de profil
     Route::post('users/photo', 'photo');
     // Route pour la deconnexion
