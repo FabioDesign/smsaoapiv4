@@ -268,6 +268,62 @@ class UserController extends BaseController
             return $this->sendError(__('message.profilerr'));
         }
 	}
+    //Photo de profil
+    /**
+     * @OA\Post(
+     *   path="/api/users/photo",
+     *   tags={"Users"},
+     *   operationId="photo",
+     *   description="Modification de la photo de profil",
+     *   security={{"bearer":{}}},
+     *   @OA\RequestBody(
+     *      required=true,
+     *      @OA\MediaType(
+     *          mediaType="multipart/form-data",
+     *          @OA\Schema(
+     *             required={"photo"},
+     *             @OA\Property(property="photo", type="string", format="binary"),
+     *          )
+     *      )
+     *   ),
+     *   @OA\Response(response=200, description="Photo de profil modifiée avec succès."),
+     *   @OA\Response(response=401, description="Non autorisé."),
+     *   @OA\Response(response=404, description="Page introuvable."),
+     * )
+     */
+    public function photo(Request $request)
+    {
+        $user = Auth::user();
+        //Validator
+        $validator = Validator::make($request->all(), [
+			'photo' => 'required|file|mimes:png,jpeg,jpg|max:2048',
+        ]);
+		App::setLocale($user->lg);
+        //Error field
+        if ($validator->fails()) {
+            Log::warning("User::photo - Validator : " . $validator->errors()->first() . " - ".json_encode($request->all()));
+            return $this->sendSuccess(__('message.fielderr'), $validator->errors(), 422);
+        }
+        // Upload photo
+        $dir = 'assets/photos';
+        $image = $request->file('photo');
+        $ext = $image->getClientOriginalExtension();
+        $photo = User::filenameUnique($ext);
+        if (!($image->move($dir, $photo))) {
+            Log::warning("User::photo - Erreur de téléchargement de la photo : " . $e->getMessage());
+            return $this->sendError(__('message.photodown'));
+        }
+        try {
+            $set = [
+                'photo' => $photo,
+            ];
+            User::findOrFail($user->id)->update($set);
+            return $this->sendSuccess(__('message.photosucc'), [], 201);
+        } catch(\Exception $e) {
+            Log::warning("Photo::store - Erreur de modification de la photo de profil : " . $e->getMessage());
+            return $this->sendError(__('message.photoerr'));
+        }
+    }
     //Authentification
     /**
     * @OA\Post(

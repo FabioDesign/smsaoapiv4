@@ -318,7 +318,7 @@
                 }
             }
         },
-        "/api/users/profil": {
+        "/api/users/profile": {
             "post": {
                 "tags": [
                     "Users"
@@ -381,6 +381,50 @@
                     },
                     "400": {
                         "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Page introuvable."
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/users/photo": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Modification de la photo de profil",
+                "operationId": "photo",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "photo"
+                                ],
+                                "properties": {
+                                    "photo": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Photo de profil modifiée avec succès."
+                    },
+                    "401": {
+                        "description": "Non autorisé."
                     },
                     "404": {
                         "description": "Page introuvable."

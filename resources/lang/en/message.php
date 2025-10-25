@@ -1,7 +1,7 @@
 <?php
 
 return [
-    //Users
+    // Users
     'login' => "Email ou téléphone",
     'password' => "Password",
     'active' => "active",
@@ -23,13 +23,17 @@ return [
     'profilsucc' => "User profile successfully modified.",
     'profilerr' => "Error while modifying User Profile.",
 
-    //Password
+    // Password
     'forgotpwd' => "Forgot password.",
     'otp' => "The OTP code is",
     'otpsucc' => "OTP code successfully validated.",
     'otperr' => "Incorrect OTP code.",
     'otpexp' => "OTP code has expired.",
 
+    // Photo
+    'photosucc' => "Profile photo successfully updated.",
+    'photoerr' => "Error updating profile photo.",
+    'photodown' => "Error downloading photo.",
     // Settings
     'userlist' => "List of users.",
     'townlist' => "List of cities.",

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    //Utilizadores
+    // Utilizadores
     'login' => "E-mail ou telefone",
     'password' => "Senha",
     'active' => "ativo",
@@ -23,12 +23,17 @@ return [
     'profilsucc' => "Perfil do utilizador alterado com sucesso.",
     'profilerr' => "Erro ao alterar o perfil do utilizador.",
 
-    //Senha
+    // Senha
     'forgotpwd' => "Esqueci a senha.",
     'otp' => "O código OTP é",
     'otpsucc' => "Código OTP validado com sucesso.",
     'otperr' => "Código OTP incorreto.",
     'otpexp' => "O código OTP expirou.",
+
+    // Photo
+    'photosucc' => "Foto do perfil atualizada com sucesso.",
+    'photoerr' => "Erro ao atualizar a foto do perfil.",
+    'photodown' => "Erro ao descarregar a foto.",
 
     // Configurações
     'userlist' => "Lista de utilizadores.",
